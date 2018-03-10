@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="unit" verbose="1">
+  <test name="ec">
+    <groups>
+      <run>
+        <include name="unit"/>
+      </run>
+    </groups>
+    <packages>
+      <package name="net.metricspace.crypto.math.ec"/>
+      <package name="net.metricspace.crypto.math.ec.curve"/>
+      <package name="net.metricspace.crypto.math.ec.group"/>
+      <package name="net.metricspace.crypto.math.ec.point"/>
+    </packages>
+  </test>
+</suite>

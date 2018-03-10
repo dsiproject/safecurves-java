@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="stress" verbose="1">
+  <test name="ec">
+    <groups>
+      <run>
+        <include name="stress"/>
+      </run>
+    </groups>
+    <packages>
+      <package name="net.metricspace.crypto.math.ec"/>
+      <package name="net.metricspace.crypto.math.ec.curve"/>
+      <package name="net.metricspace.crypto.math.ec.group"/>
+    </packages>
+  </test>
+</suite>
