@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec;
+package net.metricspace.crypto.math.ec.hash;
 
 import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
 import net.metricspace.crypto.math.ec.point.ECPoint;
