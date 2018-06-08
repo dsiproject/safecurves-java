@@ -51,8 +51,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type.
  */
 public interface Elligator<S extends PrimeField<S>,
-                           P extends Elligator<S, P>>
-    extends ECPoint<S, P> {
+                           P extends Elligator<S, P, T>,
+                           T extends ECPoint.Scratchpad>
+    extends ECPoint<S, P, T> {
     /**
      * Get the default hash parameter.
      *
@@ -78,7 +79,7 @@ public interface Elligator<S extends PrimeField<S>,
      * @param code The hash code from which to generate a point.
      */
     public void decodeHash(final int p,
-                            final S code);
+                           final S code);
 
     /**
      * Get a hash code that will re-create this point with {@link

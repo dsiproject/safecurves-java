@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.M383Curve;
 import net.metricspace.crypto.math.field.ModE383M187;
@@ -40,8 +42,36 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * equivalent to the Montgomery curve M-383.
  */
 public class M383ExtendedPoint
-    extends ExtendedTwistedEdwardsPoint<ModE383M187, M383ExtendedPoint>
+    extends ExtendedTwistedEdwardsPoint<ModE383M187, M383ExtendedPoint,
+                                        M383ExtendedPoint.Scratchpad>
     implements M383Curve {
+    /**
+     * Scratchpads for extended M-383 points.
+     */
+    public static final class Scratchpad
+        extends ExtendedTwistedEdwardsPoint.Scratchpad<ModE383M187> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE383M187(0), new ModE383M187(0), new ModE383M187(0),
+                  new ModE383M187(0), new ModE383M187(0), new ModE383M187(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     private static final M383ExtendedPoint ZERO = new M383ExtendedPoint();
 
     /**
@@ -79,6 +109,14 @@ public class M383ExtendedPoint
                                 final ModE383M187 z,
                                 final ModE383M187 t) {
         super(x, y, z, t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

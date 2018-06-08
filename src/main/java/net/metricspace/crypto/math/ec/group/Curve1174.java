@@ -49,7 +49,7 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see ModE251M9
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
-public abstract class Curve1174<P extends ECPoint<ModE251M9, P>>
+public abstract class Curve1174<P extends ECPoint<ModE251M9, P, ?>>
     extends EdwardsCurveGroup<ModE251M9, P>
     implements Curve1174Curve {
     /**

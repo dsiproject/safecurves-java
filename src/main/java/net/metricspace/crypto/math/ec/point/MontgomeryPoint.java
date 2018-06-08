@@ -43,8 +43,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type.
  */
 public interface MontgomeryPoint<S extends PrimeField<S>,
-                                 P extends MontgomeryPoint<S, P>>
-    extends ECPoint<S, P> {
+                                 P extends MontgomeryPoint<S, P, T>,
+                                 T extends ECPoint.Scratchpad>
+    extends ECPoint<S, P, T> {
     /**
      * Get the value of the X coordinate in the Montgomery
      * representation.

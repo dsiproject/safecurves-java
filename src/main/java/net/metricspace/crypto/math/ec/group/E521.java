@@ -50,7 +50,7 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see ModE521M1
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
-public abstract class E521<P extends ECPoint<ModE521M1, P>>
+public abstract class E521<P extends ECPoint<ModE521M1, P, ?>>
     extends EdwardsCurveGroup<ModE521M1, P>
     implements E521Curve {
     /**

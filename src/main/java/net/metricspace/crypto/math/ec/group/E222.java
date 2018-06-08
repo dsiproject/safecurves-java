@@ -51,7 +51,7 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see ModE222M117
  * @see net.metricspace.crypto.math.ec.curve.E222Curve
  */
-public abstract class E222<P extends ECPoint<ModE222M117, P>>
+public abstract class E222<P extends ECPoint<ModE222M117, P, ?>>
     extends EdwardsCurveGroup<ModE222M117, P>
     implements E222Curve {
     /**

@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import javax.security.auth.Destroyable;
+
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -46,9 +48,10 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type used as an argument.
  */
 public abstract class ExtendedPoint<S extends PrimeField<S>,
-                                    P extends ExtendedPoint<S, P>>
-    extends ProjectivePoint<S, P>
-    implements EdwardsPoint<S, P> {
+                                    P extends ExtendedPoint<S, P, T>,
+                                    T extends ECPoint.Scratchpad>
+    extends ProjectivePoint<S, P, T>
+    implements EdwardsPoint<S, P, T> {
     /**
      * Cached value of {@code X * Y / Z}
      */
@@ -80,6 +83,23 @@ public abstract class ExtendedPoint<S extends PrimeField<S>,
         super(x, y, z);
 
         this.t = t;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+        super.destroy();
+        t.destroy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDestroyed() {
+        return super.isDestroyed() && t.isDestroyed();
     }
 
     /**

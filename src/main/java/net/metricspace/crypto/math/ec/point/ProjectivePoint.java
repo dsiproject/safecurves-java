@@ -45,9 +45,10 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type used as an argument.
  */
 public abstract class ProjectivePoint<S extends PrimeField<S>,
-                                      P extends ProjectivePoint<S, P>>
-    extends ScaledPoint<S, P>
-    implements EdwardsPoint<S, P> {
+                                      P extends ProjectivePoint<S, P, T>,
+                                      T extends ECPoint.Scratchpad>
+    extends ScaledPoint<S, P, T>
+    implements EdwardsPoint<S, P, T> {
     /**
      * Initialize a {@code ProjectivePoint} with three scalar objects.
      * This constructor takes possession of the parameters, which are
@@ -69,7 +70,7 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * @param other The point against which to compare.
      * @return Whether this point is equal to {@code other}.
      */
-    public boolean mmequals(final ProjectivePoint<S, P> other) {
+    public boolean mmequals(final ProjectivePoint<S, P, T> other) {
         return x.equals(other.x) && y.equals(other.y);
     }
 
@@ -79,7 +80,7 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * @param other The point against which to compare.
      * @return Whether this point is equal to {@code other}.
      */
-    public boolean mequals(final ProjectivePoint<S, P> other) {
+    public boolean mequals(final ProjectivePoint<S, P, T> other) {
         other.scale();
 
         return mmequals(other);
@@ -88,7 +89,7 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
     /**
      * {@inheritDoc}
      */
-    public boolean equals(final ProjectivePoint<S, P> other) {
+    public boolean equals(final ProjectivePoint<S, P, T> other) {
         this.scale();
 
         return mequals(other);
@@ -100,7 +101,7 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
     @Override
     public boolean equals(final Object other) {
         if (other instanceof ProjectivePoint) {
-            return equals((ProjectivePoint<S, P>)other);
+            return equals((ProjectivePoint<S, P, T>)other);
         } else {
             return false;
         }

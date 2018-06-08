@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec;
 
+import javax.security.auth.Destroyable;
+
 import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
@@ -45,13 +47,15 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type used as an argument.
  */
 public interface MontgomeryLadder<S extends PrimeField<S>,
-                                  P extends MontgomeryLadder<S, P>>
-    extends ECPoint<S, P> {
+                                  P extends MontgomeryLadder<S, P, T>,
+                                  T extends ECPoint.Scratchpad>
+    extends ECPoint<S, P, T> {
     /**
      * {@inheritDoc}
      */
     @Override
-    public default void mul(final S scalar) {
+    public default void mul(final S scalar,
+                            final T scratchpad) {
         final P r1 = this.clone();
 
         reset();
@@ -62,7 +66,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
         for(int i = scalar.numBits(); i >= 0; i--) {
             final long bit = scalar.bit(i);
 
-            ladderStep(bit, r1, r2, r3);
+            ladderStep(bit, r1, r2, r3, scratchpad);
         }
     }
 
@@ -94,26 +98,27 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
     public default void ladderStep(final long bit,
                                    final P r1,
                                    final P r2,
-                                   final P r3) {
+                                   final P r3,
+                                   final T scratchpad) {
         final long negbit = bit ^ 0x1;
 
         r3.set(r1);
         this.copyTo(r2);
 
         /* Zero branch */
-        r3.add(r2);
-        r2.dbl();
+        r3.add(r2, scratchpad);
+        r2.dbl(scratchpad);
         r3.reset(negbit);
         r2.reset(negbit);
 
         /* One branch */
-        this.add(r1);
-        r1.dbl();
+        this.add(r1, scratchpad);
+        r1.dbl(scratchpad);
         this.reset(bit);
         r1.reset(bit);
 
         /* Recombination */
-        r1.add(r3);
-        this.add(r2);
+        r1.add(r3, scratchpad);
+        this.add(r2, scratchpad);
     }
 }

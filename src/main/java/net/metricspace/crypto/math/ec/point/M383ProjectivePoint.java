@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.M383Curve;
 import net.metricspace.crypto.math.field.ModE383M187;
@@ -40,8 +42,38 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * equivalent to the Montgomery curve M-383.
  */
 public class M383ProjectivePoint
-    extends ProjectiveTwistedEdwardsPoint<ModE383M187, M383ProjectivePoint>
+    extends ProjectiveTwistedEdwardsPoint<ModE383M187, M383ProjectivePoint,
+                                          M383ProjectivePoint.Scratchpad>
     implements M383Curve {
+    /**
+     * Scratchpads for projective M-383 points.
+     */
+    public static final class Scratchpad
+        extends ProjectiveTwistedEdwardsPoint.Scratchpad<ModE383M187> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE383M187(0), new ModE383M187(0), new ModE383M187(0),
+                  new ModE383M187(0), new ModE383M187(0), new ModE383M187(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
+    private static final M383ProjectivePoint ZERO = new M383ProjectivePoint();
+
     /**
      * Initialize a {@code M383ProjectivePoint} with zero
      * coordinates.
@@ -76,6 +108,14 @@ public class M383ProjectivePoint
                                   final ModE383M187 y,
                                   final ModE383M187 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**
@@ -128,5 +168,25 @@ public class M383ProjectivePoint
         TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
 
         return new M383ProjectivePoint(edwardsX, edwardsY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        if (!this.equals(ZERO)) {
+            final StringBuilder sb = new StringBuilder();
+
+            sb.append('(');
+            sb.append(montgomeryX().toString());
+            sb.append(", ");
+            sb.append(montgomeryY().toString());
+            sb.append(')');
+
+            return sb.toString();
+        } else {
+            return "Inf";
+        }
     }
 }
