@@ -38,7 +38,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 public final class MontgomeryUtils {
     private MontgomeryUtils() {}
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         boolean additionInf(final P a,
                             final P b) {
         return additionInfScalars(a.montgomeryX(), b.montgomeryX());
@@ -50,7 +50,7 @@ public final class MontgomeryUtils {
         return x1.equals(x2);
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S additionX(final P a,
                     final P b,
                     final int avalue,
@@ -117,7 +117,7 @@ public final class MontgomeryUtils {
         return out;
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S additionY(final P a,
                     final P b,
                     final int avalue,
@@ -199,7 +199,7 @@ public final class MontgomeryUtils {
         return out;
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S doubleX(final P p,
                   final int avalue,
                   final P zeroPoint) {
@@ -254,7 +254,7 @@ public final class MontgomeryUtils {
         return out;
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S doubleY(final P p,
                   final int avalue,
                   final P zeroPoint) {
@@ -326,7 +326,7 @@ public final class MontgomeryUtils {
         return out;
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         boolean tripleInf(final P p,
                           final int avalue) {
         final S x = p.montgomeryX();
@@ -345,7 +345,7 @@ public final class MontgomeryUtils {
         return dx.equals(x);
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S tripleX(final P p,
                   final int avalue) {
         final S x = p.montgomeryX();
@@ -363,7 +363,7 @@ public final class MontgomeryUtils {
                                 avalue);
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S tripleY(final P p,
                   final int avalue) {
         final S x = p.montgomeryX();
@@ -381,7 +381,7 @@ public final class MontgomeryUtils {
                                 avalue);
     }
 
-    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         void mulPoint(final P p,
                       final S s,
                       final S r0x,

@@ -100,7 +100,7 @@ public final class EdwardsUtils {
         return out;
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S additionX(final P a,
                     final P b,
                     final int dvalue) {
@@ -128,7 +128,7 @@ public final class EdwardsUtils {
         return divScalars(x1y2plusx2y1, oneplusdx1x2y1y2);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S additionY(final P a,
                     final P b,
                     final int dvalue) {
@@ -156,7 +156,7 @@ public final class EdwardsUtils {
         return divScalars(y1y2minusx1x2, oneminusdx1x2y1y2);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S doubleX(final P p,
                   final int dvalue) {
         final S x = p.edwardsX();
@@ -172,7 +172,7 @@ public final class EdwardsUtils {
         return additionXscalars(x, x, y, y, dvalue);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S doubleY(final P p,
                   final int dvalue) {
         final S x = p.edwardsX();
@@ -188,7 +188,7 @@ public final class EdwardsUtils {
         return additionYscalars(x, x, y, y, dvalue);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S tripleX(final P p,
                   final int dvalue) {
         final S x = p.edwardsX();
@@ -206,7 +206,7 @@ public final class EdwardsUtils {
                                 dvalue);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         S tripleY(final P p,
                   final int dvalue) {
         final S x = p.edwardsX();
@@ -224,7 +224,7 @@ public final class EdwardsUtils {
                                 dvalue);
     }
 
-    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P>>
+    public static <S extends PrimeField<S>, P extends EdwardsPoint<S, P, ?>>
         void mulPoint(final P p,
                       final S s,
                       final S r0x,

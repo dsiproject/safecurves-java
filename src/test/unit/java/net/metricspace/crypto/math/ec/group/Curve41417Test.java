@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 import net.metricspace.crypto.math.ec.point.EdwardsPoint;
 import net.metricspace.crypto.math.field.ModE414M17;
 
-public abstract class Curve41417Test<P extends EdwardsPoint<ModE414M17, P>,
+public abstract class Curve41417Test<P extends EdwardsPoint<ModE414M17, P, ?>,
                                      G extends EdwardsCurveGroup<ModE414M17, P>>
     extends EdwardsGroupTest<ModE414M17, P, G> {
     private static String BASE_X_STRING =
