@@ -35,14 +35,16 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import net.metricspace.crypto.math.ec.MontgomeryUtils;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadderGroupTest;
 import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
 public abstract class MontgomeryGroupTest<S extends PrimeField<S>,
-                                          P extends MontgomeryPoint<S, P, ?>,
+                                          P extends MontgomeryLadder<S, P, ?>,
                                           G extends MontgomeryCurveGroup<S, P>>
-    extends ECGroupTest<S, P, G> {
-    final int avalue;
+    extends MontgomeryLadderGroupTest<S, P, G> {
+    final S avalue;
 
     protected MontgomeryGroupTest(final G group,
                                   final String baseXString,

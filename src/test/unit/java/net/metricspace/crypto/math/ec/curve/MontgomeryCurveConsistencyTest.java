@@ -41,11 +41,11 @@ import net.metricspace.crypto.math.field.PrimeField;
 public abstract class
     MontgomeryCurveConsistencyTest<F extends PrimeField<F>,
                                    C extends MontgomeryCurve<F>> {
-    private final int montgomeryA;
+    private final F montgomeryA;
     private final C curve;
 
     protected MontgomeryCurveConsistencyTest(final C curve,
-                                             final int montgomeryA) {
+                                             final F montgomeryA) {
         this.curve = curve;
         this.montgomeryA = montgomeryA;
     }

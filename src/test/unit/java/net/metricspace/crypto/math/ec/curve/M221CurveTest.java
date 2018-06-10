@@ -40,6 +40,6 @@ import net.metricspace.crypto.math.field.ModE221M3;
 public class M221CurveTest
     extends MontgomeryCurveConsistencyTest<ModE221M3, M221Curve> {
     public M221CurveTest() {
-        super(new M221Curve() {}, 117050);
+        super(new M221Curve() {}, new ModE221M3(117050));
     }
 }

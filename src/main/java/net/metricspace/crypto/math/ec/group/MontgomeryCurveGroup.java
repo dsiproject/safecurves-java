@@ -84,7 +84,7 @@ public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
      * @return Whether or not the two are equal.
      */
     public boolean equals(final MontgomeryCurve other) {
-        return this.montgomeryA() == other.montgomeryA();
+        return this.montgomeryA().equals(other.montgomeryA());
     }
 
     /**
@@ -107,18 +107,11 @@ public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
      * @param sb {@link StringBuilder} to which to append the Montgomery form.
      * @param a The Montgomery {@code A} parameter.
      */
-    public static void appendMontgomeryForm(final StringBuilder sb,
-                                            final int a) {
-        sb.append("y^2 = x^3 ");
-
-        if (a < 0) {
-            sb.append("- ");
-            sb.append(-a);
-        } else {
-            sb.append("+ ");
-            sb.append(a);
-        }
-
+    public static <S extends PrimeField<S>>
+        void appendMontgomeryForm(final StringBuilder sb,
+                                  final S a) {
+        sb.append("y^2 = x^3 + ");
+        sb.append(a);
         sb.append(" * x^2 + x");
     }
 }

@@ -43,13 +43,45 @@ public interface MontgomeryBirationalEquivalence<F extends PrimeField<F>>
     extends MontgomeryCurve<F>,
             TwistedEdwardsCurve<F> {
     /**
-     * {@inheritDoc}
+     * Calculate the Montgomery {@code A} parameter from Edwards parameters.
+     *
+     * @param <F> The field underlying the Edwards curve.
+     * @param edwardsA The Edwards {@code a} parameter.
+     * @param edwardsD The Edwards {@code d} parameter.
+     * @return The Montgomery {@code A} parameter.
      */
-    @Override
-    public default int montgomeryA() {
-        final int a = edwardsA();
-        final int d = edwardsD();
+    public static <F extends PrimeField<F>>
+        F montgomeryAfromEdwards(final F edwardsA,
+                                 final F edwardsD) {
+        final F out = edwardsA.clone();
+        final F denom = edwardsA.clone();
 
-        return (2 * (a + d)) / (a - d);
-    }
+        denom.sub(edwardsD);
+        out.add(edwardsD);
+        out.mul(2);
+        out.div(denom);
+
+        return out;
+    };
+
+    /**
+     * Calculate the Montgomery {@code B} parameter from Edwards parameters.
+     *
+     * @param <F> The field underlying the Edwards curve.
+     * @param edwardsA The Edwards {@code a} parameter.
+     * @param edwardsD The Edwards {@code d} parameter.
+     * @return The Montgomery {@code B} parameter.
+     */
+    public static <F extends PrimeField<F>>
+        F montgomeryBfromEdwards(final F edwardsA,
+                                 final F edwardsD) {
+        final F out = edwardsA.clone();
+        final F denom = edwardsA.clone();
+
+        out.set(4);
+        denom.sub(edwardsD);
+        out.div(denom);
+
+        return out;
+    };
 }

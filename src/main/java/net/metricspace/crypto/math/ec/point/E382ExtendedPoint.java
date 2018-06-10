@@ -33,7 +33,6 @@ package net.metricspace.crypto.math.ec.point;
 
 import java.lang.ThreadLocal;
 
-import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.E382Curve;
 import net.metricspace.crypto.math.field.ModE382M105;
 

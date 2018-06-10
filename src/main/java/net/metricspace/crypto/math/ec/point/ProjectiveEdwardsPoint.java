@@ -33,8 +33,8 @@ package net.metricspace.crypto.math.ec.point;
 
 import javax.security.auth.Destroyable;
 
-import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -62,12 +62,7 @@ public abstract class
      * Superclass of scratchpads for projective Edwards points.
      */
     public static abstract class Scratchpad<S extends PrimeField<S>>
-        implements ECPoint.Scratchpad {
-        protected final S r0;
-        protected final S r1;
-        protected final S r2;
-        protected final S r3;
-        protected final S r4;
+        extends MontgomeryLadder.Scratchpad<S> {
         protected final S r5;
         protected final S r6;
 
@@ -81,11 +76,7 @@ public abstract class
                              final S r4,
                              final S r5,
                              final S r6) {
-            this.r0 = r0;
-            this.r1 = r1;
-            this.r2 = r2;
-            this.r3 = r3;
-            this.r4 = r4;
+            super(r0, r1, r2, r3, r4);
             this.r5 = r5;
             this.r6 = r6;
         }
@@ -95,11 +86,7 @@ public abstract class
          */
         @Override
         public void destroy() {
-            r0.destroy();
-            r1.destroy();
-            r2.destroy();
-            r3.destroy();
-            r4.destroy();
+            super.destroy();
             r5.destroy();
             r6.destroy();
         }
@@ -109,8 +96,7 @@ public abstract class
          */
         @Override
         public boolean isDestroyed() {
-            return r0.isDestroyed() && r1.isDestroyed() && r2.isDestroyed() &&
-                   r3.isDestroyed() && r4.isDestroyed() && r5.isDestroyed() &&
+            return super.isDestroyed() && r5.isDestroyed() &&
                    r6.isDestroyed();
         }
     }

@@ -52,6 +52,17 @@ import net.metricspace.crypto.math.field.ModE511M187;
 public interface M511Curve
     extends TwistedEdwardsCurve<ModE511M187>,
             MontgomeryBirationalEquivalence<ModE511M187> {
+    public static final int EDWARDS_A = 530440;
+    public static final int EDWARDS_D = 530436;
+    public static final ModE511M187 MONTGOMERY_A =
+        MontgomeryBirationalEquivalence
+        .montgomeryAfromEdwards(new ModE511M187(EDWARDS_A),
+                                new ModE511M187(EDWARDS_D));
+    public static final ModE511M187 MONTGOMERY_B =
+        MontgomeryBirationalEquivalence
+        .montgomeryBfromEdwards(new ModE511M187(EDWARDS_A),
+                                new ModE511M187(EDWARDS_D));
+
     /**
      * Defined as the value {@code 530440}.
      *
@@ -59,7 +70,7 @@ public interface M511Curve
      */
     @Override
     public default int edwardsA() {
-        return 530440;
+        return EDWARDS_A;
     }
 
     /**
@@ -69,6 +80,22 @@ public interface M511Curve
      */
     @Override
     public default int edwardsD() {
-        return 530436;
+        return EDWARDS_D;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE511M187 montgomeryA() {
+        return MONTGOMERY_A.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE511M187 montgomeryB() {
+        return MONTGOMERY_B.clone();
     }
 }

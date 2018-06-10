@@ -46,7 +46,19 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see ModE222M117
  * @see net.metricspace.crypto.math.ec.group.E222
  */
-public interface E222Curve extends EdwardsCurve<ModE222M117> {
+public interface E222Curve
+    extends EdwardsCurve<ModE222M117>,
+            MontgomeryBirationalEquivalence<ModE222M117> {
+    public static final int EDWARDS_D = 160102;
+    public static final ModE222M117 MONTGOMERY_A =
+        MontgomeryBirationalEquivalence
+        .montgomeryAfromEdwards(new ModE222M117(1),
+                                new ModE222M117(EDWARDS_D));
+    public static final ModE222M117 MONTGOMERY_B =
+        MontgomeryBirationalEquivalence
+        .montgomeryBfromEdwards(new ModE222M117(1),
+                                new ModE222M117(EDWARDS_D));
+
     /**
      * Defined as the value {@code 160102}.
      *
@@ -54,6 +66,22 @@ public interface E222Curve extends EdwardsCurve<ModE222M117> {
      */
     @Override
     public default int edwardsD() {
-        return 160102;
+        return EDWARDS_D;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE222M117 montgomeryA() {
+        return MONTGOMERY_A.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE222M117 montgomeryB() {
+        return MONTGOMERY_B.clone();
     }
 }

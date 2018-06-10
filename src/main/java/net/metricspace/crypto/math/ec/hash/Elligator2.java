@@ -65,7 +65,7 @@ public interface Elligator2<S extends PrimeField<S>,
     @Override
     public default void decodeHash(final int u,
                                    final S code) {
-        final int a = montgomeryA();
+        final S a = montgomeryA();
 
         /* r0 = -A / (u * code^2 + 1) */
         final S r0 = code.clone();
