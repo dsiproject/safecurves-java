@@ -41,7 +41,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 @Test(groups = "unit")
 public abstract class ECPointPropertiesTest<S extends PrimeField<S>,
-                                            P extends ECPoint<S, P>> {
+                                            P extends ECPoint<S, P, ?>> {
     protected final P zeroPoint;
 
     /**

@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
-                                           P extends ECPoint<S, P>>
+                                           P extends ECPoint<S, P, ?>>
     extends TwistedEdwardsCurveGroup<S, P>
     implements ECGroup<S, P>, MontgomeryCurve<S> {
     /**

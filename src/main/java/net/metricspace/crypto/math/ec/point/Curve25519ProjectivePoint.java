@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.Curve25519Curve;
 import net.metricspace.crypto.math.field.ModE255M19;
@@ -40,8 +42,36 @@ import net.metricspace.crypto.math.field.ModE255M19;
  * equivalent to the Montgomery curve Curve25519.
  */
 public class Curve25519ProjectivePoint
-    extends ProjectiveTwistedEdwardsPoint<ModE255M19, Curve25519ProjectivePoint>
+    extends ProjectiveTwistedEdwardsPoint<ModE255M19, Curve25519ProjectivePoint,
+                                          Curve25519ProjectivePoint.Scratchpad>
     implements Curve25519Curve {
+    /**
+     * Scratchpads for projective Curve25519 points.
+     */
+    public static final class Scratchpad
+        extends ProjectiveTwistedEdwardsPoint.Scratchpad<ModE255M19> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE255M19(0), new ModE255M19(0), new ModE255M19(0),
+                  new ModE255M19(0), new ModE255M19(0), new ModE255M19(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     /**
      * Initialize a {@code Curve25519ProjectivePoint} with zero
      * coordinates.
@@ -76,6 +106,14 @@ public class Curve25519ProjectivePoint
                                         final ModE255M19 y,
                                         final ModE255M19 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

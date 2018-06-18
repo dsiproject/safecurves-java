@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.group;
 
+import javax.security.auth.Destroyable;
+
 import net.metricspace.crypto.math.ec.group.ECGroup;
 import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.field.PrimeField;
@@ -43,7 +45,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public interface ECGroup<S extends PrimeField<S>,
-                         P extends ECPoint<S, P>> {
+                         P extends ECPoint<S, P, ?>> {
     /**
      * Get the prime order of the group.
      *

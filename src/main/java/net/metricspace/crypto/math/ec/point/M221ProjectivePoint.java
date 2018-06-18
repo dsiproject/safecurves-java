@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.M221Curve;
 import net.metricspace.crypto.math.field.ModE221M3;
@@ -40,8 +42,36 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * equivalent to the Montgomery curve M-221.
  */
 public class M221ProjectivePoint
-    extends ProjectiveTwistedEdwardsPoint<ModE221M3, M221ProjectivePoint>
+    extends ProjectiveTwistedEdwardsPoint<ModE221M3, M221ProjectivePoint,
+                                          M221ProjectivePoint.Scratchpad>
     implements M221Curve {
+    /**
+     * Scratchpads for projective M-221 points.
+     */
+    public static final class Scratchpad
+        extends ProjectiveTwistedEdwardsPoint.Scratchpad<ModE221M3> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE221M3(0), new ModE221M3(0), new ModE221M3(0),
+                  new ModE221M3(0), new ModE221M3(0), new ModE221M3(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     private static final M221ProjectivePoint ZERO = new M221ProjectivePoint();
 
     /**
@@ -78,6 +108,14 @@ public class M221ProjectivePoint
                                   final ModE221M3 y,
                                   final ModE221M3 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

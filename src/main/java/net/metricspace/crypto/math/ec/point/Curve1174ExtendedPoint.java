@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
 import net.metricspace.crypto.math.field.ModE251M9;
@@ -39,8 +41,36 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * Extended coordinates on the Edwards curve Curve1174.
  */
 public class Curve1174ExtendedPoint
-    extends ExtendedEdwardsPoint<ModE251M9, Curve1174ExtendedPoint>
+    extends ExtendedEdwardsPoint<ModE251M9, Curve1174ExtendedPoint,
+                                 Curve1174ExtendedPoint.Scratchpad>
     implements Curve1174Curve {
+    /**
+     * Scratchpads for extended Curve1174 points.
+     */
+    public static final class Scratchpad
+        extends ExtendedEdwardsPoint.Scratchpad<ModE251M9> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE251M9(0), new ModE251M9(0), new ModE251M9(0),
+                  new ModE251M9(0), new ModE251M9(0), new ModE251M9(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     /**
      * Initialize an {@code Curve1174ExtendedPoint} with zero
      * coordinates.
@@ -78,6 +108,14 @@ public class Curve1174ExtendedPoint
                                      final ModE251M9 z,
                                      final ModE251M9 t) {
         super(x, y, z, t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.E222Curve;
 import net.metricspace.crypto.math.field.ModE222M117;
@@ -39,8 +41,37 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * Projective coordinates on the Edwards curve E-222.
  */
 public class E222ProjectivePoint
-    extends ProjectiveEdwardsPoint<ModE222M117, E222ProjectivePoint>
+    extends ProjectiveEdwardsPoint<ModE222M117, E222ProjectivePoint,
+                                   E222ProjectivePoint.Scratchpad>
     implements E222Curve {
+    /**
+     * Scratchpads for projective E-222 points.
+     */
+    public static final class Scratchpad
+        extends ProjectiveEdwardsPoint.Scratchpad<ModE222M117> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
+                  new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
+                  new ModE222M117(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     /**
      * Initialize an {@code E222ProjectivePoint} with zero
      * coordinates.
@@ -75,6 +106,14 @@ public class E222ProjectivePoint
                                   final ModE222M117 y,
                                   final ModE222M117 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

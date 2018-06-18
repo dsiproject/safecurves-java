@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import javax.security.auth.Destroyable;
+
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -38,13 +40,41 @@ import net.metricspace.crypto.math.field.PrimeField;
  *
  * @param <S> Scalar values.
  * @param <P> Point type used as an argument.
+ * @param <T> Scratchpad type.
  */
-public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
-    extends Cloneable {
+public interface ECPoint<S extends PrimeField<S>,
+                         P extends ECPoint<S, P, T>,
+                         T extends ECPoint.Scratchpad>
+    extends Cloneable, Destroyable {
+
+    /**
+     * Superinterface for scratchpad objects.  These provide the extra
+     * space that implementations need, thereby preventing them from
+     * allocating objects (and likely scribbling sensitive bytes all
+     * over the heap).
+     */
+    public static interface Scratchpad extends Destroyable {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void destroy();
+    }
+
     /**
      * {@inheritDoc}
      */
     public P clone();
+
+    /**
+     * Get a scratchpad.  This is a mechanism designed to avoid
+     * repeated allocation of scalar values.  Sequences of operations
+     * should obtain a scratchpad, pass it into all operations, then
+     * destroy it when through.
+     *
+     * @return A scratchpad.
+     */
+    public T scratchpad();
 
     /**
      * Set the value of this point from another point.
@@ -103,7 +133,12 @@ public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
      *
      * @param point The point to add.
      */
-    public void add(final P point);
+    public default void add(final P point) {
+        final T scratchpad = scratchpad();
+
+        add(point, scratchpad);
+        scratchpad.destroy();
+    }
 
     /**
      * Add another point to this one, when this point has been scaled.
@@ -113,7 +148,12 @@ public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
      * @param point The point to add.
      * @see scale
      */
-    public void madd(final P point);
+    public default void madd(final P point) {
+        final T scratchpad = scratchpad();
+
+        madd(point, scratchpad);
+        scratchpad.destroy();
+    }
 
     /**
      * Add another point to this one, when both points have been
@@ -123,7 +163,13 @@ public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
      * @param point The point to add.
      * @see scale
      */
-    public void mmadd(final P point);
+    public default void mmadd(final P point) {
+        final T scratchpad = scratchpad();
+
+        mmadd(point, scratchpad);
+        scratchpad.destroy();
+    }
+
 
     /**
      * Add another point to this one.  The other point can be the
@@ -131,26 +177,48 @@ public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
      *
      * @param point The point to add.
      */
-    public void suadd(final P point);
+    public default void suadd(final P point) {
+        final T scratchpad = scratchpad();
+
+        suadd(point, scratchpad);
+        scratchpad.destroy();
+    }
 
     /**
      * Double this point.  This is mathematically equivalent to adding
      * this point to itself.
      */
-    public void dbl();
+    public default void dbl() {
+        final T scratchpad = scratchpad();
+
+        dbl(scratchpad);
+        scratchpad.destroy();
+    }
 
     /**
      * Double this point, assuming that it has previously been scaled.
      *
      * @see scale
      */
-    public void mdbl();
+    public default void mdbl() {
+        final T scratchpad = scratchpad();
+
+        mdbl(scratchpad);
+        scratchpad.destroy();
+    }
+
 
     /**
      * Triple this point.  This is mathematically equivalent to adding
      * this point to itself twice.
      */
-    public void tpl();
+    public default void tpl() {
+        final T scratchpad = scratchpad();
+
+        tpl(scratchpad);
+        scratchpad.destroy();
+    }
+
 
     /**
      * Multiply this point by a scalar.  This is equivalent to adding
@@ -158,7 +226,84 @@ public interface ECPoint<S extends PrimeField<S>, P extends ECPoint<S, P>>
      *
      * @param scalar The scalar by which to multiply.
      */
-    public void mul(final S scalar);
+    public default void mul(final S scalar) {
+        final T scratchpad = scratchpad();
+
+        mul(scalar, scratchpad);
+        scratchpad.destroy();
+    }
+
+    /**
+     * Add another point to this one.  The other point must not be
+     * equal to this one, or else {@link suadd} or {@link dbl} must be
+     * used.
+     *
+     * @param point The point to add.
+     * @param scratchpad The scratchpad to use.
+     */
+    public void add(final P point,
+                    final T scratchpad);
+
+    /**
+     * Add another point to this one, when this point has been scaled.
+     * The other point must not be equal to this one, or else {@link
+     * suadd} or {@link dbl} must be used.
+     *
+     * @param point The point to add.
+     * @param scratchpad The scratchpad to use.
+     * @see scale
+     */
+    public void madd(final P point,
+                     final T scratchpad);
+
+    /**
+     * Add another point to this one, when both points have been
+     * scaled.  The other point must not be equal to this one, or else
+     * {@link suadd} or {@link dbl} must be used.
+     *
+     * @param point The point to add.
+     * @param scratchpad The scratchpad to use.
+     * @see scale
+     */
+    public void mmadd(final P point,
+                      final T scratchpad);
+
+    /**
+     * Add another point to this one.  The other point can be the
+     * equal to this one.
+     *
+     * @param point The point to add.
+     */
+    public void suadd(final P point,
+                      final T scratchpad);
+
+    /**
+     * Double this point.  This is mathematically equivalent to adding
+     * this point to itself.
+     */
+    public void dbl(final T scratchpad);
+
+    /**
+     * Double this point, assuming that it has previously been scaled.
+     *
+     * @see scale
+     */
+    public void mdbl(final T scratchpad);
+
+    /**
+     * Triple this point.  This is mathematically equivalent to adding
+     * this point to itself twice.
+     */
+    public void tpl(final T scratchpad);
+
+    /**
+     * Multiply this point by a scalar.  This is equivalent to adding
+     * the point to itself .
+     *
+     * @param scalar The scalar by which to multiply.
+     */
+    public void mul(final S scalar,
+                    final T scratchpad);
 
     /**
      * Get the X coordinate.

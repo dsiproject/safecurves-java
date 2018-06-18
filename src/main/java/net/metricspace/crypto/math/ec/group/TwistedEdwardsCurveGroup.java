@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public abstract class TwistedEdwardsCurveGroup<S extends PrimeField<S>,
-                                               P extends ECPoint<S, P>>
+                                               P extends ECPoint<S, P, ?>>
     implements ECGroup<S, P>, TwistedEdwardsCurve<S> {
     /**
      * Create a point from its base twisted Edwards coordinates.

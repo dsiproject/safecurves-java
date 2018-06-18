@@ -51,7 +51,7 @@ import net.metricspace.crypto.math.field.ModE511M187;
  * @see ModE511M187
  * @see net.metricspace.crypto.math.ec.group.M511
  */
-public abstract class M511<P extends ECPoint<ModE511M187, P>>
+public abstract class M511<P extends ECPoint<ModE511M187, P, ?>>
     extends MontgomeryCurveGroup<ModE511M187, P>
     implements M511Curve {
     /**

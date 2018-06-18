@@ -51,7 +51,7 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see ModE382M105
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
-public abstract class E382<P extends ECPoint<ModE382M105, P>>
+public abstract class E382<P extends ECPoint<ModE382M105, P, ?>>
     extends EdwardsCurveGroup<ModE382M105, P>
     implements E382Curve {
     /**

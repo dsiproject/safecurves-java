@@ -42,8 +42,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type used as an argument.
  */
 public abstract class ScaledPoint<S extends PrimeField<S>,
-                                  P extends ScaledPoint<S, P>>
-    implements ECPoint<S, P> {
+                                  P extends ScaledPoint<S, P, T>,
+                                  T extends ECPoint.Scratchpad>
+    implements ECPoint<S, P, T> {
     /**
      * Inverted X coordinate.  This is {@code Z / x}, where {@code x}
      * is the X-coordinate on the original curve.
@@ -76,6 +77,24 @@ public abstract class ScaledPoint<S extends PrimeField<S>,
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+        x.destroy();
+        y.destroy();
+        z.destroy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDestroyed() {
+        return x.isDestroyed() && y.isDestroyed() && z.isDestroyed();
     }
 
     /**

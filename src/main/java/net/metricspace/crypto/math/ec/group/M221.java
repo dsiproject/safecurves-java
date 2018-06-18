@@ -50,7 +50,7 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * @see ModE221M3
  * @see net.metricspace.crypto.math.ec.curve.M221Curve
  */
-public abstract class M221<P extends ECPoint<ModE221M3, P>>
+public abstract class M221<P extends ECPoint<ModE221M3, P, ?>>
     extends MontgomeryCurveGroup<ModE221M3, P>
     implements M221Curve {
     /**

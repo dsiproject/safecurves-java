@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.ModE383M187;
 
-public abstract class M383Test<P extends MontgomeryPoint<ModE383M187, P>,
+public abstract class M383Test<P extends MontgomeryPoint<ModE383M187, P, ?>,
                                G extends MontgomeryCurveGroup<ModE383M187, P>>
     extends MontgomeryGroupTest<ModE383M187, P, G> {
     private static String BASE_X_STRING =

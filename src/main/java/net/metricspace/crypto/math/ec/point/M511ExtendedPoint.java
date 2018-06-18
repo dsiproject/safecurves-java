@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.ThreadLocal;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.M511Curve;
 import net.metricspace.crypto.math.field.ModE511M187;
@@ -40,8 +42,36 @@ import net.metricspace.crypto.math.field.ModE511M187;
  * equivalent to the Montgomery curve M-511.
  */
 public class M511ExtendedPoint
-    extends ExtendedTwistedEdwardsPoint<ModE511M187, M511ExtendedPoint>
+    extends ExtendedTwistedEdwardsPoint<ModE511M187, M511ExtendedPoint,
+                                        M511ExtendedPoint.Scratchpad>
     implements M511Curve {
+    /**
+     * Scratchpads for extended M-511 points.
+     */
+    public static final class Scratchpad
+        extends ExtendedTwistedEdwardsPoint.Scratchpad<ModE511M187> {
+
+        private static final ThreadLocal<Scratchpad> scratchpads =
+            new ThreadLocal<Scratchpad>() {
+                @Override
+                public Scratchpad initialValue() {
+                    return new Scratchpad();
+                }
+            };
+
+        /**
+         * Initialize an empty {@code Scratchpad}.
+         */
+        private Scratchpad() {
+            super(new ModE511M187(0), new ModE511M187(0), new ModE511M187(0),
+                  new ModE511M187(0), new ModE511M187(0), new ModE511M187(0));
+        }
+
+        protected static Scratchpad get() {
+            return scratchpads.get();
+        }
+    }
+
     private static final M511ExtendedPoint ZERO = new M511ExtendedPoint();
 
     /**
@@ -81,6 +111,14 @@ public class M511ExtendedPoint
                                 final ModE511M187 z,
                                 final ModE511M187 t) {
         super(x, y, z, t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Scratchpad scratchpad() {
+        return Scratchpad.get();
     }
 
     /**

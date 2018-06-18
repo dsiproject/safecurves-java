@@ -32,6 +32,7 @@
 package net.metricspace.crypto.math.ec;
 
 import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
+import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -54,8 +55,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type.
  */
 public interface Elligator1<S extends PrimeField<S>,
-                            P extends Elligator<S, P>>
-    extends Elligator<S, P>, EdwardsCurve<S> {
+                            P extends Elligator<S, P, T>,
+                            T extends ECPoint.Scratchpad>
+    extends Elligator<S, P, T>, EdwardsCurve<S> {
     /**
      * {@inheritDoc}
      */

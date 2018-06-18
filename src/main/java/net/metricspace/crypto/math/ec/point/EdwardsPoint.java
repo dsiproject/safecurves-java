@@ -41,8 +41,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <S> The scalar field type.
  */
 public interface EdwardsPoint<S extends PrimeField<S>,
-                              P extends EdwardsPoint<S, P>>
-    extends ECPoint<S, P> {
+                              P extends EdwardsPoint<S, P, T>,
+                              T extends ECPoint.Scratchpad>
+    extends ECPoint<S, P, T> {
     /**
      * Get the value of the X coordinate in the Edwards
      * representation.

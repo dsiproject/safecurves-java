@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.ModE221M3;
 
-public abstract class M221Test<P extends MontgomeryPoint<ModE221M3, P>,
+public abstract class M221Test<P extends MontgomeryPoint<ModE221M3, P, ?>,
                                G extends MontgomeryCurveGroup<ModE221M3, P>>
     extends MontgomeryGroupTest<ModE221M3, P, G> {
     private static String BASE_X_STRING =

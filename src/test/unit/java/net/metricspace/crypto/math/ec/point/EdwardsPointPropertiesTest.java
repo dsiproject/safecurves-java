@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 public abstract class
     EdwardsPointPropertiesTest<S extends PrimeField<S>,
-                               P extends EdwardsPoint<S, P>,
+                               P extends EdwardsPoint<S, P, ?>,
                                G extends EdwardsCurveGroup<S, P>>
     extends ECPointPropertiesTest<S, P> {
     protected final int dvalue;

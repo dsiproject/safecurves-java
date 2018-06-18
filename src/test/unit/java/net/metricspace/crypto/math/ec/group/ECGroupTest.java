@@ -40,7 +40,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 @Test(groups = "unit")
 public abstract class ECGroupTest<S extends PrimeField<S>,
-                                  P extends ECPoint<S, P>,
+                                  P extends ECPoint<S, P, ?>,
                                   G extends ECGroup<S, P>> {
     protected final S primeOrder;
     protected final P basePoint;

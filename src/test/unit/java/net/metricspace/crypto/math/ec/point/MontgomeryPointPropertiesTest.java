@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 public abstract class
     MontgomeryPointPropertiesTest<S extends PrimeField<S>,
-                                  P extends MontgomeryPoint<S, P>,
+                                  P extends MontgomeryPoint<S, P, ?>,
                                   G extends MontgomeryCurveGroup<S, P>>
     extends ECPointPropertiesTest<S, P> {
     private final int avalue;

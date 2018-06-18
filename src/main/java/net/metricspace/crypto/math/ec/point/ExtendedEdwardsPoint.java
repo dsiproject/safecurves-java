@@ -31,6 +31,8 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import javax.security.auth.Destroyable;
+
 import net.metricspace.crypto.math.ec.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
 import net.metricspace.crypto.math.field.PrimeField;
@@ -49,10 +51,63 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class
     ExtendedEdwardsPoint<S extends PrimeField<S>,
-                         P extends ExtendedEdwardsPoint<S, P>>
-    extends ExtendedPoint<S, P>
-    implements MontgomeryLadder<S, P>,
+                         P extends ExtendedEdwardsPoint<S, P, T>,
+                         T extends ExtendedEdwardsPoint.Scratchpad<S>>
+    extends ExtendedPoint<S, P, T>
+    implements MontgomeryLadder<S, P, T>,
                EdwardsCurve<S> {
+    /**
+     * Superclass of scratchpads for extended twisted Edwards points.
+     */
+    public static abstract class Scratchpad<S extends PrimeField<S>>
+        implements ECPoint.Scratchpad {
+        protected final S r0;
+        protected final S r1;
+        protected final S r2;
+        protected final S r3;
+        protected final S r4;
+        protected final S r5;
+
+        /**
+         * Initialize a {@code Scratchpad}.
+         */
+        protected Scratchpad(final S r0,
+                             final S r1,
+                             final S r2,
+                             final S r3,
+                             final S r4,
+                             final S r5) {
+            this.r0 = r0;
+            this.r1 = r1;
+            this.r2 = r2;
+            this.r3 = r3;
+            this.r4 = r4;
+            this.r5 = r5;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void destroy() {
+            r0.destroy();
+            r1.destroy();
+            r2.destroy();
+            r3.destroy();
+            r4.destroy();
+            r5.destroy();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isDestroyed() {
+            return r0.isDestroyed() && r1.isDestroyed() && r2.isDestroyed() &&
+                   r3.isDestroyed() && r4.isDestroyed() && r5.isDestroyed();
+        }
+    }
+
     /**
      * Initialize an {@code ExtendedPoint} with three scalar objects.
      * This constructor takes possession of the parameters, which are
@@ -88,15 +143,17 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void suadd(final P point) {
-        add(point);
+    public final void suadd(final P point,
+                            final T scratch) {
+        add(point, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final void add(final P point) {
+    public final void add(final P point,
+                          final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#addition-add-2008-hwcd
          *
@@ -158,35 +215,36 @@ public abstract class
          * Z3 = r0.1 * r3.1
          */
 
-        /* r0 = X1 * X2 */
-        final S r0 = x.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
+        final S r5 = scratch.r5;
 
+        /* r0 = X1 * X2 */
+        r0.set(x);
         r0.mul(point.x);
 
         /* r1 = Y1 * Y2 */
-        final S r1 = y.clone();
-
+        r1.set(y);
         r1.mul(point.y);
 
         /* r2 = T1 * d * T2 */
-        final S r2 = t.clone();
-
+        r2.set(t);
         r2.mul(edwardsD());
         r2.mul(point.t);
 
         /* r3 = Z1 * Z2 */
-        final S r3 = z.clone();
-
+        r3.set(z);
         r3.mul(point.z);
 
         /* r4 = X2 + Y2 */
-        final S r4 = point.x.clone();
-
+        r4.set(point.x);
         r4.add(point.y);
 
         /* r5 = (X1 + Y1) * r4 - r0 - r1 */
-        final S r5 = x.clone();
-
+        r5.set(x);
         r5.add(y);
         r5.mul(r4);
         r5.sub(r0);
@@ -223,7 +281,8 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void madd(final P point) {
+    public final void madd(final P point,
+                           final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#addition-madd-2008-hwcd-2
          *
@@ -282,30 +341,31 @@ public abstract class
          * Z3 = r0.1 * r2.1
          */
 
-        /* r0 = X1 * X2 */
-        final S r0 = x.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
 
+        /* r0 = X1 * X2 */
+        r0.set(x);
         r0.mul(point.x);
 
         /* r1 = Y1 * Y2 */
-        final S r1 = y.clone();
-
+        r1.set(y);
         r1.mul(point.y);
 
         /* r2 = T1 * d * T2 */
-        final S r2 = t.clone();
-
+        r2.set(t);
         r2.mul(edwardsD());
         r2.mul(point.t);
 
         /* r3 = X2 + Y2 */
-        final S r3 = point.x.clone();
-
+        r3.set(point.x);
         r3.add(point.y);
 
         /* r4 = (X1 + Y1) * r3 - r0 - r1 */
-        final S r4 = x.clone();
-
+        r4.set(x);
         r4.add(y);
         r4.mul(r3);
         r4.sub(r0);
@@ -342,7 +402,8 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void mmadd(final P point) {
+    public final void mmadd(final P point,
+                            final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#addition-mmadd-2008-hwcd-2
          *
@@ -402,30 +463,31 @@ public abstract class
          * Z3 = 1 - r2.1
          */
 
-        /* r0 = X1 * X2 */
-        final S r0 = x.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
 
+        /* r0 = X1 * X2 */
+        r0.set(x);
         r0.mul(point.x);
 
         /* r1 = Y1 * Y2 */
-        final S r1 = y.clone();
-
+        r1.set(y);
         r1.mul(point.y);
 
         /* r2 = T1 * d * T2 */
-        final S r2 = t.clone();
-
+        r2.set(t);
         r2.mul(edwardsD());
         r2.mul(point.t);
 
         /* r3 = X2 + Y2 */
-        final S r3 = point.x.clone();
-
+        r3.set(point.x);
         r3.add(point.y);
 
         /* r4 = (X1 + Y1) * r3 - r0 - r1 */
-        final S r4 = x.clone();
-
+        r4.set(x);
         r4.add(y);
         r4.mul(r3);
         r4.sub(r0);
@@ -466,7 +528,7 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void dbl() {
+    public final void dbl(final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#doubling-dbl-2008-hwcd
          *
@@ -522,33 +584,34 @@ public abstract class
          * Z3 = r2.1 * r4
          */
 
-        /* r0 = X1^2 */
-        final S r0 = x.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
 
+        /* r0 = X1^2 */
+        r0.set(x);
         r0.square();
 
         /* r1 = Y1^2 */
-        final S r1 = y.clone();
-
+        r1.set(y);
         r1.square();
 
         /* r2 = Z1^2 * -2 */
-        final S r2 = z.clone();
-
+        r2.set(z);
         r2.square();
         r2.mul(-2);
 
         /* r3 = (X1 + Y1)^2 - r0 - r1 */
-        final S r3 = x.clone();
-
+        r3.set(x);
         r3.add(y);
         r3.square();
         r3.sub(r0);
         r3.sub(r1);
 
         /* r4 = r0 + r1 */
-        final S r4 = r0.clone();
-
+        r4.set(r0);
         r4.add(r1);
 
         /* r2.1 = r4 + r2,
@@ -586,7 +649,7 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void mdbl() {
+    public final void mdbl(final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#doubling-mdbl-2008-hwcd
          *
@@ -636,27 +699,29 @@ public abstract class
          * r0.2 = 2 * r3
          * Z3 = r3^2 - r0.2
          */
-        /* r0 = X1^2 */
-        final S r0 = x.clone();
 
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+
+        /* r0 = X1^2 */
+        r0.set(x);
         r0.square();
 
         /* r1 = Y1^2 */
-        final S r1 = y.clone();
-
+        r1.set(y);
         r1.square();
 
         /* r2 = (X1 + Y1)^2 - r0 - r1 */
-        final S r2 = x.clone();
-
+        r2.set(x);
         r2.add(y);
         r2.square();
         r2.sub(r0);
         r2.sub(r1);
 
         /* r3 = r0 + r1 */
-        final S r3 = r0.clone();
-
+        r3.set(r0);
         r3.add(r1);
 
         /* r0.1 = r0 - r1,
@@ -693,7 +758,7 @@ public abstract class
      * {@inheritDoc}
      */
     @Override
-    public final void tpl() {
+    public final void tpl(final T scratch) {
         /* Formula from
          * https://hyperelliptic.org/EFD/g1p/auto-twisted-extended.html#tripling-tpl-2015-c
          *
@@ -772,32 +837,33 @@ public abstract class
          * T3 = r3.2 * r4.1
          */
 
-        /* r0 = Y1^2 */
-        final S r0 = y.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
 
+        /* r0 = Y1^2 */
+        r0.set(y);
         r0.square();
 
         /* r1 = X1^2 */
-        final S r1 = x.clone();
-
+        r1.set(x);
         r1.square();
 
         /* r2 = r0 + r1 */
-        final S r2 = r0.clone();
-
+        r2.set(r0);
         r2.add(r1);
 
         /* r3 = (Z1^2 * 2 - r2) * 2 */
-        final S r3 = z.clone();
-
+        r3.set(z);
         r3.square();
         r3.mul(2);
         r3.sub(r2);
         r3.mul(2);
 
         /* r4 = r1 * r3 */
-        final S r4 = r1.clone();
-
+        r4.set(r1);
         r4.mul(r3);
 
         /* r3.1 = r3 * r0,
