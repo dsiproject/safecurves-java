@@ -81,7 +81,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
      * </pre>
      * <p>
      * The default implementation performs both branches, optionally
-     * zeroes out branches using {@link #zero(long)}, then sums both
+     * zeroes out branches using {@link #reset(long)}, then sums both
      * branches.  This implements a completely branch-free Ladder step
      * at the cost of execution time.
      *
@@ -89,7 +89,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
      * @param r1 The {@code R1} scalar in the ladder algorithm.
      * @param r2 A scratchpad scalar.
      * @param r3 A second scratchpad scalar.
-     * @see #zero(long)
+     * @see #reset(long)
      */
     public default void ladderStep(final long bit,
                                    final P r1,

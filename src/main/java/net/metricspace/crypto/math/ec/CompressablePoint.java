@@ -87,14 +87,14 @@ public interface CompressablePoint<C> {
     /**
      * Get an array of all compression kinds.
      *
-     * @param All compression kinds supported by this curve.
+     * @return All compression kinds supported by this curve.
      */
     public Kind<Object>[] compressors();
 
     /**
      * Get the default compression kind.
      *
-     * @param Default compression kind for this curve.
+     * @return Default compression kind for this curve.
      */
     public Kind<C> defaultCompressor();
 }
