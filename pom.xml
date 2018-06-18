@@ -4,50 +4,107 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.metricspace</groupId>
-  <packaging>war</packaging>
-  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
   <artifactId>safecurves-java</artifactId>
   <name>SafeCurves-Java</name>
   <description>An implementation of Elliptic-Curve primitives over curves certified by the SafeCurves project</description>
 
+  <developers>
+    <developer>
+      <id>eric.mccorkle</id>
+      <name>Eric L. McCorkle</name>
+      <email>eric@metricspace.net</email>
+    </developer>
+  </developers>
+
   <properties>
-    <slf4j.version>1.7.21</slf4j.version>
+    <jcov.dir>${project.build.directory}/jcov</jcov.dir>
+    <jcov.coverage.dir>${jcov.dir}/coverage</jcov.coverage.dir>
+    <jcov.reports.dir>${jcov.dir}/reports</jcov.reports.dir>
+    <jcov_file_saver.jar>${jcov.dir}/jcov_file_saver.jar</jcov_file_saver.jar>
+    <jcov.template.xml>${jcov.dir}/template.xml</jcov.template.xml>
+    <jcov.surefire.coverage.xml>${jcov.dir}/surefire-coverage.xml</jcov.surefire.coverage.xml>
+    <jcov.failsafe.coverage.xml>${jcov.dir}/failsafe-coverage.xml</jcov.failsafe.coverage.xml>
+    <jcov.combined.coverage.xml>${jcov.dir}/combined-coverage.xml</jcov.combined.coverage.xml>
+    <primefields.version>1.0.0-SNAPSHOT</primefields.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
     <test.unit.srcs>${project.basedir}/src/test/unit/java</test.unit.srcs>
+    <project.build.instr.outputDirectory>${project.build.directory}/jcov-classes</project.build.instr.outputDirectory>
+    <test.unit.dir>src/test/unit</test.unit.dir>
+    <test.unit.srcs>${test.unit.dir}/java</test.unit.srcs>
+    <test.unit.resources>${test.unit.dir}/resources</test.unit.resources>
+    <test.unit.testng.xml>${test.unit.resources}/testng.xml</test.unit.testng.xml>
+    <target.dir>target</target.dir>
+    <test.unit.classes>${target}/unit-test-classes</test.unit.classes>
+    <test.perf.srcs>src/test/perf/java</test.perf.srcs>
+    <test.stress.dir>src/test/stress</test.stress.dir>
+    <test.stress.srcs>${test.stress.dir}/java</test.stress.srcs>
+    <test.stress.resources>${test.stress.dir}/resources</test.stress.resources>
+    <test.stress.testng.xml>${test.stress.resources}/testng.xml</test.stress.testng.xml>
+    <testng.version>6.1.1</testng.version>
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.1.1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>${slf4j.version}</version>
+      <groupId>net.metricspace</groupId>
+      <artifactId>primefields</artifactId>
+      <version>${primefields.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>
     <testSourceDirectory>${test.unit.srcs}</testSourceDirectory>
     <plugins>
 
+      <!-- Java compiler configuration -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.6.0</version>
         <configuration>
+          <compilerVersion>${java.version}</compilerVersion>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>net.metricspace</groupId>
+        <artifactId>jcov-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <configuration>
+          <jcovFileSaverJar>${jcov_file_saver.jar}</jcovFileSaverJar>
+          <combinedCoverageFile>${jcov.combined.coverage.xml}</combinedCoverageFile>
+          <coverageFiles>
+            <coverageFile>${jcov.surefire.coverage.xml}</coverageFile>
+            <coverageFile>${jcov.failsafe.coverage.xml}</coverageFile>
+          </coverageFiles>
+        </configuration>
+        <executions>
+          <execution>
+            <id>instrument</id>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>merge-reports</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc configuration -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -57,12 +114,78 @@
         </configuration>
       </plugin>
 
+      <!-- Add stress test sources -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9.1</version>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${test.stress.srcs}</source>
+                <source>${test.perf.srcs}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.14</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>${test.unit.testng.xml}</suiteXmlFile>
+          </suiteXmlFiles>
+          <trimStackTrace>false</trimStackTrace>
+          <!-- Use the jcov instrumented class file directory -->
+          <classesDirectory>${project.build.instr.outputDirectory}</classesDirectory>
+          <!-- Add jcov_file_saver.jar to classpath -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${jcov_file_saver.jar}</additionalClasspathElement>
+          </additionalClasspathElements>
+          <!-- System properties needed by jcov -->
+          <systemPropertyVariables>
+            <jcov.template>${jcov.template.xml}</jcov.template>
+            <jcov.file>${jcov.surefire.coverage.xml}</jcov.file>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.12</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>${test.stress.testng.xml}</suiteXmlFile>
+          </suiteXmlFiles>
+          <trimStackTrace>false</trimStackTrace>
+          <!-- Use the jcov instrumented class file directory -->
+          <classesDirectory>${project.build.instr.outputDirectory}</classesDirectory>
+          <!-- Add jcov_file_saver.jar to classpath -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${jcov_file_saver.jar}</additionalClasspathElement>
+          </additionalClasspathElements>
+          <!-- System properties needed by jcov -->
+          <systemPropertyVariables>
+            <jcov.template>${jcov.template.xml}</jcov.template>
+            <jcov.file>${jcov.failsafe.coverage.xml}</jcov.file>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -76,11 +199,18 @@
           <show>public</show>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>2.19</version>
+      </plugin>
+      <plugin>
+        <groupId>net.metricspace</groupId>
+        <artifactId>jcov-maven-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <configuration>
+          <format>cobertura</format>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
