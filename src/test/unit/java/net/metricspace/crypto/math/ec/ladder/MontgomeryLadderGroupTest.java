@@ -29,25 +29,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.group;
+package net.metricspace.crypto.math.ec.ladder;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
-import net.metricspace.crypto.math.field.ModE511M187;
+import net.metricspace.crypto.math.ec.group.ECGroupTest;
+import net.metricspace.crypto.math.ec.group.MontgomeryCurveGroup;
+import net.metricspace.crypto.math.field.PrimeField;
 
-public abstract class M511Test<P extends MontgomeryLadder<ModE511M187, P, ?>,
-                               G extends MontgomeryCurveGroup<ModE511M187, P>>
-    extends MontgomeryGroupTest<ModE511M187, P, G> {
-    private static String BASE_X_STRING =
-        "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005";
-    private static String BASE_Y_STRING =
-        "2fbdc0ad8530803d28fdbad354bb488d32399ac1cf8f6e01ee3f96389b90c809422b9429e8a43dbf49308ac4455940abe9f1dbca542093a895e30a64af056fa5";
+public abstract class
+    MontgomeryLadderGroupTest<S extends PrimeField<S>,
+                              P extends MontgomeryLadder<S, P, ?>,
+                              G extends MontgomeryCurveGroup<S, P>>
+    extends ECGroupTest<S, P, G> {
+    protected MontgomeryLadderGroupTest(final G group,
+                                        final String baseXString,
+                                        final String baseYString,
+                                        final String primeOrderString) {
+        super(group, baseXString, baseYString, primeOrderString);
+    }
 
-    public M511Test(final G group,
-                    final String primeOrderString) {
-        super(group, BASE_X_STRING, BASE_Y_STRING, primeOrderString);
+    @Test(description = "Test multiplication by the prime order")
+    public void primeOrderMulXTest() {
+        final P point = basePoint.clone();
+        final S zeroxcoord = point.mulX(primeOrder);
+
+        Assert.assertEquals(zeroxcoord, zeroPoint.montgomeryX());
     }
 }

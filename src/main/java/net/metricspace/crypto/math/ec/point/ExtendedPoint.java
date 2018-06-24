@@ -51,7 +51,7 @@ public abstract class ExtendedPoint<S extends PrimeField<S>,
                                     P extends ExtendedPoint<S, P, T>,
                                     T extends ECPoint.Scratchpad>
     extends ProjectivePoint<S, P, T>
-    implements EdwardsPoint<S, P, T> {
+    implements TwistedEdwardsPoint<S, P, T> {
     /**
      * Cached value of {@code X * Y / Z}
      */

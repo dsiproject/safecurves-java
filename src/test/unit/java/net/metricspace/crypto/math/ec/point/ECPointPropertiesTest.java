@@ -185,7 +185,7 @@ public abstract class ECPointPropertiesTest<S extends PrimeField<S>,
         mulpoint.mul(n);
         n.sub(1);
 
-        while(!n.isZero()) {
+        while(n.isZero() != 0) {
             addpoint.suadd(input);
             n.sub(1);
         }

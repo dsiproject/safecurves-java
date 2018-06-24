@@ -53,7 +53,7 @@ public final class MontgomeryUtils {
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S additionX(final P a,
                     final P b,
-                    final int avalue,
+                    final S avalue,
                     final P zeroPoint) {
         if (!a.equals(zeroPoint)) {
             if (!b.equals(zeroPoint)) {
@@ -83,7 +83,7 @@ public final class MontgomeryUtils {
                            final S x2,
                            final S y1,
                            final S y2,
-                           final int avalue) {
+                           final S avalue) {
         if (x1.equals(x2) && y1.equals(y2)) {
             return doubleXscalars(x1, y1, avalue);
         }
@@ -120,7 +120,7 @@ public final class MontgomeryUtils {
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S additionY(final P a,
                     final P b,
-                    final int avalue,
+                    final S avalue,
                     final P zeroPoint) {
         if (!a.equals(zeroPoint)) {
             if (!b.equals(zeroPoint)) {
@@ -150,7 +150,7 @@ public final class MontgomeryUtils {
                            final S x2,
                            final S y1,
                            final S y2,
-                           final int avalue) {
+                           final S avalue) {
         if (x1.equals(x2) && y1.equals(y2)) {
             return doubleYscalars(x1, y1, avalue);
         }
@@ -201,7 +201,7 @@ public final class MontgomeryUtils {
 
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S doubleX(final P p,
-                  final int avalue,
+                  final S avalue,
                   final P zeroPoint) {
         if (!p.equals(zeroPoint)) {
             final S x = p.montgomeryX().clone();
@@ -216,7 +216,7 @@ public final class MontgomeryUtils {
     private static <S extends PrimeField<S>>
         S doubleXscalars(final S x,
                          final S y,
-                         final int avalue) {
+                         final S avalue) {
         final S xsq = x.clone();
 
         xsq.square();
@@ -256,7 +256,7 @@ public final class MontgomeryUtils {
 
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S doubleY(final P p,
-                  final int avalue,
+                  final S avalue,
                   final P zeroPoint) {
         if (!p.equals(zeroPoint)) {
             final S x = p.montgomeryX();
@@ -271,7 +271,7 @@ public final class MontgomeryUtils {
     private static <S extends PrimeField<S>>
         S doubleYscalars(final S x,
                          final S y,
-                         final int avalue) {
+                         final S avalue) {
         final S xsq = x.clone();
 
         xsq.square();
@@ -328,7 +328,7 @@ public final class MontgomeryUtils {
 
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         boolean tripleInf(final P p,
-                          final int avalue) {
+                          final S avalue) {
         final S x = p.montgomeryX();
         final S y = p.montgomeryY();
 
@@ -338,7 +338,7 @@ public final class MontgomeryUtils {
     private static <S extends PrimeField<S>>
         boolean tripleInfScalars(final S x,
                                  final S y,
-                                 final int avalue) {
+                                 final S avalue) {
         final S dx = doubleXscalars(x, y, avalue);
         final S dy = doubleYscalars(x, y, avalue);
 
@@ -347,7 +347,7 @@ public final class MontgomeryUtils {
 
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S tripleX(final P p,
-                  final int avalue) {
+                  final S avalue) {
         final S x = p.montgomeryX();
         final S y = p.montgomeryY();
 
@@ -357,7 +357,7 @@ public final class MontgomeryUtils {
     private static <S extends PrimeField<S>>
         S tripleXscalars(final S x,
                          final S y,
-                         final int avalue) {
+                         final S avalue) {
         return additionXscalars(x, doubleXscalars(x, y, avalue),
                                 y, doubleYscalars(x, y, avalue),
                                 avalue);
@@ -365,7 +365,7 @@ public final class MontgomeryUtils {
 
     public static <S extends PrimeField<S>, P extends MontgomeryPoint<S, P, ?>>
         S tripleY(final P p,
-                  final int avalue) {
+                  final S avalue) {
         final S x = p.montgomeryX();
         final S y = p.montgomeryY();
 
@@ -375,7 +375,7 @@ public final class MontgomeryUtils {
     private static <S extends PrimeField<S>>
         S tripleYscalars(final S x,
                          final S y,
-                         final int avalue) {
+                         final S avalue) {
         return additionYscalars(x, doubleXscalars(x, y, avalue),
                                 y, doubleYscalars(x, y, avalue),
                                 avalue);
@@ -386,7 +386,7 @@ public final class MontgomeryUtils {
                       final S s,
                       final S r0x,
                       final S r0y,
-                      final int avalue) {
+                      final S avalue) {
         final S r1x = p.getX();
         final S r1y = p.getY();
         boolean r0zero = true;

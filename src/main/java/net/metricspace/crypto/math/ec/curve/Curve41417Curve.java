@@ -47,7 +47,19 @@ import net.metricspace.crypto.math.field.ModE414M17;
  * @see ModE414M17
  * @see net.metricspace.crypto.math.ec.group.Curve41417
  */
-public interface Curve41417Curve extends EdwardsCurve<ModE414M17> {
+public interface Curve41417Curve
+    extends EdwardsCurve<ModE414M17>,
+            MontgomeryBirationalEquivalence<ModE414M17> {
+    public static final int EDWARDS_D = 3617;
+    public static final ModE414M17 MONTGOMERY_A =
+        MontgomeryBirationalEquivalence
+        .montgomeryAfromEdwards(new ModE414M17(1),
+                                new ModE414M17(EDWARDS_D));
+    public static final ModE414M17 MONTGOMERY_B =
+        MontgomeryBirationalEquivalence
+        .montgomeryBfromEdwards(new ModE414M17(1),
+                                new ModE414M17(EDWARDS_D));
+
     /**
      * Defined as the value {@code 3617}.
      *
@@ -55,6 +67,22 @@ public interface Curve41417Curve extends EdwardsCurve<ModE414M17> {
      */
     @Override
     public default int edwardsD() {
-        return 3617;
+        return EDWARDS_D;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE414M17 montgomeryA() {
+        return MONTGOMERY_A.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE414M17 montgomeryB() {
+        return MONTGOMERY_B.clone();
     }
 }

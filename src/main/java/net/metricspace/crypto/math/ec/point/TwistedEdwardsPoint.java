@@ -46,9 +46,35 @@ import net.metricspace.crypto.math.field.PrimeField;
 public interface TwistedEdwardsPoint<S extends PrimeField<S>,
                                      P extends TwistedEdwardsPoint<S, P, T>,
                                      T extends ECPoint.Scratchpad>
-    extends EdwardsPoint<S, P, T>,
-            MontgomeryPoint<S, P, T>,
+    extends MontgomeryPoint<S, P, T>,
             MontgomeryBirationalEquivalence<S> {
+    /**
+     * Get the value of the X coordinate in the Edwards
+     * representation.
+     *
+     * @return The value of the X coordinate in the Edwards
+     * representation.
+     */
+    public S edwardsX();
+
+    /**
+     * Get the value of the Y coordinate in the Edwards
+     * representation.
+     *
+     * @return The value of the Y coordinate in the Edwards
+     * representation.
+     */
+    public S edwardsY();
+
+    /**
+     * Set the point from its Edwards coordinates.
+     *
+     * @param x The Edwards X coordinate.
+     * @param y The Edwards Y coordinate.
+     */
+    public void setEdwards(final S x,
+                           final S y);
+
     /**
      * Set Edwards X and Y scalar coordinate object from Montgomery
      * coordinates.

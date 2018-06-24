@@ -31,7 +31,10 @@
  */
 package net.metricspace.crypto.math.ec.point;
 
+import java.lang.AutoCloseable;
+
 import javax.security.auth.Destroyable;
+import javax.security.auth.DestroyFailedException;
 
 import net.metricspace.crypto.math.field.PrimeField;
 
@@ -45,7 +48,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 public interface ECPoint<S extends PrimeField<S>,
                          P extends ECPoint<S, P, T>,
                          T extends ECPoint.Scratchpad>
-    extends Cloneable, Destroyable {
+    extends Cloneable, Destroyable, AutoCloseable {
 
     /**
      * Superinterface for scratchpad objects.  These provide the extra
@@ -53,12 +56,34 @@ public interface ECPoint<S extends PrimeField<S>,
      * allocating objects (and likely scribbling sensitive bytes all
      * over the heap).
      */
-    public static interface Scratchpad extends Destroyable {
+    public static interface Scratchpad extends Destroyable, AutoCloseable {
         /**
          * {@inheritDoc}
          */
         @Override
         public void destroy();
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public default void close() {
+            destroy();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default void close() {
+        destroy();
     }
 
     /**
@@ -134,10 +159,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @param point The point to add.
      */
     public default void add(final P point) {
-        final T scratchpad = scratchpad();
-
-        add(point, scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            add(point, scratchpad);
+        }
     }
 
     /**
@@ -149,10 +173,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @see scale
      */
     public default void madd(final P point) {
-        final T scratchpad = scratchpad();
-
-        madd(point, scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            madd(point, scratchpad);
+        }
     }
 
     /**
@@ -164,10 +187,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @see scale
      */
     public default void mmadd(final P point) {
-        final T scratchpad = scratchpad();
-
-        mmadd(point, scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            mmadd(point, scratchpad);
+        }
     }
 
 
@@ -178,10 +200,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @param point The point to add.
      */
     public default void suadd(final P point) {
-        final T scratchpad = scratchpad();
-
-        suadd(point, scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            suadd(point, scratchpad);
+        }
     }
 
     /**
@@ -189,10 +210,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * this point to itself.
      */
     public default void dbl() {
-        final T scratchpad = scratchpad();
-
-        dbl(scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            dbl(scratchpad);
+        }
     }
 
     /**
@@ -201,10 +221,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @see scale
      */
     public default void mdbl() {
-        final T scratchpad = scratchpad();
-
-        mdbl(scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            mdbl(scratchpad);
+        }
     }
 
 
@@ -213,10 +232,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * this point to itself twice.
      */
     public default void tpl() {
-        final T scratchpad = scratchpad();
-
-        tpl(scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            tpl(scratchpad);
+        }
     }
 
 
@@ -227,10 +245,9 @@ public interface ECPoint<S extends PrimeField<S>,
      * @param scalar The scalar by which to multiply.
      */
     public default void mul(final S scalar) {
-        final T scratchpad = scratchpad();
-
-        mul(scalar, scratchpad);
-        scratchpad.destroy();
+        try(final T scratchpad = scratchpad()) {
+            mul(scalar, scratchpad);
+        }
     }
 
     /**

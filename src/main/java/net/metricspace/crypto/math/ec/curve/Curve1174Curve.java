@@ -46,7 +46,19 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see ModE251M9
  * @see net.metricspace.crypto.math.ec.group.Curve1174
  */
-public interface Curve1174Curve extends EdwardsCurve<ModE251M9> {
+public interface Curve1174Curve
+    extends EdwardsCurve<ModE251M9>,
+            MontgomeryBirationalEquivalence<ModE251M9> {
+    public static final int EDWARDS_D = -1174;
+    public static final ModE251M9 MONTGOMERY_A =
+        MontgomeryBirationalEquivalence
+        .montgomeryAfromEdwards(new ModE251M9(1),
+                                new ModE251M9(EDWARDS_D));
+    public static final ModE251M9 MONTGOMERY_B =
+        MontgomeryBirationalEquivalence
+        .montgomeryBfromEdwards(new ModE251M9(1),
+                                new ModE251M9(EDWARDS_D));
+
     /**
      * Defined as the value {@code -1174}.
      *
@@ -54,6 +66,22 @@ public interface Curve1174Curve extends EdwardsCurve<ModE251M9> {
      */
     @Override
     public default int edwardsD() {
-        return -1174;
+        return EDWARDS_D;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE251M9 montgomeryA() {
+        return MONTGOMERY_A.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default ModE251M9 montgomeryB() {
+        return MONTGOMERY_B.clone();
     }
 }

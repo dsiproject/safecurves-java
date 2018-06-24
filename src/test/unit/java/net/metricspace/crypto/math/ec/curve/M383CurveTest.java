@@ -40,6 +40,6 @@ import net.metricspace.crypto.math.field.ModE383M187;
 public class M383CurveTest
     extends MontgomeryCurveConsistencyTest<ModE383M187, M383Curve> {
     public M383CurveTest() {
-        super(new M383Curve() {}, 2065150);
+        super(new M383Curve() {}, new ModE383M187(2065150));
     }
 }

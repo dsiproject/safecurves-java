@@ -48,7 +48,7 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
                                       P extends ProjectivePoint<S, P, T>,
                                       T extends ECPoint.Scratchpad>
     extends ScaledPoint<S, P, T>
-    implements EdwardsPoint<S, P, T> {
+    implements TwistedEdwardsPoint<S, P, T> {
     /**
      * Initialize a {@code ProjectivePoint} with three scalar objects.
      * This constructor takes possession of the parameters, which are

@@ -29,25 +29,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.group;
+package net.metricspace.crypto.math.ec.ladder;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
-import net.metricspace.crypto.math.field.ModE511M187;
+import net.metricspace.crypto.math.ec.point.ECPointPropertiesTest;
+import net.metricspace.crypto.math.field.PrimeField;
 
-public abstract class M511Test<P extends MontgomeryLadder<ModE511M187, P, ?>,
-                               G extends MontgomeryCurveGroup<ModE511M187, P>>
-    extends MontgomeryGroupTest<ModE511M187, P, G> {
-    private static String BASE_X_STRING =
-        "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005";
-    private static String BASE_Y_STRING =
-        "2fbdc0ad8530803d28fdbad354bb488d32399ac1cf8f6e01ee3f96389b90c809422b9429e8a43dbf49308ac4455940abe9f1dbca542093a895e30a64af056fa5";
+public abstract class
+    MontgomeryLadderPointPropertiesTest<S extends PrimeField<S>,
+                                        P extends MontgomeryLadder<S, P, ?>>
+    extends ECPointPropertiesTest<S, P> {
 
-    public M511Test(final G group,
-                    final String primeOrderString) {
-        super(group, BASE_X_STRING, BASE_Y_STRING, primeOrderString);
+    protected MontgomeryLadderPointPropertiesTest(final S[] coefficients,
+                                                  final P[] points,
+                                                  final P zeroPoint) {
+        super(coefficients, points, zeroPoint);
+    }
+
+    @Test(dataProvider = "mulpoints",
+          description = "Test that scalar multiplication and repeated "+
+          "addition are the same")
+    public void mulXmulTest(final S ninput,
+                            final P input) {
+        final P mulpoint = input.clone();
+        final S n = ninput.clone();
+        final S mulxcoord = input.mulX(n);
+
+        mulpoint.mul(n);
+
+        Assert.assertEquals(mulxcoord, mulpoint.montgomeryX());
     }
 }

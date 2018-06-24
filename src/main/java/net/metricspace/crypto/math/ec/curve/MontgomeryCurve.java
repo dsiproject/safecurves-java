@@ -35,16 +35,24 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 /**
  * Parameters for a Montgomery curve.  Montgomery curves are of the
- * form {@code y^2 = x^3 + A * x^2 + x}.
+ * form {@code B * y^2 = x^3 + A * x^2 + x}.
  *
  * @param <F> The field underlying the Edwards curve.
  */
 public interface MontgomeryCurve<F extends PrimeField<F>> {
     /**
      * The value of {@code A} in the Montgomery curve of the form
-     * {@code y^2 = x^3 + A * x^2 + x}.
+     * {@code B * y^2 = x^3 + A * x^2 + x}.
      *
      * @return The value of {@code A} in the Montgomery curve.
      */
-    public int montgomeryA();
+    public F montgomeryA();
+
+    /**
+     * The value of {@code A} in the Montgomery curve of the form
+     * {@code B * y^2 = x^3 + A * x^2 + x}.
+     *
+     * @return The value of {@code A} in the Montgomery curve.
+     */
+    public F montgomeryB();
 }
