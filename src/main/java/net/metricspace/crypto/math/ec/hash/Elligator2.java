@@ -33,6 +33,7 @@ package net.metricspace.crypto.math.ec.hash;
 
 import net.metricspace.crypto.math.ec.curve.MontgomeryCurve;
 import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -55,84 +56,183 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Point type.
  */
 public interface Elligator2<S extends PrimeField<S>,
-                            P extends Elligator<S, P, T>,
+                            P extends Elligator2<S, P, T>,
                             T extends ECPoint.Scratchpad>
     extends Elligator<S, P, T>,
+            MontgomeryPoint<S, P, T>,
             MontgomeryCurve<S>  {
     /**
      * {@inheritDoc}
      */
     @Override
-    public default void decodeHash(final int u,
-                                   final S code) {
-        final S a = montgomeryA();
-
-        /* r0 = -A / (u * code^2 + 1) */
-        final S r0 = code.clone();
-
-        r0.square();
-        r0.mul(u);
-        r0.add(1);
-        r0.inv();
-        r0.mul(a);
-        r0.neg();
-
-        /* r1 = A * r0 */
-        final S r1 = r0.clone();
-
-        r1.mul(a);
-
-        /* r2 = ((r0^2 + r1 + 1) * r0),
-         * r1 dead
+    public default void decodeHash(final S r) {
+        /* Formula from https://eprint.iacr.org/2013/325.pdf
+         *
+         * v = -A / (1 + u * r^2)
+         * e = (v^3 + A * v^2 + B * v).legendre
+         * x = e * v - (1 - e) * A / 2
+         * y = -e * (x^3 + A * x^2 + B * x).sqrt
+         *
+         * All our Montgomery curves are over 5 mod 8 primes, so u =
+         * 2, and they have B = 1.  This is applied, and the formula
+         * is rewritten as:
+         *
+         * v = -A / (1 + 2 * r^2)
+         * e = ((v^2 + A * v + 1) * v).legendre
+         * x = e * v + (e - 1) * A / 2
+         * y = -e * ((x^2 + A * x + 1) * x).sqrt
+         *
+         * Manual common subexpression elimination produces the following:
+         *
+         * A = montgomeryA
+         * C = 1 + 2 * r^2
+         * V = -A / C
+         * D = A * V
+         * F = (V^2 + D + 1) * V
+         * l1 = F.legendre
+         * G = l1 * V
+         * X = G + (l1 - 1) * A / 2
+         * H = A * X
+         * I = X^2 + H + 1
+         * Y = -l1 * (I * X).sqrt
+         *
+         * Manual register allocation produces the following assignments:
+         *
+         * r0 = A
+         * r1 = C
+         * r2 = V
+         * r1.1 = D
+         * r3 = F
+         * r2.1 = G
+         * r3.1 = x
+         * r2.2 = H
+         * r1.1 = I
+         * r1.2 = y
+         *
+         * Final formula:
+         *
+         * r0 = montgomeryA
+         * r1 = 1 + 2 * r^2
+         * r2 = -r0 / r1
+         * r1.1 = r0 * r2
+         * r3 = (r2^2 + r1.1 + 1) * r2
+         * l1 = r3.legendre
+         * r2.1 = l1 * r2
+         * r3.1 = r2.1 + (l1 - 1) * r0 / 2
+         * r2.2 = r0 * r3.1
+         * r1.1 = r3.1^2 + r2.2 + 1
+         * r1.2 = -l1 * (r1.1 * r3.1).sqrt
+         * x = r3.1
+         * y = r1.2
          */
+
+        /* r0 = montgomeryA */
+        final S r0 = montgomeryA();
+
+        /* r1 = 1 + 2 * r^2 */
+        final S r1 = r.clone();
+
+        r1.square();
+        r1.mul(2);
+        r1.add(1);
+
+        /* r2 = -r0 / r1 */
         final S r2 = r0.clone();
 
-        r2.square();
-        r2.add(r1);
-        r2.add(1);
-        r2.mul(r0);
+        r2.neg();
+        r2.div(r1);
 
-        /* l = r2.legendre,
-         * r2 dead
-         */
-        final int l = r2.legendre();
+        /* r1.1 = r0 * r2 */
+        r1.set(r0);
+        r1.mul(r2);
 
-        /* r1 = (1 - l) * A / 2 */
-        r1.set(1);
-        r1.sub(r2);
-        r1.mul(a);
-        r1.div(2);
+        /* r3 = (r2^2 + r1.1 + 1) * r2 */
+        final S r3 = r2.clone();
 
-        /* x = l * r0 - r1,
-         * r0, r1 dead
-         */
-        final S x = r0.clone();
+        r3.square();
+        r3.add(r1);
+        r3.add(1);
+        r3.mul(r2);
 
-        x.mul(l);
-        x.sub(r1);
+        /* l1 = r3.legendre */
+        final int l1 = r3.legendre();
 
-        /* r0 = x * A */
-        r0.set(x);
-        r0.mul(a);
+        /* r2.1 = l1 * r2 */
+        r2.mul(l1);
 
-        /* y = sqrt((x^2 + r0 + 1) * x) * -l */
-        final S y = x.clone();
+        /* r3.1 = r2.1 + (l1 - 1) * r0 / 2 */
+        r3.set(r0);
+        r3.mul(l1 - 1);
+        r3.div(2);
+        r3.add(r2);
 
-        y.square();
-        y.add(r0);
-        y.add(1);
-        y.mul(x);
-        y.sqrt();
-        y.mul(-l);
+        /* r2.2 = r0 * r3.1 */
+        r2.set(r0);
+        r2.mul(r3);
 
-        set(x, y);
+        /* r1.1 = r3.1^2 + r2.2 + 1 */
+        r1.set(r3);
+        r1.square();
+        r1.add(r2);
+        r1.add(1);
+
+        /* r1.2 = -l1 * (r1.1 * r3.1).sqrt */
+        r1.mul(r3);
+        r1.sqrt();
+        r1.mul(-l1);
+
+        /* x = r3.1 */
+        /* y = r1.2 */
+        setMontgomery(r3, r1);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public default S encodeHash(final int u) {
+    public default S encodeHash() {
+        /* Formula from https://eprint.iacr.org/2013/325.pdf
+         *
+         * r = (-x / ((x + A) * u)).sqrt
+         * q = (-(x + A) / (u * x)).sqrt
+         * r if y is a square, q otherwise
+         *
+         * All our Montgomery curves are over 5 mod 8 primes, so u =
+         * 2, and they have B = 1.  This is applied, and the formula
+         * is rewritten as:
+         *
+         * r = (-x / ((x + A) * 2)).sqrt
+         * q = (-(x + A) / (2 * x)).sqrt
+         * r if y is a square, q otherwise
+         *
+         * Manual common subexpression elimination produces the following:
+         *
+         * C = x + A
+         * D = C * 2
+         * E = 2 * x
+         * Q = (-C / E).sqrt
+         * R = (-x / D).sqrt
+         * l1 = y.legendre + 1 / 2
+         * R if l1 = 1, Q if l1 = 0
+         *
+         * Manual register allocation produces the following assignments:
+         *
+         * r0 = C
+         * r1 = D
+         * r2 = E
+         * r0.1 = Q
+         * r2.1 = R
+         *
+         * Final formula:
+         *
+         * r0 = x + A
+         * r1 = r0 * 2
+         * r2 = 2 * x
+         * r0.1 = (-r0 / r2).sqrt
+         * r2.1 = (-x / r1).sqrt
+         * l1 = (y.legendre + 1) / 2
+         * r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0
+         */
         final S x = getX();
         final S y = getY();
 
@@ -141,18 +241,15 @@ public interface Elligator2<S extends PrimeField<S>,
 
         r0.add(montgomeryA());
 
-        /* r1 = -x / r0 * u */
+        /* r1 = r0 * 2 */
         final S r1 = r0.clone();
 
-        r1.mul(u);
-        r1.inv();
-        r1.mul(x);
-        r1.neg();
+        r1.mul(2);
 
-        /* r2 = u * x */
+        /* r2 = 2 * x */
         final S r2 = x.clone();
 
-        r2.mul(u);
+        r2.mul(2);
 
         /* r0.1 = -r0 / r2,
          * r0, r2 dead
@@ -160,12 +257,18 @@ public interface Elligator2<S extends PrimeField<S>,
         r0.neg();
         r0.div(r2);
 
-        /* out = r1 if y.legendre == 1, r0 if y.legendre == -1 */
-        final int leg = (y.legendre() + 1) >> 1;
+        /* r2.1 = (-x / r1).sqrt */
+        r2.set(x);
+        r2.neg();
+        r2.div(r1);
 
-        r1.mask(leg);
-        r0.mask(leg ^ 0x1);
-        r0.or(r1);
+        /* l1 = y.legendre + 1 / 2 */
+        final int l1 = (y.legendre() + 1) / 2;
+
+        /* r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0 */
+        r2.mask(l1);
+        r0.mask(l1 ^ 0x1);
+        r0.or(r2);
 
         return r0;
     }

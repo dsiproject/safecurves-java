@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE251M9;
 public class Curve1174ExtendedPoint
     extends ExtendedEdwardsPoint<ModE251M9, Curve1174ExtendedPoint,
                                  Curve1174ExtendedPoint.Scratchpad>
-    implements Curve1174Curve {
+    implements Curve1174Curve,
+               Elligator1<ModE251M9, Curve1174ExtendedPoint,
+                          Curve1174ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended Curve1174 points.
      */
@@ -107,6 +110,30 @@ public class Curve1174ExtendedPoint
                                      final ModE251M9 z,
                                      final ModE251M9 t) {
         super(x, y, z, t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE251M9 elligatorS() {
+        return Curve1174Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE251M9 elligatorR() {
+        return Curve1174Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE251M9 elligatorC() {
+        return Curve1174Curve.ELLIGATOR_C.clone();
     }
 
     /**

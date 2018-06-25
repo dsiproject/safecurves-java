@@ -40,7 +40,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 
 @Test(groups = "unit")
 public abstract class ElligatorTest<S extends PrimeField<S>,
-                                    P extends Elligator<S, P>> {
+                                    P extends Elligator<S, P, ?>> {
     private final Object[][] pointsData;
 
     public ElligatorTest(final S[] encoded,
@@ -60,11 +60,11 @@ public abstract class ElligatorTest<S extends PrimeField<S>,
 
     @Test(dataProvider = "points",
           description = "Test that points encode to the expected hash")
-    public void testEncode(final P point,
-                           final S expected) {
+    public void testEncode(final S expected,
+                           final P point) {
         final S actual = point.encodeHash();
 
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(actual, expected);
     }
 
     @Test(dataProvider = "points",
@@ -73,9 +73,9 @@ public abstract class ElligatorTest<S extends PrimeField<S>,
                            final P expected) {
         final P actual = expected.clone();
 
-        actual.zero();
+        actual.reset();
         actual.decodeHash(encoded);
 
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(actual, expected);
     }
 }

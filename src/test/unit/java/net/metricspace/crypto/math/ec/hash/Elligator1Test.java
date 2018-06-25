@@ -38,10 +38,65 @@ import org.testng.annotations.Test;
 import net.metricspace.crypto.math.field.PrimeField;
 
 public abstract class Elligator1Test<S extends PrimeField<S>,
-                                     P extends Elligator1<S, P>>
+                                     P extends Elligator1<S, P, ?>>
     extends ElligatorTest<S, P> {
-    public Elligator1Test(final S[] encoded,
-                          final P[] points) {
+    private final S edwardsD;
+    private final S elligatorC;
+    private final S elligatorR;
+    private final S elligatorS;
+
+    protected Elligator1Test(final S[] encoded,
+                             final P[] points,
+                             final S edwardsD,
+                             final S elligatorC,
+                             final S elligatorR,
+                             final S elligatorS) {
         super(encoded, points);
+
+        this.edwardsD = edwardsD;
+        this.elligatorC = elligatorC;
+        this.elligatorR = elligatorR;
+        this.elligatorS = elligatorS;
+    }
+
+    @Test(description = "Check sanity of Elligator 1 C")
+    public void elligatorCsanity() {
+        final S numer = elligatorC.clone();
+
+        numer.add(1);
+        numer.square();
+        numer.neg();
+
+        final S denom = elligatorC.clone();
+
+        denom.sub(1);
+        denom.square();
+
+        numer.div(denom);
+
+        Assert.assertEquals(elligatorC.legendre(), 1);
+        Assert.assertEquals(numer, edwardsD);
+    }
+
+    @Test(description = "Check sanity of Elligator 1 R")
+    public void elligatorRsanity() {
+        final S cinv = elligatorC.clone();
+
+        cinv.inv();
+        cinv.add(elligatorC);
+
+        Assert.assertEquals(cinv, elligatorR);
+    }
+
+    @Test(description = "Check sanity of Elligator 1 S")
+    public void elligatorSsanity() {
+        final S sinv = elligatorS.clone();
+
+        sinv.square();
+        sinv.inv();
+        sinv.mul(2);
+
+        Assert.assertEquals(elligatorS.legendre(), 1);
+        Assert.assertEquals(sinv, elligatorC);
     }
 }

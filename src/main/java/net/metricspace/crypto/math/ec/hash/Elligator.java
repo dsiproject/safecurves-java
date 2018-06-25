@@ -55,31 +55,12 @@ public interface Elligator<S extends PrimeField<S>,
                            T extends ECPoint.Scratchpad>
     extends ECPoint<S, P, T> {
     /**
-     * Get the default hash parameter.
-     *
-     * @return The default hash parameter.
-     */
-    public int defaultHashParam();
-
-    /**
      * Use the hash function from a single scalar value to a point to
      * set the value of this point.
      *
      * @param code The hash code from which to generate a point.
      */
-    public default void decodeHash(final S code) {
-        decodeHash(defaultHashParam(), code);
-    }
-
-    /**
-     * Use the hash function from a single scalar value to a point to
-     * set the value of this point.
-     *
-     * @param p Hash parameter as a small number.
-     * @param code The hash code from which to generate a point.
-     */
-    public void decodeHash(final int p,
-                           final S code);
+    public void decodeHash(final S code);
 
     /**
      * Get a hash code that will re-create this point with {@link
@@ -89,18 +70,5 @@ public interface Elligator<S extends PrimeField<S>,
      *         decodeHash}.
      * @see decodeHash
      */
-    public default S encodeHash() {
-        return encodeHash(defaultHashParam());
-    }
-
-    /**
-     * Get a hash code that will re-create this point with {@link
-     * decodeHash}.
-     *
-     * @param p Hash parameter as a small number.
-     * @return A hash code that will re-create this point with {@link
-     *         decodeHash}.
-     * @see decodeHash
-     */
-    public S encodeHash(final int p);
+    public S encodeHash();
 }

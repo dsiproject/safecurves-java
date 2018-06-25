@@ -35,13 +35,39 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.field.PrimeField;
+import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
+import net.metricspace.crypto.math.ec.group.Curve1174Projective;
+import net.metricspace.crypto.math.ec.point.Curve1174ProjectivePoint;
+import net.metricspace.crypto.math.field.ModE251M9;
 
-public abstract class Elligator2Test<S extends PrimeField<S>,
-                                     P extends Elligator2<S, P, ?>>
-    extends ElligatorTest<S, P> {
-    public Elligator2Test(final S[] encoded,
-                          final P[] points) {
-        super(encoded, points);
+public class Curve1174Elligator1Test
+    extends Elligator1Test<ModE251M9, Curve1174ProjectivePoint> {
+    private static final Curve1174Projective group =
+        new Curve1174Projective();
+
+    private static final ModE251M9[] encoded =
+        new ModE251M9[] {
+        new ModE251M9(new byte[] {
+                (byte)0xc9, (byte)0x42, (byte)0xf8, (byte)0x6c,
+                (byte)0x96, (byte)0x7b, (byte)0x67, (byte)0xf3,
+                (byte)0xbd, (byte)0xb1, (byte)0x19, (byte)0xaf,
+                (byte)0xc6, (byte)0x3a, (byte)0xce, (byte)0xd4,
+                (byte)0x1b, (byte)0xd9, (byte)0x81, (byte)0xab,
+                (byte)0x5b, (byte)0x3d, (byte)0xad, (byte)0x56,
+                (byte)0x30, (byte)0xf0, (byte)0x85, (byte)0xd7,
+                (byte)0x0d, (byte)0xff, (byte)0x1a, (byte)0x03
+            })
+    };
+
+    private static final Curve1174ProjectivePoint[] points =
+        new Curve1174ProjectivePoint[] {
+        group.basePoint()
+    };
+
+    public Curve1174Elligator1Test() {
+        super(encoded, points, Curve1174Curve.EDWARDS_D_LONG,
+              Curve1174Curve.ELLIGATOR_C,
+              Curve1174Curve.ELLIGATOR_R,
+              Curve1174Curve.ELLIGATOR_S);
     }
 }
