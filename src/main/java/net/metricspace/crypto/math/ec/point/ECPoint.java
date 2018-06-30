@@ -130,7 +130,7 @@ public interface ECPoint<S extends PrimeField<S>,
      * implementation, this is passed as an integer which is expected
      * to be {@code 0} or {@code 1} as opposed to a {@code boolean}.
      *
-     * @param bool {@code 0} to zero this point, or {@code 1} to leave
+     * @param bool {@code 1} to zero this point, or {@code 0} to leave
      *             it as is.
      */
     public void reset(final long bool);
@@ -139,7 +139,7 @@ public interface ECPoint<S extends PrimeField<S>,
      * Set this point to the zero point.
      */
     public default void reset() {
-        reset(0);
+        reset(1);
     }
 
     /**
