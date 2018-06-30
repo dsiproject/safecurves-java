@@ -29,72 +29,64 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec;
+package net.metricspace.crypto.math.ec.point;
+
+import net.metricspace.crypto.math.field.PrimeField;
 
 /**
- * Interface for points that can be compressed according to various
- * compression types.
+ * Interface for points that can be compressed according to some
+ * compression scheme.
  *
- * @param <C> The default compression type.
+ * @param <C> The type of compressed points.
  */
-public interface CompressablePoint<C> {
+public interface CompressablePoint<S extends PrimeField<S>,
+                                   P extends CompressablePoint<S, P, T, C>,
+                                   T extends ECPoint.Scratchpad,
+                                   C>
+    extends ECPoint<S, P, T> {
     /**
-     * Master superclass for compression kinds.
-     *
-     * @param <T> Type of compressed points.
-     */
-    public static interface Kind<T> {}
-
-    /**
-     * Compress this point using a specific compression type.
-     *
-     * @param <T> The compressed point type.
-     * @param compressor The compressor to use.
-     * @return The compressed point.
-     */
-    public <T> T compress(final Kind<T> compressor);
-
-    /**
-     * Compress this point using the default compression type.
+     * Compress the point.
      *
      * @return The compressed point.
      */
     public default C compress() {
-        return compress(defaultCompressor());
+        try(final T scratch = scratchpad()) {
+            return compress(scratch);
+        }
     }
 
     /**
-     * Decompress this point using a specific compression type and set
-     * this point to its value.
+     * Compress the point using a scratchpad.
      *
-     * @param <T> The compressed point type.
-     * @param compressor The compressor to use.
-     * @param compressed The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return The compressed point.
      */
-    public <T> void decompress(final Kind<T> compressor,
-                               final T compressed);
+    public C compress(final T scratch);
 
     /**
-     * Decompress this point using the default compression type and
-     * set this point to its value.
+     * Set this point's value by decompressing a compressed point.
      *
-     * @param compressed The compressed point.
+     * @param s The compressed point.
+     * @throws IllegalArgumentException If {@code s} is not a valid
+     *                                  compressed point.
      */
-    public default void decompress(final C compressed) {
-        decompress((Kind<C>) defaultCompressor(), compressed);
+    public default void decompress(final S s)
+        throws IllegalArgumentException {
+        try(final T scratch = scratchpad()) {
+            decompress(s, scratch);
+        }
     }
 
     /**
-     * Get an array of all compression kinds.
+     * Set this point's value by decompressing a compressed point
+     * using a scratchpad..
      *
-     * @return All compression kinds supported by this curve.
+     * @param s The compressed point.
+     * @param scratch The scratchpad.
+     * @throws IllegalArgumentException If {@code s} is not a valid
+     *                                  compressed point.
      */
-    public Kind<Object>[] compressors();
-
-    /**
-     * Get the default compression kind.
-     *
-     * @return Default compression kind for this curve.
-     */
-    public Kind<C> defaultCompressor();
+    public void decompress(final S s,
+                           final T scratch)
+        throws IllegalArgumentException;
 }
