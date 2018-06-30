@@ -138,11 +138,11 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
         final long negbit = bit ^ 0x1;
 
         one.set(1);
-        one.mask(negbit);
-        x.mask(bit);
-        y.mask(bit);
+        one.mask(bit);
+        x.mask(negbit);
+        y.mask(negbit);
         y.or(one);
-        z.mask(bit);
+        z.mask(negbit);
         z.or(one);
     }
 

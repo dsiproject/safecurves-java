@@ -134,7 +134,7 @@ public abstract class ExtendedPoint<S extends PrimeField<S>,
     public void reset(final long bit) {
         super.reset(bit);
 
-        t.mask(bit);
+        t.mask(bit ^ 0x1);
     }
 
     /**
