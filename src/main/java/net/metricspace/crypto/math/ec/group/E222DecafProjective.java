@@ -87,7 +87,7 @@ public class E222DecafProjective
     @Override
     public E222DecafProjectivePoint fromCompressed(final ModE222M117 s)
         throws IllegalArgumentException {
-        E222DecafProjectivePoint.fromCompressed(s);
+        return E222DecafProjectivePoint.fromCompressed(s);
     }
 
     /**

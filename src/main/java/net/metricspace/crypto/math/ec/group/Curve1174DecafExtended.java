@@ -87,7 +87,7 @@ public class Curve1174DecafExtended
     @Override
     public Curve1174DecafExtendedPoint fromCompressed(final ModE251M9 s)
         throws IllegalArgumentException {
-        Curve1174DecafExtendedPoint.fromCompressed(s);
+        return Curve1174DecafExtendedPoint.fromCompressed(s);
     }
 
     /**

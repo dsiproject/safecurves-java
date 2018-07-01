@@ -87,7 +87,7 @@ public class Curve1174DecafProjective
     @Override
     public Curve1174DecafProjectivePoint fromCompressed(final ModE251M9 s)
         throws IllegalArgumentException {
-        Curve1174DecafProjectivePoint.fromCompressed(s);
+        return Curve1174DecafProjectivePoint.fromCompressed(s);
     }
 
     /**

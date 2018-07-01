@@ -87,7 +87,7 @@ public class E382DecafExtended
     @Override
     public E382DecafExtendedPoint fromCompressed(final ModE382M105 s)
         throws IllegalArgumentException {
-        E382DecafExtendedPoint.fromCompressed(s);
+        return E382DecafExtendedPoint.fromCompressed(s);
     }
 
     /**
