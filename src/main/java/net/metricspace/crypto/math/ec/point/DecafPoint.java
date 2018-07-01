@@ -98,14 +98,14 @@ public interface DecafPoint<S extends PrimeField<S>,
          * R = 1 / sqrt((a - d) * (Z + Y) * (Z - Y))
          * U = (a - d) * R
          * R = if (-2 * U * Z) negative then -R else R
-         * S = abs(u * ((R * ((a * Z * U) - (d * Y * T))) + Y) / a)
+         * S = abs(u * ((R * ((a * Z * X) - (d * Y * T))) + Y) / a)
          *
          * Set a = 1, slight rewrite to
          *
          * R = ((1 - d) * (Z + Y) * (Z - Y)).invsqrt
          * U = (1 - d) * R
          * Q = R * (-2 * U * Z).signum
-         * S = abs(U * ((Q * ((Z * U) - (d * Y * T))) + Y))
+         * S = abs(U * ((Q * ((Z * X) - (d * Y * T))) + Y))
          *
          * Manual common subexpression elimination produces the following:
          *
@@ -116,7 +116,7 @@ public interface DecafPoint<S extends PrimeField<S>,
          * G = -2 * U * Z
          * Q = R * G.signum
          * F = d * Y * T
-         * S = abs(U * ((Q * ((Z * U) - F)) + Y))
+         * S = abs(U * ((Q * ((Z * X) - F)) + Y))
          *
          * We will assume T requires a register assignment of its own.
          * Manual register allocation then produces the following
@@ -140,7 +140,7 @@ public interface DecafPoint<S extends PrimeField<S>,
          * r3 = -2 * r1.1 * Z
          * r2.1 = r2 * r3.signum
          * r3.1 = d * Y * T
-         * r0.1 = abs(r1.1 * ((r2.1 * ((Z * r1.1) - r3.1)) + Y))
+         * r0.1 = abs(r1.1 * ((r2.1 * ((Z * X) - r3.1)) + Y))
          */
 
         final S r0 = scratch.r0;
@@ -148,7 +148,7 @@ public interface DecafPoint<S extends PrimeField<S>,
         final S r2 = scratch.r2;
         final S r3 = scratch.r3;
 
-        /* i0 = a - d */
+        /* i0 = 1 - d */
         final int i0 = 1 - d;
 
 
@@ -180,9 +180,9 @@ public interface DecafPoint<S extends PrimeField<S>,
         r3.mul(y);
         r3.mul(d);
 
-        /* r0.1 = abs(r1.1 * ((r2.1 * ((Z * r1.1) - r3.1)) + Y)) */
-        r0.set(r1);
-        r0.mul(z);
+        /* r0.1 = abs(r1.1 * ((r2.1 * ((Z * X) - r3.1)) + Y)) */
+        r0.set(z);
+        r0.mul(x);
         r0.sub(r3);
         r0.mul(r2);
         r0.add(y);

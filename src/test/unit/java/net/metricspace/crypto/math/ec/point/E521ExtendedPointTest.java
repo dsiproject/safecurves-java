@@ -43,10 +43,28 @@ import net.metricspace.crypto.math.field.ModE521M1;
 public class E521ExtendedPointTest
     extends EdwardsPointPropertiesTest<ModE521M1, E521ExtendedPoint,
                                        E521Extended> {
+    private static final E521ExtendedPoint BASE_POINT =
+        E521ExtendedPoint.fromEdwards(E521.baseX(), E521.baseY());
+
+    private static final E521ExtendedPoint POINT_TWO =
+        BASE_POINT.clone();
+
+    private static final E521ExtendedPoint POINT_THREE =
+        BASE_POINT.clone();
+
+    static {
+        POINT_TWO.add(BASE_POINT);
+        POINT_TWO.scale();
+        POINT_THREE.add(POINT_TWO);
+        POINT_THREE.scale();
+    };
+
     private static final E521ExtendedPoint[] points =
         new E521ExtendedPoint[] {
             E521ExtendedPoint.zero(),
-            E521ExtendedPoint.fromEdwards(E521.baseX(), E521.baseY())
+            BASE_POINT,
+            POINT_TWO,
+            POINT_THREE
         };
 
     private static final ModE521M1[] coefficients =

@@ -41,12 +41,60 @@ import net.metricspace.crypto.math.ec.point.E222DecafExtendedPoint;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 public class E222DecafExtendedPointTest
-    extends EdwardsPointPropertiesTest<ModE222M117, E222DecafExtendedPoint,
-                                       E222DecafExtended> {
+    extends DecafPointPropertiesTest<ModE222M117, E222DecafExtendedPoint,
+                                     E222DecafExtended> {
+    private static final E222DecafExtendedPoint BASE_POINT =
+        E222DecafExtendedPoint.fromEdwards(E222.baseX(), E222.baseY());
+
+    private static final E222DecafExtendedPoint POINT_TWO =
+        BASE_POINT.clone();
+
+    private static final E222DecafExtendedPoint POINT_THREE =
+        BASE_POINT.clone();
+
+    static {
+        POINT_TWO.add(BASE_POINT);
+        POINT_THREE.add(POINT_TWO);
+    };
+
     private static final E222DecafExtendedPoint[] points =
         new E222DecafExtendedPoint[] {
             E222DecafExtendedPoint.zero(),
-            E222DecafExtendedPoint.fromEdwards(E222.baseX(), E222.baseY())
+            BASE_POINT,
+            POINT_TWO,
+            POINT_THREE
+        };
+
+    private static final ModE222M117[] compressed =
+        new ModE222M117[] {
+            new ModE222M117(0),
+            new ModE222M117(new byte[] {
+                    (byte)0x24, (byte)0x3d, (byte)0x61, (byte)0xb0,
+                    (byte)0x4a, (byte)0x8c, (byte)0xe6, (byte)0x79,
+                    (byte)0x6a, (byte)0x52, (byte)0x03, (byte)0x0c,
+                    (byte)0x30, (byte)0x72, (byte)0x27, (byte)0x81,
+                    (byte)0xb0, (byte)0x90, (byte)0x04, (byte)0x23,
+                    (byte)0xb1, (byte)0xa6, (byte)0xd3, (byte)0x9f,
+                    (byte)0x05, (byte)0xfe, (byte)0x44, (byte)0x02
+                }),
+            new ModE222M117(new byte[] {
+                    (byte)0xa9, (byte)0x61, (byte)0x30, (byte)0xd9,
+                    (byte)0x9d, (byte)0x79, (byte)0x97, (byte)0x29,
+                    (byte)0x9e, (byte)0x53, (byte)0x59, (byte)0x4b,
+                    (byte)0x64, (byte)0xce, (byte)0xe2, (byte)0xbf,
+                    (byte)0x66, (byte)0x05, (byte)0xd6, (byte)0x85,
+                    (byte)0xa5, (byte)0xdf, (byte)0xe7, (byte)0x3c,
+                    (byte)0xde, (byte)0x19, (byte)0x15, (byte)0x0f
+                }),
+            new ModE222M117(new byte[] {
+                    (byte)0xe2, (byte)0x33, (byte)0xec, (byte)0xe9,
+                    (byte)0x28, (byte)0xcd, (byte)0xe4, (byte)0xe6,
+                    (byte)0x5c, (byte)0x09, (byte)0x07, (byte)0xef,
+                    (byte)0x07, (byte)0x82, (byte)0xfc, (byte)0xf5,
+                    (byte)0x28, (byte)0x73, (byte)0x55, (byte)0x7f,
+                    (byte)0x8b, (byte)0x4d, (byte)0xe9, (byte)0x3f,
+                    (byte)0x58, (byte)0x4f, (byte)0xda, (byte)0x1d
+                })
         };
 
     private static final ModE222M117[] coefficients =
@@ -64,6 +112,6 @@ public class E222DecafExtendedPointTest
         };
 
     public E222DecafExtendedPointTest() {
-        super(coefficients, points, new E222DecafExtended());
+        super(coefficients, points, compressed, new E222DecafExtended());
     }
 }

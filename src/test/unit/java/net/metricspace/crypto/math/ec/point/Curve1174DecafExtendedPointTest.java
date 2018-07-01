@@ -41,13 +41,66 @@ import net.metricspace.crypto.math.ec.point.Curve1174DecafExtendedPoint;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 public class Curve1174DecafExtendedPointTest
-    extends EdwardsPointPropertiesTest<ModE251M9, Curve1174DecafExtendedPoint,
-                                       Curve1174DecafExtended> {
+    extends DecafPointPropertiesTest<ModE251M9, Curve1174DecafExtendedPoint,
+                                     Curve1174DecafExtended> {
+    private static final Curve1174DecafExtendedPoint BASE_POINT =
+        Curve1174DecafExtendedPoint.fromEdwards(Curve1174.baseX(),
+                                                  Curve1174.baseY());
+
+    private static final Curve1174DecafExtendedPoint POINT_TWO =
+        BASE_POINT.clone();
+
+    private static final Curve1174DecafExtendedPoint POINT_THREE =
+        BASE_POINT.clone();
+
+    static {
+        POINT_TWO.add(BASE_POINT);
+        POINT_TWO.scale();
+        POINT_THREE.add(POINT_TWO);
+        POINT_THREE.scale();
+    };
+
     private static final Curve1174DecafExtendedPoint[] points =
         new Curve1174DecafExtendedPoint[] {
             Curve1174DecafExtendedPoint.zero(),
-            Curve1174DecafExtendedPoint.fromEdwards(Curve1174.baseX(),
-                                               Curve1174.baseY())
+            BASE_POINT,
+            POINT_TWO,
+            POINT_THREE
+        };
+
+    private static final ModE251M9[] compressed =
+        new ModE251M9[] {
+            new ModE251M9(0),
+            new ModE251M9(new byte[] {
+                    (byte)0x51, (byte)0x0f, (byte)0x26, (byte)0xbb,
+                    (byte)0x85, (byte)0x4b, (byte)0x15, (byte)0x17,
+                    (byte)0x03, (byte)0x2e, (byte)0xc0, (byte)0xbc,
+                    (byte)0x0e, (byte)0x80, (byte)0x84, (byte)0x46,
+                    (byte)0x02, (byte)0x2c, (byte)0xc7, (byte)0x89,
+                    (byte)0x7c, (byte)0xc6, (byte)0x0d, (byte)0xe0,
+                    (byte)0x67, (byte)0xb3, (byte)0x58, (byte)0x0f,
+                    (byte)0xcc, (byte)0xc8, (byte)0xdf, (byte)0x03
+                }),
+            new ModE251M9(new byte[] {
+                    (byte)0x05, (byte)0x18, (byte)0xe2, (byte)0xd0,
+                    (byte)0x0d, (byte)0x47, (byte)0x7b, (byte)0xf5,
+                    (byte)0x26, (byte)0x99, (byte)0x40, (byte)0xb9,
+                    (byte)0x06, (byte)0x55, (byte)0xce, (byte)0x78,
+                    (byte)0x60, (byte)0x36, (byte)0x11, (byte)0xef,
+                    (byte)0x32, (byte)0x79, (byte)0x89, (byte)0x54,
+                    (byte)0x71, (byte)0x87, (byte)0x0d, (byte)0xfd,
+                    (byte)0xc5, (byte)0x54, (byte)0x54, (byte)0x02
+                }),
+            new ModE251M9(new byte[] {
+                    (byte)0xe8, (byte)0x97, (byte)0xcf, (byte)0x99,
+                    (byte)0x10, (byte)0xb5, (byte)0x84, (byte)0x88,
+                    (byte)0xd4, (byte)0xa9, (byte)0x28, (byte)0x67,
+                    (byte)0xeb, (byte)0x5d, (byte)0x1f, (byte)0x2c,
+                    (byte)0x07, (byte)0x79, (byte)0x9e, (byte)0x7d,
+                    (byte)0xd0, (byte)0x57, (byte)0x2c, (byte)0xf1,
+                    (byte)0x39, (byte)0x0d, (byte)0xb6, (byte)0x52,
+                    (byte)0x4e, (byte)0x6b, (byte)0xe7, (byte)0x03
+                })
         };
 
     private static final ModE251M9[] coefficients =
@@ -65,6 +118,6 @@ public class Curve1174DecafExtendedPointTest
         };
 
     public Curve1174DecafExtendedPointTest() {
-        super(coefficients, points, new Curve1174DecafExtended());
+        super(coefficients, points, compressed, new Curve1174DecafExtended());
     }
 }

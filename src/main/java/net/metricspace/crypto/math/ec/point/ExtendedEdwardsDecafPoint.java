@@ -59,7 +59,7 @@ public abstract class
                               P extends ExtendedEdwardsDecafPoint<S, P, T>,
                               T extends ExtendedEdwardsPoint.Scratchpad<S>>
     extends ExtendedEdwardsPoint<S, P, T>
-    implements DecafPoint<S, P, T> {
+    implements EdwardsDecafPoint<S, P, T> {
     /**
      * Initialize an {@code ExtendedPoint} with three scalar objects.
      * This constructor takes possession of the parameters, which are

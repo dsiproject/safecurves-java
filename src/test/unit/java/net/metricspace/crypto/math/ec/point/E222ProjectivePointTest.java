@@ -44,10 +44,28 @@ public class E222ProjectivePointTest
     extends EdwardsPointPropertiesTest<ModE222M117,
                                        E222ProjectivePoint,
                                        E222Projective> {
+    private static final E222ProjectivePoint BASE_POINT =
+        E222ProjectivePoint.fromEdwards(E222.baseX(), E222.baseY());
+
+    private static final E222ProjectivePoint POINT_TWO =
+        BASE_POINT.clone();
+
+    private static final E222ProjectivePoint POINT_THREE =
+        BASE_POINT.clone();
+
+    static {
+        POINT_TWO.add(BASE_POINT);
+        POINT_TWO.scale();
+        POINT_THREE.add(POINT_TWO);
+        POINT_THREE.scale();
+    };
+
     private static final E222ProjectivePoint[] points =
         new E222ProjectivePoint[] {
             E222ProjectivePoint.zero(),
-            E222ProjectivePoint.fromEdwards(E222.baseX(), E222.baseY())
+            BASE_POINT,
+            POINT_TWO,
+            POINT_THREE
         };
 
     private static final ModE222M117[] coefficients =

@@ -57,7 +57,7 @@ public abstract class
                                 P extends ProjectiveEdwardsDecafPoint<S, P, T>,
                                 T extends ProjectiveEdwardsPoint.Scratchpad<S>>
     extends ProjectiveEdwardsPoint<S, P, T>
-    implements DecafPoint<S, P, T> {
+    implements EdwardsDecafPoint<S, P, T> {
     /**
      * Initialize a {@code ProjectiveEdwardsPoint} with three scalar
      * objects.  This constructor takes possession of the parameters,
