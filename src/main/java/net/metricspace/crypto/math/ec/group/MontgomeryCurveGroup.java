@@ -104,6 +104,7 @@ public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
     /**
      * Append the Montgomery form to a {@link StringBuilder}.
      *
+     * @param <S> Type of scalar values.
      * @param sb {@link StringBuilder} to which to append the Montgomery form.
      * @param a The Montgomery {@code A} parameter.
      */

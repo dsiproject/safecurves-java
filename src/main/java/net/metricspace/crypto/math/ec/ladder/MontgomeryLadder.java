@@ -54,6 +54,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  *
  * @param <S> Scalar values.
  * @param <P> Point type used as an argument.
+ * @param <T> Scratchpad type.
  */
 public interface MontgomeryLadder<S extends PrimeField<S>,
                                   P extends MontgomeryLadder<S, P, T>,
@@ -62,6 +63,8 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
             MontgomeryCurve<S> {
     /**
      * Superclass of scratchpads for Montgomery ladders.
+     *
+     * @param <S> Scalar values.
      */
     public static abstract class Scratchpad<S extends PrimeField<S>>
         implements ECPoint.Scratchpad {

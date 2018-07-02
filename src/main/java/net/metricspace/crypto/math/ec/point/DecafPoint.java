@@ -43,7 +43,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * Cofactors through Point Compression"</a>.  It reduces the cofactor
  * by a factor of {@code 4}
  *
- * @param <C> The type of compressed points.
+ * @param <S> Scalar values.
+ * @param <P> Point type used as an argument.
+ * @param <T> Scratchpad type.
  */
 public interface DecafPoint<S extends PrimeField<S>,
                             P extends DecafPoint<S, P, T>,
@@ -205,8 +207,6 @@ public interface DecafPoint<S extends PrimeField<S>,
      *          y}-coordinate.
      * @param z The scalar object to which to write the {@code
      *          z}-coordinate.
-     * @param t The scalar object to which to write the {@code
-     *          t}-coordinate, will not be written if this is null.
      * @param scratch The scratchpad object.
      * @throws IllegalArgumentException If the compressed point is
      *                                  invalid.
