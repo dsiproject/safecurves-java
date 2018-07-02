@@ -29,59 +29,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.point;
+package net.metricspace.crypto.math.ec.group;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.ec.group.E521;
-import net.metricspace.crypto.math.ec.group.E521Extended;
-import net.metricspace.crypto.math.ec.point.E521ExtendedPoint;
-import net.metricspace.crypto.math.field.ModE521M1;
+import net.metricspace.crypto.math.ec.point.Curve1174DecafExtendedPoint;
+import net.metricspace.crypto.math.field.ModE251M9;
 
-public class E521ExtendedPointTest
-    extends EdwardsPointPropertiesTest<ModE521M1, E521ExtendedPoint,
-                                       E521Extended> {
-    private static final E521ExtendedPoint BASE_POINT =
-        E521ExtendedPoint.fromEdwards(E521.baseX(), E521.baseY());
+public class Curve1174DecafExtendedTest
+    extends Curve1174Test<Curve1174DecafExtendedPoint, Curve1174DecafExtended> {
+    public static String PRIME_ORDER =
+        "01fffffffffffffffffffffffffffffff77965c4dfd307348944d45fd166c971";
 
-    private static final E521ExtendedPoint POINT_TWO =
-        BASE_POINT.clone();
-
-    private static final E521ExtendedPoint POINT_THREE =
-        BASE_POINT.clone();
-
-    static {
-        POINT_TWO.add(BASE_POINT);
-        POINT_TWO.scale();
-        POINT_THREE.add(POINT_TWO);
-        POINT_THREE.scale();
-    };
-
-    private static final E521ExtendedPoint[] points =
-        new E521ExtendedPoint[] {
-            E521ExtendedPoint.zero(),
-            BASE_POINT,
-            POINT_TWO,
-            POINT_THREE
-        };
-
-    private static final ModE521M1[] coefficients =
-        new ModE521M1[] {
-             new ModE521M1(1),
-             new ModE521M1(2),
-             new ModE521M1(3),
-             new ModE521M1(4),
-             new ModE521M1(5),
-             new ModE521M1(7),
-             new ModE521M1(9),
-             new ModE521M1(16),
-             new ModE521M1(19),
-             new ModE521M1(20)
-        };
-
-    public E521ExtendedPointTest() {
-        super(coefficients, points, new E521Extended());
+    public Curve1174DecafExtendedTest() {
+        super(new Curve1174DecafExtended(), PRIME_ORDER);
     }
 }

@@ -43,11 +43,29 @@ import net.metricspace.crypto.math.field.ModE251M9;
 public class Curve1174ExtendedPointTest
     extends EdwardsPointPropertiesTest<ModE251M9, Curve1174ExtendedPoint,
                                        Curve1174Extended> {
+    private static final Curve1174ExtendedPoint BASE_POINT =
+        Curve1174ExtendedPoint.fromEdwards(Curve1174.baseX(),
+                                           Curve1174.baseY());
+
+    private static final Curve1174ExtendedPoint POINT_TWO =
+        BASE_POINT.clone();
+
+    private static final Curve1174ExtendedPoint POINT_THREE =
+        BASE_POINT.clone();
+
+    static {
+        POINT_TWO.add(BASE_POINT);
+        POINT_TWO.scale();
+        POINT_THREE.add(POINT_TWO);
+        POINT_THREE.scale();
+    };
+
     private static final Curve1174ExtendedPoint[] points =
         new Curve1174ExtendedPoint[] {
             Curve1174ExtendedPoint.zero(),
-            Curve1174ExtendedPoint.fromEdwards(Curve1174.baseX(),
-                                               Curve1174.baseY())
+            BASE_POINT,
+            POINT_TWO,
+            POINT_THREE
         };
 
     private static final ModE251M9[] coefficients =

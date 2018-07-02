@@ -29,59 +29,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.point;
+package net.metricspace.crypto.math.ec.group;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.ec.group.E521;
-import net.metricspace.crypto.math.ec.group.E521Extended;
-import net.metricspace.crypto.math.ec.point.E521ExtendedPoint;
-import net.metricspace.crypto.math.field.ModE521M1;
+import net.metricspace.crypto.math.ec.point.E222DecafProjectivePoint;
 
-public class E521ExtendedPointTest
-    extends EdwardsPointPropertiesTest<ModE521M1, E521ExtendedPoint,
-                                       E521Extended> {
-    private static final E521ExtendedPoint BASE_POINT =
-        E521ExtendedPoint.fromEdwards(E521.baseX(), E521.baseY());
+public class E222DecafProjectiveTest
+    extends E222Test<E222DecafProjectivePoint, E222DecafProjective> {
+    public static String PRIME_ORDER =
+        "0ffffffffffffffffffffffffffff70cbc95e932f802f31423598cbf";
 
-    private static final E521ExtendedPoint POINT_TWO =
-        BASE_POINT.clone();
-
-    private static final E521ExtendedPoint POINT_THREE =
-        BASE_POINT.clone();
-
-    static {
-        POINT_TWO.add(BASE_POINT);
-        POINT_TWO.scale();
-        POINT_THREE.add(POINT_TWO);
-        POINT_THREE.scale();
-    };
-
-    private static final E521ExtendedPoint[] points =
-        new E521ExtendedPoint[] {
-            E521ExtendedPoint.zero(),
-            BASE_POINT,
-            POINT_TWO,
-            POINT_THREE
-        };
-
-    private static final ModE521M1[] coefficients =
-        new ModE521M1[] {
-             new ModE521M1(1),
-             new ModE521M1(2),
-             new ModE521M1(3),
-             new ModE521M1(4),
-             new ModE521M1(5),
-             new ModE521M1(7),
-             new ModE521M1(9),
-             new ModE521M1(16),
-             new ModE521M1(19),
-             new ModE521M1(20)
-        };
-
-    public E521ExtendedPointTest() {
-        super(coefficients, points, new E521Extended());
+    public E222DecafProjectiveTest() {
+        super(new E222DecafProjective(), PRIME_ORDER);
     }
 }
