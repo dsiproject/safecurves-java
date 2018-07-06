@@ -207,12 +207,12 @@ public interface Elligator2<S extends PrimeField<S>,
          *
          * Manual common subexpression elimination produces the following:
          *
-         * C = x + A
+         * C = -(x + A)
          * D = C * 2
          * E = 2 * x
-         * Q = (-C / E).sqrt
-         * R = (-x / D).sqrt
-         * l1 = y.legendre + 1 / 2
+         * Q = (C / E).sqrt
+         * R = (x / D).sqrt
+         * l1 = (y.legendre + 1) / 2
          * R if l1 = 1, Q if l1 = 0
          *
          * Manual register allocation produces the following assignments:
@@ -225,21 +225,22 @@ public interface Elligator2<S extends PrimeField<S>,
          *
          * Final formula:
          *
-         * r0 = x + A
+         * r0 = -(x + A)
          * r1 = r0 * 2
          * r2 = 2 * x
-         * r0.1 = (-r0 / r2).sqrt
-         * r2.1 = (-x / r1).sqrt
+         * r0.1 = (r0 / r2).sqrt
+         * r2.1 = (x / r1).sqrt
          * l1 = (y.legendre + 1) / 2
          * r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0
          */
         final S x = getX();
         final S y = getY();
 
-        /* r0 = x + A */
+        /* r0 = -(x + A) */
         final S r0 = x.clone();
 
         r0.add(montgomeryA());
+        r0.neg();
 
         /* r1 = r0 * 2 */
         final S r1 = r0.clone();
@@ -251,16 +252,15 @@ public interface Elligator2<S extends PrimeField<S>,
 
         r2.mul(2);
 
-        /* r0.1 = -r0 / r2,
-         * r0, r2 dead
+        /* r0.1 = (r0 / r2).sqrt
          */
-        r0.neg();
         r0.div(r2);
+        r0.sqrt();
 
-        /* r2.1 = (-x / r1).sqrt */
+        /* r2.1 = (x / r1).sqrt */
         r2.set(x);
-        r2.neg();
         r2.div(r1);
+        r2.sqrt();
 
         /* l1 = y.legendre + 1 / 2 */
         final int l1 = (y.legendre() + 1) / 2;
@@ -271,5 +271,36 @@ public interface Elligator2<S extends PrimeField<S>,
         r0.or(r2);
 
         return r0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default boolean canHash() {
+        /**
+         * Formula from https://eprint.iacr.org/2013/325.pdf
+         *
+         * (-2 * x * (x + A)).legendre == 1
+         *
+         * This can easily be done as
+         *
+         * r0 = A
+         * r0 = x + A
+         * r0.1 = r1.1 * x * -2
+         * result = r0.1.legendre
+         */
+        final S x = montgomeryX();
+
+        /* r0 = x + A */
+        final S r0 = x.clone();
+
+        r0.add(montgomeryA());
+
+        /* r0.1 = r1.1 * x * -2 */
+        r0.mul(x);
+        r0.mul(-2);
+
+        return r0.legendre() == 1;
     }
 }

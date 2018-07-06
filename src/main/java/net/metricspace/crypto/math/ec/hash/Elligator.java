@@ -49,6 +49,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  *
  * @param <S> Scalar type.
  * @param <P> Point type.
+ * @param <T> Scratchpad type.
  */
 public interface Elligator<S extends PrimeField<S>,
                            P extends Elligator<S, P, T>,
@@ -71,4 +72,11 @@ public interface Elligator<S extends PrimeField<S>,
      * @see decodeHash
      */
     public S encodeHash();
+
+    /**
+     * Determine whether the point can be hashed.
+     *
+     * @return Whether the point can be hashed.
+     */
+    public boolean canHash();
 }

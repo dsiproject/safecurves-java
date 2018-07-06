@@ -62,20 +62,29 @@ public abstract class ElligatorTest<S extends PrimeField<S>,
           description = "Test that points encode to the expected hash")
     public void testEncode(final S expected,
                            final P point) {
-        final S actual = point.encodeHash();
+        if (expected != null) {
+            final S actual = point.encodeHash();
 
-        Assert.assertEquals(actual, expected);
+            Assert.assertEquals(actual, expected);
+        } else {
+            Assert.assertFalse(point.canHash());
+        }
     }
 
     @Test(dataProvider = "points",
           description = "Test that points decode as expected")
     public void testDecode(final S encoded,
                            final P expected) {
-        final P actual = expected.clone();
+        if (encoded != null) {
+            final P actual = expected.clone();
 
-        actual.reset();
-        actual.decodeHash(encoded);
+            actual.reset();
+            actual.decodeHash(encoded);
 
-        Assert.assertEquals(actual, expected);
+            Assert.assertEquals(actual, expected);
+        } else {
+            Assert.assertFalse(expected.canHash());
+        }
+
     }
 }

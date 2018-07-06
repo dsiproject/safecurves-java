@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E222Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE222M117;
 public class E222ProjectivePoint
     extends ProjectiveEdwardsPoint<ModE222M117, E222ProjectivePoint,
                                    E222ProjectivePoint.Scratchpad>
-    implements E222Curve {
+    implements E222Curve,
+               Elligator1<ModE222M117, E222ProjectivePoint,
+                          E222ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective E-222 points.
      */
@@ -105,6 +108,30 @@ public class E222ProjectivePoint
                                   final ModE222M117 y,
                                   final ModE222M117 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE222M117 elligatorS() {
+        return E222Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE222M117 elligatorR() {
+        return E222Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE222M117 elligatorC() {
+        return E222Curve.ELLIGATOR_C.clone();
     }
 
     /**

@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.M511Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE511M187;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE511M187;
 public class M511ProjectivePoint
     extends ProjectiveTwistedEdwardsPoint<ModE511M187, M511ProjectivePoint,
                                           M511ProjectivePoint.Scratchpad>
-    implements M511Curve {
+    implements M511Curve,
+               Elligator2<ModE511M187, M511ProjectivePoint,
+                          M511ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective M-511 points.
      */

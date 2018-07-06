@@ -336,7 +336,8 @@ public interface Elligator1<S extends PrimeField<S>,
          * u = z * X
          * t = (1 - u) / (1 + u)
          *
-         * Rewritten slightly as:
+         * Rewritten slightly as, and taking absolute value of t, as t
+         * and -t are equivalent under the inverse map:
          *
          * e = (y - 1) / (2 * (y + 1))
          * r = elligatorR()
@@ -345,7 +346,7 @@ public interface Elligator1<S extends PrimeField<S>,
          * z = ((c - 1) * elligatorS() * X * (1 + X) * x *
          *     (X^2 + (1 / c^2))).legendre
          * u = z * X
-         * t = (1 - u) / (1 + u)
+         * t = ((1 - u) / (1 + u)).abs
          *
          * Manual common subexpression elimination produces the following:
          *
@@ -359,9 +360,9 @@ public interface Elligator1<S extends PrimeField<S>,
          * K = X^2
          * Z = I * elligatorS * X * J * x * (K + (1 / C^2))
          * l1 = Z.legendre
-         * u = l1 * X
-         * L = 1 + u
-         * t = (1 - u) / L
+         * U = l1 * X
+         * L = 1 + U
+         * t = ((1 - U) / L).abs
          *
          * Manual register allocation produces the following assignments:
          *
@@ -374,7 +375,7 @@ public interface Elligator1<S extends PrimeField<S>,
          * r3 = J
          * r4 = K
          * r0.3 = Z
-         * r0.4 = u
+         * r0.4 = U
          * r1.2 = L
          *
          * Final formula:
@@ -391,7 +392,7 @@ public interface Elligator1<S extends PrimeField<S>,
          * l1 = r0.3.legendre
          * r0.4 = l1 * r1.1
          * r1.2 = 1 + r0.4
-         * r0.5 = (1 - r0.4) / r1.2
+         * r0.5 = ((1 - r0.4) / r1.2).abs
          * t = r0.5
          */
         final S y = getY();
@@ -410,7 +411,7 @@ public interface Elligator1<S extends PrimeField<S>,
 
         /* r0.1 = 1 + r1 * elligatorR() */
         r0.set(elligatorR());
-        r0.add(r1);
+        r0.mul(r1);
         r0.add(1);
 
         /* r1.1 = (r0.1^2 - 1).sqrt - r0.1 */
@@ -459,12 +460,21 @@ public interface Elligator1<S extends PrimeField<S>,
         r1.set(r0);
         r1.add(1);
 
-        /* r0.5 = (1 - r0.4) / r1.2 */
+        /* r0.5 = ((1 - r0.4) / r1.2).abs */
         r0.neg();
         r0.add(1);
         r0.div(r1);
+        r0.abs();
 
         /* t = r0.5 */
         return r0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public default boolean canHash() {
+        return false;
     }
 }

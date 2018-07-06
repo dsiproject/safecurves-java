@@ -31,6 +31,7 @@
  */
 package net.metricspace.crypto.math.ec.curve;
 
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE382M105;
 
 /**
@@ -50,6 +51,8 @@ public interface E382Curve
     extends EdwardsCurve<ModE382M105>,
             MontgomeryBirationalEquivalence<ModE382M105> {
     public static final int EDWARDS_D = -67254;
+    public static final ModE382M105 EDWARDS_D_LONG =
+        new ModE382M105(EDWARDS_D);
     public static final ModE382M105 MONTGOMERY_A =
         MontgomeryBirationalEquivalence
         .montgomeryAfromEdwards(new ModE382M105(1),
@@ -58,6 +61,12 @@ public interface E382Curve
         MontgomeryBirationalEquivalence
         .montgomeryBfromEdwards(new ModE382M105(1),
                                 new ModE382M105(EDWARDS_D));
+    public static final ModE382M105 ELLIGATOR_C =
+        Elligator1.calculateElligatorC(EDWARDS_D_LONG);
+    public static final ModE382M105 ELLIGATOR_R =
+        Elligator1.calculateElligatorR(ELLIGATOR_C);
+    public static final ModE382M105 ELLIGATOR_S =
+        Elligator1.calculateElligatorS(ELLIGATOR_C);
 
     /**
      * Defined as the value {@code -67254}.

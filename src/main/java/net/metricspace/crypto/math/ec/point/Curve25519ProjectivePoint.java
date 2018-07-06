@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve25519Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE255M19;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE255M19;
 public class Curve25519ProjectivePoint
     extends ProjectiveTwistedEdwardsPoint<ModE255M19, Curve25519ProjectivePoint,
                                           Curve25519ProjectivePoint.Scratchpad>
-    implements Curve25519Curve {
+    implements Curve25519Curve,
+               Elligator2<ModE255M19, Curve25519ProjectivePoint,
+                          Curve25519ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective Curve25519 points.
      */
@@ -70,6 +73,9 @@ public class Curve25519ProjectivePoint
             return scratchpads.get();
         }
     }
+
+    private static final Curve25519ProjectivePoint ZERO =
+        new Curve25519ProjectivePoint();
 
     /**
      * Initialize a {@code Curve25519ProjectivePoint} with zero
@@ -131,7 +137,7 @@ public class Curve25519ProjectivePoint
      *         coordinates.
      */
     public static Curve25519ProjectivePoint zero() {
-        return new Curve25519ProjectivePoint();
+        return ZERO.clone();
     }
 
     /**
@@ -165,5 +171,25 @@ public class Curve25519ProjectivePoint
         TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
 
         return new Curve25519ProjectivePoint(edwardsX, edwardsY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        if (!this.equals(ZERO)) {
+            final StringBuilder sb = new StringBuilder();
+
+            sb.append('(');
+            sb.append(montgomeryX().toString());
+            sb.append(", ");
+            sb.append(montgomeryY().toString());
+            sb.append(')');
+
+            return sb.toString();
+        } else {
+            return "Inf";
+        }
     }
 }

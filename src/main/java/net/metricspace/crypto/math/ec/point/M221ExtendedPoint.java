@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.M221Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE221M3;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE221M3;
 public class M221ExtendedPoint
     extends ExtendedTwistedEdwardsPoint<ModE221M3, M221ExtendedPoint,
                                         M221ExtendedPoint.Scratchpad>
-    implements M221Curve {
+    implements M221Curve,
+               Elligator2<ModE221M3, M221ExtendedPoint,
+                          M221ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended M-221 points.
      */

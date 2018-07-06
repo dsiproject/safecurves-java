@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve41417Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE414M17;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE414M17;
 public class Curve41417ProjectivePoint
     extends ProjectiveEdwardsPoint<ModE414M17, Curve41417ProjectivePoint,
                                    Curve41417ProjectivePoint.Scratchpad>
-    implements Curve41417Curve {
+    implements Curve41417Curve,
+               Elligator1<ModE414M17, Curve41417ProjectivePoint,
+                          Curve41417ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective Curve41417 points.
      */
@@ -105,6 +108,30 @@ public class Curve41417ProjectivePoint
                                         final ModE414M17 y,
                                         final ModE414M17 z) {
         super(x, y, z);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE414M17 elligatorS() {
+        return Curve41417Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE414M17 elligatorR() {
+        return Curve41417Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE414M17 elligatorC() {
+        return Curve41417Curve.ELLIGATOR_C.clone();
     }
 
     /**

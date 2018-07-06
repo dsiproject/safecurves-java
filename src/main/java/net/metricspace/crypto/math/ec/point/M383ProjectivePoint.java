@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.M383Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE383M187;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE383M187;
 public class M383ProjectivePoint
     extends ProjectiveTwistedEdwardsPoint<ModE383M187, M383ProjectivePoint,
                                           M383ProjectivePoint.Scratchpad>
-    implements M383Curve {
+    implements M383Curve,
+               Elligator2<ModE383M187, M383ProjectivePoint,
+                          M383ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective M-383 points.
      */

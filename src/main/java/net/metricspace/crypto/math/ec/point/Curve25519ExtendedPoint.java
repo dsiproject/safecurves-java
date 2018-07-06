@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve25519Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE255M19;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE255M19;
 public class Curve25519ExtendedPoint
     extends ExtendedTwistedEdwardsPoint<ModE255M19, Curve25519ExtendedPoint,
                                         Curve25519ExtendedPoint.Scratchpad>
-    implements Curve25519Curve {
+    implements Curve25519Curve,
+               Elligator2<ModE255M19, Curve25519ExtendedPoint,
+                          Curve25519ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended Curve25519 points.
      */

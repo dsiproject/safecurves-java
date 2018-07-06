@@ -45,24 +45,58 @@ public class Curve1174Elligator1Test
     private static final Curve1174Projective group =
         new Curve1174Projective();
 
+    private static final Curve1174ProjectivePoint BASE_POINT =
+        group.basePoint();
+
+    private static final Curve1174ProjectivePoint TWO_POINT =
+        group.basePoint();
+
+    private static final Curve1174ProjectivePoint THREE_POINT =
+        group.basePoint();
+
+    private static final Curve1174ProjectivePoint SEVEN_POINT =
+        group.basePoint();
+
+    static {
+        TWO_POINT.add(BASE_POINT);
+        THREE_POINT.add(TWO_POINT);
+        SEVEN_POINT.add(THREE_POINT);
+        SEVEN_POINT.add(THREE_POINT);
+    };
+
     private static final ModE251M9[] encoded =
         new ModE251M9[] {
-        new ModE251M9(new byte[] {
-                (byte)0xc9, (byte)0x42, (byte)0xf8, (byte)0x6c,
-                (byte)0x96, (byte)0x7b, (byte)0x67, (byte)0xf3,
-                (byte)0xbd, (byte)0xb1, (byte)0x19, (byte)0xaf,
-                (byte)0xc6, (byte)0x3a, (byte)0xce, (byte)0xd4,
-                (byte)0x1b, (byte)0xd9, (byte)0x81, (byte)0xab,
-                (byte)0x5b, (byte)0x3d, (byte)0xad, (byte)0x56,
-                (byte)0x30, (byte)0xf0, (byte)0x85, (byte)0xd7,
-                (byte)0x0d, (byte)0xff, (byte)0x1a, (byte)0x03
-            })
-    };
+            new ModE251M9(new byte[] {
+                    (byte)0xb5, (byte)0x8a, (byte)0x4e, (byte)0x2e,
+                    (byte)0x85, (byte)0x15, (byte)0x33, (byte)0xbe,
+                    (byte)0x5c, (byte)0x77, (byte)0xb9, (byte)0xfe,
+                    (byte)0x0c, (byte)0x41, (byte)0x77, (byte)0x45,
+                    (byte)0x82, (byte)0x0e, (byte)0x63, (byte)0xb9,
+                    (byte)0x56, (byte)0x3f, (byte)0x30, (byte)0x3b,
+                    (byte)0x57, (byte)0x24, (byte)0xa6, (byte)0x8a,
+                    (byte)0x22, (byte)0x79, (byte)0x55, (byte)0x03
+                }),
+            null,
+            null,
+            new ModE251M9(new byte[] {
+                    (byte)0x9a, (byte)0xf2, (byte)0xcf, (byte)0xcd,
+                    (byte)0x8b, (byte)0x16, (byte)0x23, (byte)0xea,
+                    (byte)0xf1, (byte)0x5a, (byte)0x5d, (byte)0x95,
+                    (byte)0xbd, (byte)0x05, (byte)0x66, (byte)0x86,
+                    (byte)0x0a, (byte)0x6f, (byte)0x02, (byte)0xfc,
+                    (byte)0x3d, (byte)0xa4, (byte)0x1f, (byte)0x76,
+                    (byte)0x1c, (byte)0x1e, (byte)0x24, (byte)0xde,
+                    (byte)0x28, (byte)0xd2, (byte)0x7e, (byte)0x01
+                })
+        };
 
     private static final Curve1174ProjectivePoint[] points =
         new Curve1174ProjectivePoint[] {
-        group.basePoint()
-    };
+            BASE_POINT,
+            TWO_POINT,
+            THREE_POINT,
+            SEVEN_POINT
+        };
 
     public Curve1174Elligator1Test() {
         super(encoded, points, Curve1174Curve.EDWARDS_D_LONG,
