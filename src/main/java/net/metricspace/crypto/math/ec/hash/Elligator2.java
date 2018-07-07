@@ -277,7 +277,7 @@ public interface Elligator2<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default boolean canHash() {
+    public default boolean canEncode() {
         /**
          * Formula from https://eprint.iacr.org/2013/325.pdf
          *

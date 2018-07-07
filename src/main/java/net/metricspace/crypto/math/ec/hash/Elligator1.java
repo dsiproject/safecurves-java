@@ -474,7 +474,7 @@ public interface Elligator1<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default boolean canHash() {
+    public default boolean canEncode() {
         /* Criteria from https://eprint.iacr.org/2013/325.pdf
          *
          * e = (y - 1) / (2 * (y + 1))

@@ -78,5 +78,5 @@ public interface Elligator<S extends PrimeField<S>,
      *
      * @return Whether the point can be hashed.
      */
-    public boolean canHash();
+    public boolean canEncode();
 }
