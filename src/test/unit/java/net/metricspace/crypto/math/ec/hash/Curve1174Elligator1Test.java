@@ -54,14 +54,13 @@ public class Curve1174Elligator1Test
     private static final Curve1174ProjectivePoint THREE_POINT =
         group.basePoint();
 
-    private static final Curve1174ProjectivePoint SEVEN_POINT =
+    private static final Curve1174ProjectivePoint FOUR_POINT =
         group.basePoint();
 
     static {
         TWO_POINT.add(BASE_POINT);
         THREE_POINT.add(TWO_POINT);
-        SEVEN_POINT.add(THREE_POINT);
-        SEVEN_POINT.add(THREE_POINT);
+        FOUR_POINT.add(THREE_POINT);
     };
 
     private static final ModE251M9[] encoded =
@@ -77,17 +76,17 @@ public class Curve1174Elligator1Test
                     (byte)0x22, (byte)0x79, (byte)0x55, (byte)0x03
                 }),
             null,
-            null,
             new ModE251M9(new byte[] {
-                    (byte)0x9a, (byte)0xf2, (byte)0xcf, (byte)0xcd,
-                    (byte)0x8b, (byte)0x16, (byte)0x23, (byte)0xea,
-                    (byte)0xf1, (byte)0x5a, (byte)0x5d, (byte)0x95,
-                    (byte)0xbd, (byte)0x05, (byte)0x66, (byte)0x86,
-                    (byte)0x0a, (byte)0x6f, (byte)0x02, (byte)0xfc,
-                    (byte)0x3d, (byte)0xa4, (byte)0x1f, (byte)0x76,
-                    (byte)0x1c, (byte)0x1e, (byte)0x24, (byte)0xde,
-                    (byte)0x28, (byte)0xd2, (byte)0x7e, (byte)0x01
-                })
+                    (byte)0x90, (byte)0x0d, (byte)0xd5, (byte)0xe2,
+                    (byte)0x4e, (byte)0xa3, (byte)0xda, (byte)0x3c,
+                    (byte)0x96, (byte)0x66, (byte)0x86, (byte)0xfa,
+                    (byte)0xc9, (byte)0x9d, (byte)0xc5, (byte)0xc9,
+                    (byte)0xa9, (byte)0x4e, (byte)0xec, (byte)0x88,
+                    (byte)0x5b, (byte)0xbb, (byte)0xa0, (byte)0xef,
+                    (byte)0x64, (byte)0x1f, (byte)0x49, (byte)0xbc,
+                    (byte)0x3e, (byte)0xd8, (byte)0xe6, (byte)0x01
+                }),
+            null
         };
 
     private static final Curve1174ProjectivePoint[] points =
@@ -95,7 +94,7 @@ public class Curve1174Elligator1Test
             BASE_POINT,
             TWO_POINT,
             THREE_POINT,
-            SEVEN_POINT
+            FOUR_POINT
         };
 
     public Curve1174Elligator1Test() {

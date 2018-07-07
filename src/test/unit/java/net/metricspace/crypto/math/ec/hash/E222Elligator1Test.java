@@ -57,25 +57,31 @@ public class E222Elligator1Test
     private static final E222ProjectivePoint FIVE_POINT =
         group.basePoint();
 
+    private static final E222ProjectivePoint FOURTEEN_POINT =
+        group.basePoint();
+
     static {
         TWO_POINT.add(BASE_POINT);
-        THREE_POINT.add(BASE_POINT);
+        THREE_POINT.add(TWO_POINT);
         FIVE_POINT.add(TWO_POINT);
         FIVE_POINT.add(TWO_POINT);
+        FOURTEEN_POINT.add(FIVE_POINT);
+        FOURTEEN_POINT.add(FIVE_POINT);
+        FOURTEEN_POINT.add(THREE_POINT);
     };
 
     private static final ModE222M117[] encoded =
         new ModE222M117[] {
-            new ModE222M117(new byte[] {
-                    (byte)0x31, (byte)0x06, (byte)0xc1, (byte)0x59,
-                    (byte)0xd9, (byte)0x67, (byte)0x3a, (byte)0x3b,
-                    (byte)0x58, (byte)0x8e, (byte)0xb0, (byte)0xab,
-                    (byte)0x3b, (byte)0x79, (byte)0x2a, (byte)0x70,
-                    (byte)0xee, (byte)0xb2, (byte)0x39, (byte)0xbc,
-                    (byte)0x30, (byte)0x2b, (byte)0x26, (byte)0xd0,
-                    (byte)0x8a, (byte)0x72, (byte)0x40, (byte)0x1c
-                }),
             null,
+            new ModE222M117(new byte[] {
+                    (byte)0x95, (byte)0x25, (byte)0x5f, (byte)0x7c,
+                    (byte)0xff, (byte)0x40, (byte)0x1f, (byte)0xf3,
+                    (byte)0x62, (byte)0x07, (byte)0xfc, (byte)0x9e,
+                    (byte)0x35, (byte)0xe1, (byte)0x7b, (byte)0xa7,
+                    (byte)0xba, (byte)0xc0, (byte)0xd9, (byte)0x04,
+                    (byte)0x82, (byte)0xb5, (byte)0x96, (byte)0x42,
+                    (byte)0xdf, (byte)0x01, (byte)0xbd, (byte)0x0e
+                }),
             null,
             new ModE222M117(new byte[] {
                     (byte)0xe3, (byte)0x9b, (byte)0x22, (byte)0x8c,
@@ -86,6 +92,15 @@ public class E222Elligator1Test
                     (byte)0x4a, (byte)0x95, (byte)0xb1, (byte)0x89,
                     (byte)0x45, (byte)0x7f, (byte)0x91, (byte)0x13
                 }),
+            new ModE222M117(new byte[] {
+                    (byte)0x07, (byte)0x27, (byte)0x2d, (byte)0x40,
+                    (byte)0x19, (byte)0x5a, (byte)0x0c, (byte)0x30,
+                    (byte)0xe0, (byte)0xa5, (byte)0x8e, (byte)0xb7,
+                    (byte)0x40, (byte)0x56, (byte)0xb5, (byte)0xe9,
+                    (byte)0x2b, (byte)0xa3, (byte)0xc8, (byte)0x52,
+                    (byte)0x9e, (byte)0xaa, (byte)0xc4, (byte)0x96,
+                    (byte)0xbc, (byte)0xee, (byte)0xdf, (byte)0x02
+                }),
         };
 
     private static final E222ProjectivePoint[] points =
@@ -93,7 +108,8 @@ public class E222Elligator1Test
             BASE_POINT,
             TWO_POINT,
             THREE_POINT,
-            FIVE_POINT
+            FIVE_POINT,
+            FOURTEEN_POINT
         };
 
     public E222Elligator1Test() {

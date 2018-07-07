@@ -206,7 +206,7 @@ public interface Elligator1<S extends PrimeField<S>,
          * r2.1 = x
          * r0.5 = J
          * r3.2 = K
-         * r1.1 = L
+         * r1.2 = L
          * r3.3 = y
          *
          * Final formula:
@@ -228,8 +228,8 @@ public interface Elligator1<S extends PrimeField<S>,
          * r2.1 = (r2 - 1) * elligatorS() * r1.1 * r0.4 / r4.1
          * r0.5 = r0.4^2
          * r3.2 = r3.1 * r1.1
-         * r1.1 = r3.2 + r0.5
-         * r3.3 = (r3.2 - r0.5) / r1.1
+         * r1.2 = r3.2 + r0.5
+         * r3.3 = (r3.2 - r0.5) / r1.2
          * x = r2.1
          * y = r3.3
          */
@@ -256,9 +256,9 @@ public interface Elligator1<S extends PrimeField<S>,
         /* r3 = r0.1 + (1 / r2^2) */
         final S r3 = r2.clone();
 
-        r2.square();
-        r2.neg();
-        r2.add(r0);
+        r3.square();
+        r3.inv();
+        r3.add(r0);
 
         /* l2 = r3.legendre */
         final int l2 = r3.legendre();
@@ -269,9 +269,9 @@ public interface Elligator1<S extends PrimeField<S>,
         /* r4 = (r3.1^2 - 2) * r0.1 */
         final S r4 = r3.clone();
 
-        r3.square();
-        r3.sub(2);
-        r3.mul(r0);
+        r4.square();
+        r4.sub(2);
+        r4.mul(r0);
 
         /* r0.2 = r0.1^2 */
         r0.square();
@@ -310,11 +310,11 @@ public interface Elligator1<S extends PrimeField<S>,
         /* r3.2 = r3.1 * r1.1 */
         r3.mul(r1);
 
-        /* r1.1 = r3.2 + r0.5 */
+        /* r1.2 = r3.2 + r0.5 */
         r1.set(r3);
-        r1.set(r0);
+        r1.add(r0);
 
-        /* r3.3 = (r3.2 - r0.5) / r1.1 */
+        /* r3.3 = (r3.2 - r0.5) / r1.2 */
         r3.sub(r0);
         r3.div(r1);
 
@@ -395,7 +395,7 @@ public interface Elligator1<S extends PrimeField<S>,
          * r0.5 = ((1 - r0.4) / r1.2).abs
          * t = r0.5
          */
-        final S y = getY();
+        final S y = edwardsY();
 
         /* r0 = 2 * (y + 1) */
         final S r0 = y.clone();
@@ -475,6 +475,108 @@ public interface Elligator1<S extends PrimeField<S>,
      */
     @Override
     public default boolean canHash() {
-        return false;
+        /* Criteria from https://eprint.iacr.org/2013/325.pdf
+         *
+         * e = (y - 1) / (2 * (y + 1))
+         *
+         * y + 1 != 0
+         * ((1 + e * r)^2 - 1).legendre == 1
+         * if e * r == -2 then 2 * s * (c - 1) * c.legendre / r
+         *
+         * Manual common subexpression elimination produces the following:
+         *
+         * R = elligatorR
+         * F = y + 1
+         * G = 2 * F
+         * E = (y - 1) / G
+         * H = E * R
+         * I = (1 + H)^2 - 1
+         * C = elligatorC
+         * l1 = C.legendre
+         * J = 2 * s * (C - 1) * l1 / R
+         *
+         * F != 0
+         * I.legendre == 1
+         * if H == -2 then x == J
+         *
+         * Manual register allocation produces the following assignments:
+         *
+         * r0 = R
+         * r1 = F
+         * r2 = G
+         * r3 = E
+         * r2.1 = H
+         * r3.1 = I
+         * r4 = C
+         * r4.1 = J
+         *
+         * Final formula:
+         *
+         * r0 = elligatorR
+         * r1 = y + 1
+         * r2 = 2 * r1
+         * r3 = (y - 1) / r2
+         * r2.1 = r3 * r0
+         * r3.1 = (1 + r2.1)^2 - 1
+         * r4 = elligatorC
+         * l1 = r4.legendre
+         * r4.1 = 2 * s * (r4 - 1) * l1 / r0
+         *
+         * r1 != 0
+         * r3.1.legendre == 1
+         * if r2.1 == -2 then x == r4.1
+         */
+
+        final S y = edwardsY();
+
+        /* r0 = elligatorR */
+        final S r0 = elligatorR();
+
+        /* r1 = y + 1 */
+        final S r1 = y.clone();
+
+        r1.add(1);
+
+        /* r2 = 2 * r1 */
+        final S r2 = r1.clone();
+
+        r2.mul(2);
+
+        /* r3 = (y - 1) / r2 */
+        final S r3 = y.clone();
+
+        r3.sub(1);
+        r3.div(r2);
+
+        /* r2.1 = r3 * r0 */
+        r2.set(r3);
+        r2.mul(r0);
+
+        /* r3.1 = (1 + r2.1)^2 - 1 */
+        r3.set(r2);
+        r3.add(1);
+        r3.square();
+        r3.sub(1);
+
+        /* r4 = elligatorC */
+        final S r4 = elligatorC();
+
+        /* l1 = r4.legendre */
+        final int l1 = r4.legendre();
+
+        /* r4.1 = 2 * s * (r4 - 1) * l1 / r0 */
+        r4.sub(1);
+        r4.mul(2);
+        r4.mul(elligatorS());
+        r4.mul(l1);
+        r4.div(r0);
+
+        /* r1 != 0 */
+        /* r3.1.legendre == 1 */
+        /* if r2.1 == -2 then x == r4.1 */
+        r0.set(-2);
+
+        return r1.isZero() != 1 && r3.legendre() == 1 &&
+               (!r2.equals(r0) || r4.equals(edwardsX()));
     }
 }

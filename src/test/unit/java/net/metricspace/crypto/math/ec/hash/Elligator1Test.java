@@ -74,7 +74,12 @@ public abstract class Elligator1Test<S extends PrimeField<S>,
 
         numer.div(denom);
 
-        Assert.assertEquals(elligatorC.legendre(), 1);
+        final S leg = elligatorC.clone();
+
+        leg.inv();
+        leg.mul(2);
+
+        Assert.assertEquals(leg.legendre(), 1);
         Assert.assertEquals(numer, edwardsD);
     }
 

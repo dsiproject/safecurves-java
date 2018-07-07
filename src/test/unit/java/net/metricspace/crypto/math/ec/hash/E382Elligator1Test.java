@@ -54,15 +54,13 @@ public class E382Elligator1Test
     private static final E382ProjectivePoint THREE_POINT =
         group.basePoint();
 
-    private static final E382ProjectivePoint NINE_POINT =
+    private static final E382ProjectivePoint FOUR_POINT =
         group.basePoint();
 
     static {
         TWO_POINT.add(BASE_POINT);
-        THREE_POINT.add(BASE_POINT);
-        NINE_POINT.add(THREE_POINT);
-        NINE_POINT.add(THREE_POINT);
-        NINE_POINT.add(TWO_POINT);
+        THREE_POINT.add(TWO_POINT);
+        FOUR_POINT.add(THREE_POINT);
     };
 
     private static final ModE382M105[] encoded =
@@ -82,21 +80,21 @@ public class E382Elligator1Test
                     (byte)0xb1, (byte)0x85, (byte)0x0b, (byte)0x0a
                 }),
             null,
-            null,
             new ModE382M105(new byte[] {
-                    (byte)0xbf, (byte)0xff, (byte)0xc5, (byte)0xb4,
-                    (byte)0x14, (byte)0x19, (byte)0x27, (byte)0x8f,
-                    (byte)0x6b, (byte)0xfe, (byte)0xf8, (byte)0x62,
-                    (byte)0x37, (byte)0xb7, (byte)0x7e, (byte)0x4c,
-                    (byte)0x3d, (byte)0xef, (byte)0x0e, (byte)0x8d,
-                    (byte)0x6c, (byte)0xd5, (byte)0x55, (byte)0x00,
-                    (byte)0x02, (byte)0xf8, (byte)0x63, (byte)0x85,
-                    (byte)0xe0, (byte)0x6d, (byte)0x28, (byte)0x25,
-                    (byte)0xb7, (byte)0x6e, (byte)0x49, (byte)0x86,
-                    (byte)0x0b, (byte)0xef, (byte)0xbc, (byte)0xd0,
-                    (byte)0xbd, (byte)0x48, (byte)0x56, (byte)0x56,
-                    (byte)0x36, (byte)0xfa, (byte)0x49, (byte)0x05
+                    (byte)0x85, (byte)0x9a, (byte)0x3e, (byte)0x08,
+                    (byte)0x96, (byte)0x16, (byte)0x90, (byte)0x97,
+                    (byte)0x9e, (byte)0x31, (byte)0x27, (byte)0x47,
+                    (byte)0x24, (byte)0xc8, (byte)0x4a, (byte)0xa6,
+                    (byte)0x29, (byte)0xcb, (byte)0xfe, (byte)0xc0,
+                    (byte)0xb2, (byte)0xc1, (byte)0x12, (byte)0x48,
+                    (byte)0xae, (byte)0x3b, (byte)0x66, (byte)0xe9,
+                    (byte)0x70, (byte)0x5f, (byte)0x0c, (byte)0xa4,
+                    (byte)0xa4, (byte)0x6e, (byte)0xcf, (byte)0x69,
+                    (byte)0x3f, (byte)0x12, (byte)0x44, (byte)0x40,
+                    (byte)0x54, (byte)0x0f, (byte)0xba, (byte)0x20,
+                    (byte)0x49, (byte)0xac, (byte)0x81, (byte)0x01
                 }),
+            null
         };
 
     private static final E382ProjectivePoint[] points =
@@ -104,7 +102,7 @@ public class E382Elligator1Test
             BASE_POINT,
             TWO_POINT,
             THREE_POINT,
-            NINE_POINT
+            FOUR_POINT
         };
 
     public E382Elligator1Test() {

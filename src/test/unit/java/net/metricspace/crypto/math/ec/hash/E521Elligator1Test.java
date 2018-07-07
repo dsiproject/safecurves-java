@@ -110,6 +110,10 @@ public class E521Elligator1Test
 
     private static final E521ProjectivePoint[] points =
         new E521ProjectivePoint[] {
+            BASE_POINT,
+            TWO_POINT,
+            THREE_POINT,
+            FIVE_POINT
         };
 
     public E521Elligator1Test() {

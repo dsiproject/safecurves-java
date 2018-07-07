@@ -65,6 +65,7 @@ public abstract class ElligatorTest<S extends PrimeField<S>,
         if (expected != null) {
             final S actual = point.encodeHash();
 
+            Assert.assertTrue(point.canHash());
             Assert.assertEquals(actual, expected);
         } else {
             Assert.assertFalse(point.canHash());
@@ -81,6 +82,7 @@ public abstract class ElligatorTest<S extends PrimeField<S>,
             actual.reset();
             actual.decodeHash(encoded);
 
+            Assert.assertTrue(actual.canHash());
             Assert.assertEquals(actual, expected);
         } else {
             Assert.assertFalse(expected.canHash());
