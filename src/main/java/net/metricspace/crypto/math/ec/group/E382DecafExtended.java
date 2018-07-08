@@ -59,7 +59,8 @@ import net.metricspace.crypto.math.field.ModE382M105;
  */
 public class E382DecafExtended
     extends E382Decaf<E382DecafExtendedPoint>
-    implements E382Curve {
+    implements E382Curve,
+               ElligatorGroup<ModE382M105, E382DecafExtendedPoint> {
     /**
      * The base point of the E-382 group.
      */
@@ -88,6 +89,14 @@ public class E382DecafExtended
     public E382DecafExtendedPoint fromCompressed(final ModE382M105 s)
         throws IllegalArgumentException {
         return E382DecafExtendedPoint.fromCompressed(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E382DecafExtendedPoint fromHash(final ModE382M105 r) {
+        return E382DecafExtendedPoint.fromHash(r);
     }
 
     /**

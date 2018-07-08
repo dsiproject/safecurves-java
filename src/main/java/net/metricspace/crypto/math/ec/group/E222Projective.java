@@ -54,7 +54,8 @@ import net.metricspace.crypto.math.field.ModE222M117;
  */
 public class E222Projective
     extends E222<E222ProjectivePoint>
-    implements E222Curve {
+    implements E222Curve,
+               ElligatorGroup<ModE222M117, E222ProjectivePoint> {
     /**
      * The base point of the E-222 group.
      */
@@ -74,6 +75,14 @@ public class E222Projective
     public E222ProjectivePoint fromEdwards(final ModE222M117 x,
                                            final ModE222M117 y) {
         return E222ProjectivePoint.fromEdwards(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E222ProjectivePoint fromHash(final ModE222M117 r) {
+        return E222ProjectivePoint.fromHash(r);
     }
 
     /**

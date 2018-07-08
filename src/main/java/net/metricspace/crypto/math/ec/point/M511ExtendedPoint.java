@@ -177,6 +177,22 @@ public class M511ExtendedPoint
     }
 
     /**
+     * Create a {@code M511ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M511ExtendedPoint fromHash(final ModE511M187 s)
+        throws IllegalArgumentException {
+        final M511ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

@@ -173,6 +173,22 @@ public class M221ProjectivePoint
     }
 
     /**
+     * Create a {@code M221ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M221ProjectivePoint fromHash(final ModE221M3 s)
+        throws IllegalArgumentException {
+        final M221ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

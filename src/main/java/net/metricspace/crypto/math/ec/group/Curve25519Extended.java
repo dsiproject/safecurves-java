@@ -55,7 +55,8 @@ import net.metricspace.crypto.math.field.ModE255M19;
  */
 public class Curve25519Extended
     extends Curve25519<Curve25519ExtendedPoint>
-    implements Curve25519Curve {
+    implements Curve25519Curve,
+               ElligatorGroup<ModE255M19, Curve25519ExtendedPoint> {
     /**
      * The base point of the Curve25519 group.
      */
@@ -84,6 +85,14 @@ public class Curve25519Extended
     public Curve25519ExtendedPoint fromMontgomery(final ModE255M19 x,
                                                   final ModE255M19 y) {
         return Curve25519ExtendedPoint.fromMontgomery(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve25519ExtendedPoint fromHash(final ModE255M19 r) {
+        return Curve25519ExtendedPoint.fromHash(r);
     }
 
     /**

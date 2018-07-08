@@ -29,54 +29,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.hash;
+package net.metricspace.crypto.math.ec.group;
 
-import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.hash.Elligator;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
- * Interface for the Elligator hash algorithms.  The Elligator hash
+ * Groups supporting an Elligator hash function.  The Elligator hash
  * algorithms were introduced by Bernstein, Hamburg, Krasnova, and
  * Lange in their paper <a
  * href="https://elligator.cr.yp.to/elligator-20130828.pdf">"Elligator:
  * Elliptic-Curve Points Indistinguishable from Uniform Random
  * Strings"</a>.  It provides the ability to hash any scalar value to
  * a point on an elliptic curve.
- * <p>
- * This is <i>not</i> a cryptogrophic hash function.  In fact,
- * Elligator provides a preimage function which produces scalar values
- * from elliptic curve points with a uniform distribution.
  *
- * @param <S> Scalar type.
- * @param <P> Point type.
- * @param <T> Scratchpad type.
+ * @param <S> Scalar values.
+ * @param <P> The type of points.
  */
-public interface Elligator<S extends PrimeField<S>,
-                           P extends Elligator<S, P, T>,
-                           T extends ECPoint.Scratchpad>
-    extends ECPoint<S, P, T> {
+public interface ElligatorGroup<S extends PrimeField<S>,
+                                P extends Elligator<S, P, ?>> {
     /**
-     * Use the hash function from a single scalar value to a point to
-     * set the value of this point.
+     * Create a point by hashing a value to a point on the curve.
      *
-     * @param code The hash code from which to generate a point.
+     * @param r The hash input.
+     * @return The point created by hashing {@code r}.
+     * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public void decodeHash(final S code);
-
-    /**
-     * Get a hash code that will re-create this point with {@link
-     * decodeHash}.
-     *
-     * @return A hash code that will re-create this point with {@link
-     *         decodeHash}.
-     * @see decodeHash
-     */
-    public S encodeHash();
-
-    /**
-     * Determine whether the point can be hashed.
-     *
-     * @return Whether the point can be hashed.
-     */
-    public boolean canEncode();
+    public P fromHash(final S r)
+        throws IllegalArgumentException;
 }

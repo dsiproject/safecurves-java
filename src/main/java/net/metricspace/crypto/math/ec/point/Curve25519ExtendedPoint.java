@@ -178,6 +178,22 @@ public class Curve25519ExtendedPoint
     }
 
     /**
+     * Create a {@code Curve25519ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve25519ExtendedPoint fromHash(final ModE255M19 s)
+        throws IllegalArgumentException {
+        final Curve25519ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

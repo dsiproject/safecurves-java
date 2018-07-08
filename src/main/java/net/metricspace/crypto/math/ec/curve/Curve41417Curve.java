@@ -70,6 +70,16 @@ public interface Curve41417Curve
         Elligator1.calculateElligatorS(ELLIGATOR_C);
 
     /**
+     * The value {@code -2}.
+     *
+     * @return The value {@code -2}.
+     */
+    @Override
+    public default int nonresidue() {
+        return -2;
+    }
+
+    /**
      * Defined as the value {@code 3617}.
      *
      * @return The value {@code 3617}.

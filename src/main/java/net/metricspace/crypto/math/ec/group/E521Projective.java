@@ -53,7 +53,8 @@ import net.metricspace.crypto.math.field.ModE521M1;
  */
 public class E521Projective
     extends E521<E521ProjectivePoint>
-    implements E521Curve {
+    implements E521Curve,
+               ElligatorGroup<ModE521M1, E521ProjectivePoint> {
     /**
      * The base point of the E-521 group.
      */
@@ -73,6 +74,14 @@ public class E521Projective
     public E521ProjectivePoint fromEdwards(final ModE521M1 x,
                                            final ModE521M1 y) {
         return E521ProjectivePoint.fromEdwards(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521ProjectivePoint fromHash(final ModE521M1 r) {
+        return E521ProjectivePoint.fromHash(r);
     }
 
     /**

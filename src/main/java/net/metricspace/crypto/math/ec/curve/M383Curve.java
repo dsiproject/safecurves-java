@@ -64,6 +64,16 @@ public interface M383Curve
                                 new ModE383M187(EDWARDS_D));
 
     /**
+     * The value {@code -2}.
+     *
+     * @return The value {@code -2}.
+     */
+    @Override
+    public default int nonresidue() {
+        return -2;
+    }
+
+    /**
      * Defined as the value {@code 2065152}.
      *
      * @return The value {@code 2065152}.

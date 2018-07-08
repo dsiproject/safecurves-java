@@ -175,6 +175,22 @@ public class M383ExtendedPoint
     }
 
     /**
+     * Create a {@code M383ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M383ExtendedPoint fromHash(final ModE383M187 s)
+        throws IllegalArgumentException {
+        final M383ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

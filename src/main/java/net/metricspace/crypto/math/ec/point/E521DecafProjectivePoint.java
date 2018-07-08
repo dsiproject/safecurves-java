@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E521Curve;
+import net.metricspace.crypto.math.ec.hash.ElligatorDecaf;
 import net.metricspace.crypto.math.field.ModE521M1;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE521M1;
 public class E521DecafProjectivePoint
     extends ProjectiveEdwardsDecafPoint<ModE521M1, E521DecafProjectivePoint,
                                         E521DecafProjectivePoint.Scratchpad>
-    implements E521Curve {
+    implements E521Curve,
+               ElligatorDecaf<ModE521M1, E521DecafProjectivePoint,
+                              E521DecafProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective E-521 points.
      */
@@ -161,6 +164,22 @@ public class E521DecafProjectivePoint
         final E521DecafProjectivePoint p = zero();
 
         p.decompress(s);
+
+        return p;
+    }
+
+    /**
+     * Create a {@code E521DecafProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E521DecafProjectivePoint fromHash(final ModE521M1 s)
+        throws IllegalArgumentException {
+        final E521DecafProjectivePoint p = zero();
+
+        p.decodeHash(s);
 
         return p;
     }

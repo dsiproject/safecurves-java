@@ -35,56 +35,13 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
-@Test(groups = "unit")
-public abstract class ElligatorTest<S extends PrimeField<S>,
-                                    P extends Elligator<S, P, ?>> {
-    private final Object[][] pointsData;
-
-    public ElligatorTest(final S[] encoded,
-                         final P[] points) {
-        pointsData = new Object[encoded.length][2];
-
-        for(int i = 0; i < encoded.length; i++) {
-            pointsData[i][0] = encoded[i];
-            pointsData[i][1] = points[i];
-        }
-    }
-
-    @DataProvider(name = "points")
-    public Object[][] getPoints() {
-        return pointsData;
-    }
-
-    @Test(dataProvider = "points",
-          description = "Test that points encode to the expected hash")
-    public void testEncode(final S expected,
-                           final P point) {
-        if (expected != null) {
-            final S actual = point.encodeHash();
-
-            Assert.assertTrue(point.canEncode());
-            Assert.assertEquals(actual, expected);
-        } else {
-            Assert.assertFalse(point.canEncode());
-        }
-    }
-
-    @Test(dataProvider = "points",
-          description = "Test that points decode as expected")
-    public void testDecode(final S encoded,
-                           final P expected) {
-        if (encoded != null) {
-            final P actual = expected.clone();
-
-            actual.reset();
-            actual.decodeHash(encoded);
-
-            Assert.assertEquals(actual, expected);
-        } else {
-            Assert.assertFalse(expected.canEncode());
-        }
+public abstract class ElligatorDecafTest<S extends PrimeField<S>,
+                                         P extends ElligatorDecaf<S, P, ?>>
+    extends ElligatorTest<S, P> {
+    protected ElligatorDecafTest(final S[] encoded,
+                                 final P[] points) {
+        super(encoded, points);
     }
 }

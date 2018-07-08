@@ -176,4 +176,20 @@ public class E521ExtendedPoint
                                                 final ModE521M1 y) {
         return new E521ExtendedPoint(x.clone(), y.clone());
     }
+
+    /**
+     * Create a {@code E521ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E521ExtendedPoint fromHash(final ModE521M1 s)
+        throws IllegalArgumentException {
+        final E521ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
 }

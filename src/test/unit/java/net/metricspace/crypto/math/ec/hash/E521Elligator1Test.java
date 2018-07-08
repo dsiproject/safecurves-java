@@ -51,7 +51,7 @@ public class E521Elligator1Test
     private static final E521ProjectivePoint TWO_POINT =
         group.basePoint();
 
-    private static final E521ProjectivePoint THREE_POINT =
+    private static final E521ProjectivePoint FOUR_POINT =
         group.basePoint();
 
     private static final E521ProjectivePoint FIVE_POINT =
@@ -59,9 +59,9 @@ public class E521Elligator1Test
 
     static {
         TWO_POINT.add(BASE_POINT);
-        THREE_POINT.add(BASE_POINT);
-        FIVE_POINT.add(TWO_POINT);
-        FIVE_POINT.add(TWO_POINT);
+        FOUR_POINT.add(TWO_POINT);
+        FOUR_POINT.add(BASE_POINT);
+        FIVE_POINT.add(FOUR_POINT);
     };
 
     private static final ModE521M1[] encoded =
@@ -112,7 +112,7 @@ public class E521Elligator1Test
         new E521ProjectivePoint[] {
             BASE_POINT,
             TWO_POINT,
-            THREE_POINT,
+            FOUR_POINT,
             FIVE_POINT
         };
 

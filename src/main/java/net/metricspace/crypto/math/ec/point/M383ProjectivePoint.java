@@ -173,6 +173,22 @@ public class M383ProjectivePoint
     }
 
     /**
+     * Create a {@code M383ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M383ProjectivePoint fromHash(final ModE383M187 s)
+        throws IllegalArgumentException {
+        final M383ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

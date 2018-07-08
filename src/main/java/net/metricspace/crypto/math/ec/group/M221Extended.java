@@ -54,7 +54,8 @@ import net.metricspace.crypto.math.field.ModE221M3;
  */
 public class M221Extended
     extends M221<M221ExtendedPoint>
-    implements M221Curve {
+    implements M221Curve,
+               ElligatorGroup<ModE221M3, M221ExtendedPoint> {
     /**
      * The base point of the M-221 group.
      */
@@ -84,6 +85,14 @@ public class M221Extended
     public M221ExtendedPoint fromMontgomery(final ModE221M3 x,
                                             final ModE221M3 y) {
         return M221ExtendedPoint.fromMontgomery(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M221ExtendedPoint fromHash(final ModE221M3 r) {
+        return M221ExtendedPoint.fromHash(r);
     }
 
     /**

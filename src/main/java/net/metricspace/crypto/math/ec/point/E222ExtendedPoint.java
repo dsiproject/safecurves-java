@@ -176,4 +176,20 @@ public class E222ExtendedPoint
                                                 final ModE222M117 y) {
         return new E222ExtendedPoint(x.clone(), y.clone());
     }
+
+    /**
+     * Create a {@code E222ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E222ExtendedPoint fromHash(final ModE222M117 s)
+        throws IllegalArgumentException {
+        final E222ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
 }

@@ -54,7 +54,8 @@ import net.metricspace.crypto.math.field.ModE382M105;
  */
 public class E382Projective
     extends E382<E382ProjectivePoint>
-    implements E382Curve {
+    implements E382Curve,
+               ElligatorGroup<ModE382M105, E382ProjectivePoint> {
     /**
      * The base point of the E-382 group.
      */
@@ -74,6 +75,14 @@ public class E382Projective
     public E382ProjectivePoint fromEdwards(final ModE382M105 x,
                                            final ModE382M105 y) {
         return E382ProjectivePoint.fromEdwards(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E382ProjectivePoint fromHash(final ModE382M105 r) {
+        return E382ProjectivePoint.fromHash(r);
     }
 
     /**

@@ -174,4 +174,20 @@ public class Curve41417ProjectivePoint
                                                         final ModE414M17 y) {
         return new Curve41417ProjectivePoint(x.clone(), y.clone());
     }
+
+    /**
+     * Create a {@code Curve41417ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve41417ProjectivePoint fromHash(final ModE414M17 s)
+        throws IllegalArgumentException {
+        final Curve41417ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
 }

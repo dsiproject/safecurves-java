@@ -64,6 +64,16 @@ public interface Curve25519Curve
                                 new ModE255M19(EDWARDS_D));
 
     /**
+     * The value {@code 2}.
+     *
+     * @return The value {@code -2}.
+     */
+    @Override
+    public default int nonresidue() {
+        return 2;
+    }
+
+    /**
      * Defined as the value {@code 486664}.
      *
      * @return The value {@code 486664}.

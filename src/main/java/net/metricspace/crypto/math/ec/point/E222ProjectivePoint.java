@@ -174,4 +174,20 @@ public class E222ProjectivePoint
                                                   final ModE222M117 y) {
         return new E222ProjectivePoint(x.clone(), y.clone());
     }
+
+    /**
+     * Create a {@code E222ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E222ProjectivePoint fromHash(final ModE222M117 s)
+        throws IllegalArgumentException {
+        final E222ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
+    }
 }

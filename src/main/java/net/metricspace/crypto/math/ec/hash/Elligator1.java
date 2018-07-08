@@ -37,17 +37,17 @@ import net.metricspace.crypto.math.ec.point.EdwardsPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
- * Interface for the Elligator hash algorithms.  The Elligator hash
- * algorithms were introduced by Bernstein, Hamburg, Krasnova, and
- * Lange in their paper <a
+ * Interface for points supporting the Elligator1 hash.  Elligator1
+ * was introduced by Bernstein, Hamburg, Krasnova, and Lange in their
+ * paper <a
  * href="https://elligator.cr.yp.to/elligator-20130828.pdf">"Elligator:
  * Elliptic-Curve Points Indistinguishable from Uniform Random
  * Strings"</a>.  It provides the ability to hash any scalar value to
  * a point on an elliptic curve.
  * <p>
- * This is <i>not</i> a cryptogrophic function.  In fact, Elligator
- * provides a preimage function which produces scalar values from
- * elliptic curve points with a uniform distribution.
+ * This is <i>not</i> a cryptogrophic hash function.  In fact,
+ * Elligator provides a preimage function which produces scalar values
+ * from elliptic curve points with a uniform distribution.
  * <p>
  * Elligator-1 functions on Edwards curves over primes of the form
  * {@code 3 mod 4}.

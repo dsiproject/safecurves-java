@@ -64,6 +64,16 @@ public interface M221Curve
                                 new ModE221M3(EDWARDS_D));
 
     /**
+     * The value {@code -2}.
+     *
+     * @return The value {@code -2}.
+     */
+    @Override
+    public default int nonresidue() {
+        return -2;
+    }
+
+    /**
      * Defined as the value {@code 117052}.
      *
      * @return The value {@code 117052}.
