@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E382Curve;
+import net.metricspace.crypto.math.ec.hash.ElligatorDecaf;
 import net.metricspace.crypto.math.field.ModE382M105;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE382M105;
 public class E382DecafProjectivePoint
     extends ProjectiveEdwardsDecafPoint<ModE382M105, E382DecafProjectivePoint,
                                         E382DecafProjectivePoint.Scratchpad>
-    implements E382Curve {
+    implements E382Curve,
+               ElligatorDecaf<ModE382M105, E382DecafProjectivePoint,
+                              E382DecafProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective E-382 points.
      */
@@ -161,6 +164,22 @@ public class E382DecafProjectivePoint
         final E382DecafProjectivePoint p = zero();
 
         p.decompress(s);
+
+        return p;
+    }
+
+    /**
+     * Create a {@code E382DecafProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E382DecafProjectivePoint fromHash(final ModE382M105 s)
+        throws IllegalArgumentException {
+        final E382DecafProjectivePoint p = zero();
+
+        p.decodeHash(s);
 
         return p;
     }

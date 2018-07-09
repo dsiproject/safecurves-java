@@ -53,7 +53,8 @@ import net.metricspace.crypto.math.field.ModE521M1;
  */
 public class E521DecafExtended
     extends E521Decaf<E521DecafExtendedPoint>
-    implements E521Curve {
+    implements E521Curve,
+               ElligatorGroup<ModE521M1, E521DecafExtendedPoint> {
     /**
      * The base point of the E-521 group.
      */
@@ -82,6 +83,14 @@ public class E521DecafExtended
     public E521DecafExtendedPoint fromCompressed(final ModE521M1 s)
         throws IllegalArgumentException {
         return E521DecafExtendedPoint.fromCompressed(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521DecafExtendedPoint fromHash(final ModE521M1 r) {
+        return E521DecafExtendedPoint.fromHash(r);
     }
 
     /**

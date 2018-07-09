@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve41417Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE414M17;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE414M17;
 public class Curve41417ExtendedPoint
     extends ExtendedEdwardsPoint<ModE414M17, Curve41417ExtendedPoint,
                                  Curve41417ExtendedPoint.Scratchpad>
-    implements Curve41417Curve {
+    implements Curve41417Curve,
+               Elligator1<ModE414M17, Curve41417ExtendedPoint,
+                          Curve41417ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended Curve41417 points.
      */
@@ -113,6 +116,30 @@ public class Curve41417ExtendedPoint
      * {@inheritDoc}
      */
     @Override
+    public ModE414M17 elligatorS() {
+        return Curve41417Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE414M17 elligatorR() {
+        return Curve41417Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE414M17 elligatorC() {
+        return Curve41417Curve.ELLIGATOR_C.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Scratchpad scratchpad() {
         return Scratchpad.get();
     }
@@ -149,5 +176,21 @@ public class Curve41417ExtendedPoint
     public static Curve41417ExtendedPoint fromEdwards(final ModE414M17 x,
                                                       final ModE414M17 y) {
         return new Curve41417ExtendedPoint(x.clone(), y.clone());
+    }
+
+    /**
+     * Create a {@code Curve41417ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve41417ExtendedPoint fromHash(final ModE414M17 s)
+        throws IllegalArgumentException {
+        final Curve41417ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 }

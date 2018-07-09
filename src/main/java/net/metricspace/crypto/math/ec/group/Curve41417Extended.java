@@ -53,7 +53,8 @@ import net.metricspace.crypto.math.field.ModE414M17;
  */
 public class Curve41417Extended
     extends Curve41417<Curve41417ExtendedPoint>
-    implements Curve41417Curve {
+    implements Curve41417Curve,
+               ElligatorGroup<ModE414M17, Curve41417ExtendedPoint> {
     /**
      * The base point of the Curve41417 group.
      */
@@ -73,6 +74,14 @@ public class Curve41417Extended
     public Curve41417ExtendedPoint fromEdwards(final ModE414M17 x,
                                                final ModE414M17 y) {
         return Curve41417ExtendedPoint.fromEdwards(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve41417ExtendedPoint fromHash(final ModE414M17 r) {
+        return Curve41417ExtendedPoint.fromHash(r);
     }
 
     /**

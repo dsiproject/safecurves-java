@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E521Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE521M1;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE521M1;
 public class E521ExtendedPoint
     extends ExtendedEdwardsPoint<ModE521M1, E521ExtendedPoint,
                                  E521ExtendedPoint.Scratchpad>
-    implements E521Curve {
+    implements E521Curve,
+               Elligator1<ModE521M1, E521ExtendedPoint,
+                          E521ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended E-521 points.
      */
@@ -112,6 +115,30 @@ public class E521ExtendedPoint
      * {@inheritDoc}
      */
     @Override
+    public ModE521M1 elligatorS() {
+        return E521Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE521M1 elligatorR() {
+        return E521Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE521M1 elligatorC() {
+        return E521Curve.ELLIGATOR_C.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Scratchpad scratchpad() {
         return Scratchpad.get();
     }
@@ -148,5 +175,21 @@ public class E521ExtendedPoint
     public static E521ExtendedPoint fromEdwards(final ModE521M1 x,
                                                 final ModE521M1 y) {
         return new E521ExtendedPoint(x.clone(), y.clone());
+    }
+
+    /**
+     * Create a {@code E521ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E521ExtendedPoint fromHash(final ModE521M1 s)
+        throws IllegalArgumentException {
+        final E521ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 }

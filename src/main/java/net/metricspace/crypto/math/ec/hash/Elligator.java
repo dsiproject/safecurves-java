@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec;
+package net.metricspace.crypto.math.ec.hash;
 
 import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.field.PrimeField;
@@ -43,43 +43,25 @@ import net.metricspace.crypto.math.field.PrimeField;
  * Strings"</a>.  It provides the ability to hash any scalar value to
  * a point on an elliptic curve.
  * <p>
- * This is <i>not</i> a cryptogrophic function.  In fact, Elligator
- * provides a preimage function which produces scalar values from
- * elliptic curve points with a uniform distribution.
+ * This is <i>not</i> a cryptogrophic hash function.  In fact,
+ * Elligator provides a preimage function which produces scalar values
+ * from elliptic curve points with a uniform distribution.
  *
  * @param <S> Scalar type.
  * @param <P> Point type.
+ * @param <T> Scratchpad type.
  */
 public interface Elligator<S extends PrimeField<S>,
                            P extends Elligator<S, P, T>,
                            T extends ECPoint.Scratchpad>
     extends ECPoint<S, P, T> {
     /**
-     * Get the default hash parameter.
-     *
-     * @return The default hash parameter.
-     */
-    public int defaultHashParam();
-
-    /**
      * Use the hash function from a single scalar value to a point to
      * set the value of this point.
      *
      * @param code The hash code from which to generate a point.
      */
-    public default void decodeHash(final S code) {
-        decodeHash(defaultHashParam(), code);
-    }
-
-    /**
-     * Use the hash function from a single scalar value to a point to
-     * set the value of this point.
-     *
-     * @param p Hash parameter as a small number.
-     * @param code The hash code from which to generate a point.
-     */
-    public void decodeHash(final int p,
-                           final S code);
+    public void decodeHash(final S code);
 
     /**
      * Get a hash code that will re-create this point with {@link
@@ -89,18 +71,12 @@ public interface Elligator<S extends PrimeField<S>,
      *         decodeHash}.
      * @see decodeHash
      */
-    public default S encodeHash() {
-        return encodeHash(defaultHashParam());
-    }
+    public S encodeHash();
 
     /**
-     * Get a hash code that will re-create this point with {@link
-     * decodeHash}.
+     * Determine whether the point can be hashed.
      *
-     * @param p Hash parameter as a small number.
-     * @return A hash code that will re-create this point with {@link
-     *         decodeHash}.
-     * @see decodeHash
+     * @return Whether the point can be hashed.
      */
-    public S encodeHash(final int p);
+    public boolean canEncode();
 }

@@ -58,7 +58,8 @@ import net.metricspace.crypto.math.field.ModE251M9;
  */
 public class Curve1174DecafProjective
     extends Curve1174Decaf<Curve1174DecafProjectivePoint>
-    implements Curve1174Curve {
+    implements Curve1174Curve,
+               ElligatorGroup<ModE251M9, Curve1174DecafProjectivePoint> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -88,6 +89,14 @@ public class Curve1174DecafProjective
     public Curve1174DecafProjectivePoint fromCompressed(final ModE251M9 s)
         throws IllegalArgumentException {
         return Curve1174DecafProjectivePoint.fromCompressed(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174DecafProjectivePoint fromHash(final ModE251M9 r) {
+        return Curve1174DecafProjectivePoint.fromHash(r);
     }
 
     /**

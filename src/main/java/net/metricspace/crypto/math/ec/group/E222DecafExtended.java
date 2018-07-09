@@ -59,7 +59,8 @@ import net.metricspace.crypto.math.field.ModE222M117;
  */
 public class E222DecafExtended
     extends E222Decaf<E222DecafExtendedPoint>
-    implements E222Curve {
+    implements E222Curve,
+               ElligatorGroup<ModE222M117, E222DecafExtendedPoint> {
     /**
      * The base point of the E-222 group.
      */
@@ -88,6 +89,14 @@ public class E222DecafExtended
     public E222DecafExtendedPoint fromCompressed(final ModE222M117 s)
         throws IllegalArgumentException {
         return E222DecafExtendedPoint.fromCompressed(s);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E222DecafExtendedPoint fromHash(final ModE222M117 r) {
+        return E222DecafExtendedPoint.fromHash(r);
     }
 
     /**

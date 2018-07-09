@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E222Curve;
+import net.metricspace.crypto.math.ec.hash.ElligatorDecaf;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE222M117;
 public class E222DecafExtendedPoint
     extends ExtendedEdwardsDecafPoint<ModE222M117, E222DecafExtendedPoint,
                                       E222DecafExtendedPoint.Scratchpad>
-    implements E222Curve {
+    implements E222Curve,
+               ElligatorDecaf<ModE222M117, E222DecafExtendedPoint,
+                              E222DecafExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for projective E-222 points.
      */
@@ -164,6 +167,22 @@ public class E222DecafExtendedPoint
         final E222DecafExtendedPoint p = zero();
 
         p.decompress(s);
+
+        return p;
+    }
+
+    /**
+     * Create a {@code E222DecafExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E222DecafExtendedPoint fromHash(final ModE222M117 s)
+        throws IllegalArgumentException {
+        final E222DecafExtendedPoint p = zero();
+
+        p.decodeHash(s);
 
         return p;
     }

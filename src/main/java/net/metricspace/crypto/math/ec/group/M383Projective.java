@@ -55,7 +55,8 @@ import net.metricspace.crypto.math.field.ModE383M187;
  */
 public class M383Projective
     extends M383<M383ProjectivePoint>
-    implements M383Curve {
+    implements M383Curve,
+               ElligatorGroup<ModE383M187, M383ProjectivePoint> {
     /**
      * The base point of the M-383 group.
      */
@@ -84,6 +85,14 @@ public class M383Projective
     public M383ProjectivePoint fromMontgomery(final ModE383M187 x,
                                               final ModE383M187 y) {
         return M383ProjectivePoint.fromMontgomery(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M383ProjectivePoint fromHash(final ModE383M187 r) {
+        return M383ProjectivePoint.fromHash(r);
     }
 
     /**

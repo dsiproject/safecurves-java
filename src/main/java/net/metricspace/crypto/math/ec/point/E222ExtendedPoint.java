@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E222Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE222M117;
 public class E222ExtendedPoint
     extends ExtendedEdwardsPoint<ModE222M117, E222ExtendedPoint,
                                  E222ExtendedPoint.Scratchpad>
-    implements E222Curve {
+    implements E222Curve,
+               Elligator1<ModE222M117, E222ExtendedPoint,
+                          E222ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for projective E-222 points.
      */
@@ -112,6 +115,30 @@ public class E222ExtendedPoint
      * {@inheritDoc}
      */
     @Override
+    public ModE222M117 elligatorS() {
+        return E222Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE222M117 elligatorR() {
+        return E222Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE222M117 elligatorC() {
+        return E222Curve.ELLIGATOR_C.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Scratchpad scratchpad() {
         return Scratchpad.get();
     }
@@ -148,5 +175,21 @@ public class E222ExtendedPoint
     public static E222ExtendedPoint fromEdwards(final ModE222M117 x,
                                                 final ModE222M117 y) {
         return new E222ExtendedPoint(x.clone(), y.clone());
+    }
+
+    /**
+     * Create a {@code E222ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E222ExtendedPoint fromHash(final ModE222M117 s)
+        throws IllegalArgumentException {
+        final E222ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 }

@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE251M9;
 public class Curve1174ProjectivePoint
     extends ProjectiveEdwardsPoint<ModE251M9, Curve1174ProjectivePoint,
                                    Curve1174ProjectivePoint.Scratchpad>
-    implements Curve1174Curve {
+    implements Curve1174Curve,
+               Elligator1<ModE251M9, Curve1174ProjectivePoint,
+                          Curve1174ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective Curve1174 points.
      */
@@ -111,6 +114,30 @@ public class Curve1174ProjectivePoint
      * {@inheritDoc}
      */
     @Override
+    public ModE251M9 elligatorS() {
+        return Curve1174Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE251M9 elligatorR() {
+        return Curve1174Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE251M9 elligatorC() {
+        return Curve1174Curve.ELLIGATOR_C.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Scratchpad scratchpad() {
         return Scratchpad.get();
     }
@@ -146,5 +173,21 @@ public class Curve1174ProjectivePoint
     public static Curve1174ProjectivePoint fromEdwards(final ModE251M9 x,
                                                        final ModE251M9 y) {
         return new Curve1174ProjectivePoint(x.clone(), y.clone());
+    }
+
+    /**
+     * Create a {@code Curve1174ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve1174ProjectivePoint fromHash(final ModE251M9 s)
+        throws IllegalArgumentException {
+        final Curve1174ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 }

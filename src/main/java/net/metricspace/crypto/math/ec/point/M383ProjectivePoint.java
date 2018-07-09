@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.M383Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE383M187;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE383M187;
 public class M383ProjectivePoint
     extends ProjectiveTwistedEdwardsPoint<ModE383M187, M383ProjectivePoint,
                                           M383ProjectivePoint.Scratchpad>
-    implements M383Curve {
+    implements M383Curve,
+               Elligator2<ModE383M187, M383ProjectivePoint,
+                          M383ProjectivePoint.Scratchpad> {
     /**
      * Scratchpads for projective M-383 points.
      */
@@ -167,6 +170,22 @@ public class M383ProjectivePoint
         TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
 
         return new M383ProjectivePoint(edwardsX, edwardsY);
+    }
+
+    /**
+     * Create a {@code M383ProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M383ProjectivePoint fromHash(final ModE383M187 s)
+        throws IllegalArgumentException {
+        final M383ProjectivePoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 
     /**

@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.E382Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator1;
 import net.metricspace.crypto.math.field.ModE382M105;
 
 /**
@@ -42,7 +43,9 @@ import net.metricspace.crypto.math.field.ModE382M105;
 public class E382ExtendedPoint
     extends ExtendedEdwardsPoint<ModE382M105, E382ExtendedPoint,
                                  E382ExtendedPoint.Scratchpad>
-    implements E382Curve {
+    implements E382Curve,
+               Elligator1<ModE382M105, E382ExtendedPoint,
+                          E382ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended E-382 points.
      */
@@ -87,7 +90,7 @@ public class E382ExtendedPoint
      * @param y The Y coordinate value.
      */
     protected E382ExtendedPoint(final ModE382M105 x,
-                             final ModE382M105 y) {
+                                final ModE382M105 y) {
         super(x, y);
     }
 
@@ -106,6 +109,30 @@ public class E382ExtendedPoint
                                 final ModE382M105 z,
                                 final ModE382M105 t) {
         super(x, y, z, t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE382M105 elligatorS() {
+        return E382Curve.ELLIGATOR_S.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE382M105 elligatorR() {
+        return E382Curve.ELLIGATOR_R.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModE382M105 elligatorC() {
+        return E382Curve.ELLIGATOR_C.clone();
     }
 
     /**
@@ -148,5 +175,21 @@ public class E382ExtendedPoint
     public static E382ExtendedPoint fromEdwards(final ModE382M105 x,
                                                 final ModE382M105 y) {
         return new E382ExtendedPoint(x.clone(), y.clone());
+    }
+
+    /**
+     * Create a {@code E382ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E382ExtendedPoint fromHash(final ModE382M105 s)
+        throws IllegalArgumentException {
+        final E382ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 }

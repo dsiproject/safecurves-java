@@ -52,7 +52,8 @@ import net.metricspace.crypto.math.field.ModE251M9;
  */
 public class Curve1174Projective
     extends Curve1174<Curve1174ProjectivePoint>
-    implements Curve1174Curve {
+    implements Curve1174Curve,
+               ElligatorGroup<ModE251M9, Curve1174ProjectivePoint> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -72,6 +73,14 @@ public class Curve1174Projective
     public Curve1174ProjectivePoint fromEdwards(final ModE251M9 x,
                                                 final ModE251M9 y) {
         return Curve1174ProjectivePoint.fromEdwards(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174ProjectivePoint fromHash(final ModE251M9 r) {
+        return Curve1174ProjectivePoint.fromHash(r);
     }
 
     /**

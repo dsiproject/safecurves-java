@@ -47,6 +47,12 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface TwistedEdwardsCurve<F extends PrimeField<F>> {
     /**
+     * Get a fixed quadratic non-residue in the underlying field.
+     * This is either {@code 2} or {@code -2}.
+     */
+    public int nonresidue();
+
+    /**
      * Get the value of {@code a} in a twisted Edwards curve of the
      * form {@code a * x^2 + y^2 = 1 + d * x^2 * y^2}.
      *

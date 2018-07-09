@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
+import net.metricspace.crypto.math.ec.hash.ElligatorDecaf;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 /**
@@ -44,7 +45,9 @@ public class Curve1174DecafExtendedPoint
     extends ExtendedEdwardsDecafPoint<ModE251M9,
                                       Curve1174DecafExtendedPoint,
                                       Curve1174DecafExtendedPoint.Scratchpad>
-    implements Curve1174Curve {
+    implements Curve1174Curve,
+               ElligatorDecaf<ModE251M9, Curve1174DecafExtendedPoint,
+                              Curve1174DecafExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended Curve1174 points.
      */
@@ -166,6 +169,22 @@ public class Curve1174DecafExtendedPoint
         final Curve1174DecafExtendedPoint p = zero();
 
         p.decompress(s);
+
+        return p;
+    }
+
+    /**
+     * Create a {@code Curve1174DecafExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve1174DecafExtendedPoint fromHash(final ModE251M9 s)
+        throws IllegalArgumentException {
+        final Curve1174DecafExtendedPoint p = zero();
+
+        p.decodeHash(s);
 
         return p;
     }

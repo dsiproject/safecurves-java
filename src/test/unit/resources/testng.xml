@@ -10,6 +10,7 @@
       <package name="net.metricspace.crypto.math.ec"/>
       <package name="net.metricspace.crypto.math.ec.curve"/>
       <package name="net.metricspace.crypto.math.ec.group"/>
+      <package name="net.metricspace.crypto.math.ec.hash"/>
       <package name="net.metricspace.crypto.math.ec.point"/>
     </packages>
   </test>

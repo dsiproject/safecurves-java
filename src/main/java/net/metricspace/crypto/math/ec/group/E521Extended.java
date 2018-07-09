@@ -53,7 +53,8 @@ import net.metricspace.crypto.math.field.ModE521M1;
  */
 public class E521Extended
     extends E521<E521ExtendedPoint>
-    implements E521Curve {
+    implements E521Curve,
+               ElligatorGroup<ModE521M1, E521ExtendedPoint> {
     /**
      * The base point of the E-521 group.
      */
@@ -80,6 +81,14 @@ public class E521Extended
      */
     public E521ExtendedPoint basePoint() {
         return BASE_POINT.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521ExtendedPoint fromHash(final ModE521M1 r) {
+        return E521ExtendedPoint.fromHash(r);
     }
 
     /**

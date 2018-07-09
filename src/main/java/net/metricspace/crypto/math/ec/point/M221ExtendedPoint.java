@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.point;
 import java.lang.ThreadLocal;
 
 import net.metricspace.crypto.math.ec.curve.M221Curve;
+import net.metricspace.crypto.math.ec.hash.Elligator2;
 import net.metricspace.crypto.math.field.ModE221M3;
 
 /**
@@ -43,7 +44,9 @@ import net.metricspace.crypto.math.field.ModE221M3;
 public class M221ExtendedPoint
     extends ExtendedTwistedEdwardsPoint<ModE221M3, M221ExtendedPoint,
                                         M221ExtendedPoint.Scratchpad>
-    implements M221Curve {
+    implements M221Curve,
+               Elligator2<ModE221M3, M221ExtendedPoint,
+                          M221ExtendedPoint.Scratchpad> {
     /**
      * Scratchpads for extended M-221 points.
      */
@@ -170,6 +173,22 @@ public class M221ExtendedPoint
         TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
 
         return new M221ExtendedPoint(edwardsX, edwardsY);
+    }
+
+    /**
+     * Create a {@code M221ExtendedPoint} from a hash.
+     *
+     * @param s The hash input.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M221ExtendedPoint fromHash(final ModE221M3 s)
+        throws IllegalArgumentException {
+        final M221ExtendedPoint p = zero();
+
+        p.decodeHash(s);
+
+        return p;
     }
 
     /**

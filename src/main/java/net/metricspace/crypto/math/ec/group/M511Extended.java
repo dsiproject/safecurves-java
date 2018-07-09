@@ -55,7 +55,8 @@ import net.metricspace.crypto.math.field.ModE511M187;
  */
 public class M511Extended
     extends M511<M511ExtendedPoint>
-    implements M511Curve {
+    implements M511Curve,
+               ElligatorGroup<ModE511M187, M511ExtendedPoint> {
     /**
      * The base point of the M-511 group.
      */
@@ -84,6 +85,14 @@ public class M511Extended
     public M511ExtendedPoint fromMontgomery(final ModE511M187 x,
                                             final ModE511M187 y) {
         return M511ExtendedPoint.fromMontgomery(x, y);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M511ExtendedPoint fromHash(final ModE511M187 r) {
+        return M511ExtendedPoint.fromHash(r);
     }
 
     /**
