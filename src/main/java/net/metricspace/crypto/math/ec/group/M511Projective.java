@@ -54,9 +54,10 @@ import net.metricspace.crypto.math.field.ModE511M187;
  * @see net.metricspace.crypto.math.ec.curve.M511Curve
  */
 public class M511Projective
-    extends M511<M511ProjectivePoint>
+    extends M511<M511ProjectivePoint, M511ProjectivePoint.Scratchpad>
     implements M511Curve,
-               ElligatorGroup<ModE511M187, M511ProjectivePoint> {
+               ElligatorGroup<ModE511M187, M511ProjectivePoint,
+                              M511ProjectivePoint.Scratchpad> {
     /**
      * The base point of the M-511 group.
      */
@@ -68,6 +69,14 @@ public class M511Projective
      */
     private static M511ProjectivePoint ZERO_POINT =
         M511ProjectivePoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M511ProjectivePoint.Scratchpad scratchpad() {
+        return M511ProjectivePoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

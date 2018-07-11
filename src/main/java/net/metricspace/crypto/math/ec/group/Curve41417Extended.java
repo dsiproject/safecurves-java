@@ -52,9 +52,11 @@ import net.metricspace.crypto.math.field.ModE414M17;
  * @see net.metricspace.crypto.math.ec.curve.Curve41417Curve
  */
 public class Curve41417Extended
-    extends Curve41417<Curve41417ExtendedPoint>
+    extends Curve41417<Curve41417ExtendedPoint,
+                       Curve41417ExtendedPoint.Scratchpad>
     implements Curve41417Curve,
-               ElligatorGroup<ModE414M17, Curve41417ExtendedPoint> {
+               ElligatorGroup<ModE414M17, Curve41417ExtendedPoint,
+                              Curve41417ExtendedPoint.Scratchpad> {
     /**
      * The base point of the Curve41417 group.
      */
@@ -66,6 +68,14 @@ public class Curve41417Extended
      */
     private static Curve41417ExtendedPoint ZERO_POINT =
         Curve41417ExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve41417ExtendedPoint.Scratchpad scratchpad() {
+        return Curve41417ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

@@ -54,9 +54,10 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * @see net.metricspace.crypto.math.ec.curve.M383Curve
  */
 public class M383Extended
-    extends M383<M383ExtendedPoint>
+    extends M383<M383ExtendedPoint, M383ExtendedPoint.Scratchpad>
     implements M383Curve,
-               ElligatorGroup<ModE383M187, M383ExtendedPoint> {
+               ElligatorGroup<ModE383M187, M383ExtendedPoint,
+                              M383ExtendedPoint.Scratchpad> {
     /**
      * The base point of the M-383 group.
      */
@@ -68,6 +69,14 @@ public class M383Extended
      */
     private static M383ExtendedPoint ZERO_POINT =
         M383ExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M383ExtendedPoint.Scratchpad scratchpad() {
+        return M383ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

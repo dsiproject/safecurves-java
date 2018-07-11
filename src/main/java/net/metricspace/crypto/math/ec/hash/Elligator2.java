@@ -32,6 +32,7 @@
 package net.metricspace.crypto.math.ec.hash;
 
 import net.metricspace.crypto.math.ec.curve.MontgomeryCurve;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.PrimeField;
@@ -57,7 +58,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface Elligator2<S extends PrimeField<S>,
                             P extends Elligator2<S, P, T>,
-                            T extends ECPoint.Scratchpad>
+                            T extends MontgomeryLadder.Scratchpad<S>>
     extends Elligator<S, P, T>,
             MontgomeryPoint<S, P, T>,
             MontgomeryCurve<S>  {
@@ -65,7 +66,8 @@ public interface Elligator2<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default void decodeHash(final S r) {
+    public default void decodeHash(final S r,
+                                   final T scratch) {
         /* Formula from https://eprint.iacr.org/2013/325.pdf
          *
          * v = -A / (1 + u * r^2)
@@ -190,7 +192,7 @@ public interface Elligator2<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S encodeHash() {
+    public default S encodeHash(final T scratch) {
         /* Formula from https://eprint.iacr.org/2013/325.pdf
          *
          * r = (-x / ((x + A) * u)).sqrt
@@ -277,7 +279,7 @@ public interface Elligator2<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default boolean canEncode() {
+    public default boolean canEncode(final T scratch) {
         /**
          * Formula from https://eprint.iacr.org/2013/325.pdf
          *

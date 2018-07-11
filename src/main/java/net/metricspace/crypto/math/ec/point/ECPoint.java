@@ -47,28 +47,55 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface ECPoint<S extends PrimeField<S>,
                          P extends ECPoint<S, P, T>,
-                         T extends ECPoint.Scratchpad>
+                         T extends ECPoint.Scratchpad<S>>
     extends Cloneable, Destroyable, AutoCloseable {
-
     /**
-     * Superinterface for scratchpad objects.  These provide the extra
-     * space that implementations need, thereby preventing them from
-     * allocating objects (and likely scribbling sensitive bytes all
-     * over the heap).
+     * Superclass of scratchpads for Montgomery ladders.
+     *
+     * @param <S> Scalar values.
      */
-    public static interface Scratchpad extends Destroyable, AutoCloseable {
+    public static abstract class Scratchpad<S extends PrimeField<S>>
+        extends PrimeField.Scratchpad {
+        public final S r0;
+        public final S r1;
+        public final S r2;
+
         /**
-         * {@inheritDoc}
+         * Initialize a {@code Scratchpad}.
+         *
+         * @param r0 A scalar object, to be owned by the scratchpad.
+         * @param ndigits The number of digits in a scalar value.
          */
-        @Override
-        public void destroy();
+        protected Scratchpad(final S r0,
+                             final S r1,
+                             final S r2,
+                             final int ndigits) {
+            super(ndigits);
+
+            this.r0 = r0;
+            this.r1 = r1;
+            this.r2 = r2;
+        }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public default void close() {
-            destroy();
+        public void destroy() {
+            super.destroy();
+
+            r0.destroy();
+            r1.destroy();
+            r2.destroy();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isDestroyed() {
+            return super.isDestroyed() && r0.isDestroyed() &&
+                   r1.isDestroyed() && r2.isDestroyed();
         }
     }
 

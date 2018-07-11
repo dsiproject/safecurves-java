@@ -54,9 +54,11 @@ import net.metricspace.crypto.math.field.ModE255M19;
  * @see net.metricspace.crypto.math.ec.curve.Curve25519Curve
  */
 public class Curve25519Projective
-    extends Curve25519<Curve25519ProjectivePoint>
+    extends Curve25519<Curve25519ProjectivePoint,
+                       Curve25519ProjectivePoint.Scratchpad>
     implements Curve25519Curve,
-               ElligatorGroup<ModE255M19, Curve25519ProjectivePoint> {
+               ElligatorGroup<ModE255M19, Curve25519ProjectivePoint,
+                              Curve25519ProjectivePoint.Scratchpad> {
     /**
      * The base point of the Curve25519 group.
      */
@@ -68,6 +70,14 @@ public class Curve25519Projective
      */
     private static Curve25519ProjectivePoint ZERO_POINT =
         Curve25519ProjectivePoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve25519ProjectivePoint.Scratchpad scratchpad() {
+        return Curve25519ProjectivePoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

@@ -49,7 +49,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class ExtendedPoint<S extends PrimeField<S>,
                                     P extends ExtendedPoint<S, P, T>,
-                                    T extends ECPoint.Scratchpad>
+                                    T extends ECPoint.Scratchpad<S>>
     extends ProjectivePoint<S, P, T>
     implements TwistedEdwardsPoint<S, P, T> {
     /**

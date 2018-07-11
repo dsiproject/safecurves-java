@@ -67,7 +67,8 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default void decodeHash(final S r) {
+    public default void decodeHash(final S r,
+                                   final T scratch) {
         /* Formula from https://eprint.iacr.org/2015/673.pdf
          *
          * n = nonresidue
@@ -210,7 +211,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S encodeHash() {
+    public default S encodeHash(final T scratch) {
         /* Formula from https://eprint.iacr.org/2015/673.pdf
          * (This hashes Jacobi quartic points)
          *
@@ -329,7 +330,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default boolean canEncode() {
+    public default boolean canEncode(final T scratch) {
         /* Formula derived from encodeHash:
          *
          * n = nonresidue

@@ -32,6 +32,7 @@
 package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.hash.Elligator;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -47,7 +48,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> The type of points.
  */
 public interface ElligatorGroup<S extends PrimeField<S>,
-                                P extends Elligator<S, P, ?>> {
+                                P extends Elligator<S, P, T>,
+                                T extends MontgomeryLadder.Scratchpad<S>>
+    extends ECGroup<S, P, T> {
     /**
      * Create a point by hashing a value to a point on the curve.
      *

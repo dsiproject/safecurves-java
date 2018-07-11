@@ -66,10 +66,16 @@ public class M511ExtendedPoint
          */
         private Scratchpad() {
             super(new ModE511M187(0), new ModE511M187(0), new ModE511M187(0),
-                  new ModE511M187(0), new ModE511M187(0), new ModE511M187(0));
+                  new ModE511M187(0), new ModE511M187(0), new ModE511M187(0),
+                  ModE511M187.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }

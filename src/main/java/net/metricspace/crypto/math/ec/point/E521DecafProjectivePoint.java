@@ -67,10 +67,15 @@ public class E521DecafProjectivePoint
         private Scratchpad() {
             super(new ModE521M1(0), new ModE521M1(0), new ModE521M1(0),
                   new ModE521M1(0), new ModE521M1(0), new ModE521M1(0),
-                  new ModE521M1(0));
+                  new ModE521M1(0), ModE521M1.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }

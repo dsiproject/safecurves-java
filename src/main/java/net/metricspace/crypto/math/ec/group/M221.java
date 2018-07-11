@@ -33,6 +33,7 @@ package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.curve.M221Curve;
 import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.ModE221M3;
 
 /**
@@ -50,8 +51,9 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * @see ModE221M3
  * @see net.metricspace.crypto.math.ec.curve.M221Curve
  */
-public abstract class M221<P extends ECPoint<ModE221M3, P, ?>>
-    extends MontgomeryCurveGroup<ModE221M3, P>
+public abstract class M221<P extends MontgomeryPoint<ModE221M3, P, T>,
+                           T extends ECPoint.Scratchpad<ModE221M3>>
+    extends MontgomeryCurveGroup<ModE221M3, P, T>
     implements M221Curve {
     /**
      * Prime order for the group.  The value is {@code

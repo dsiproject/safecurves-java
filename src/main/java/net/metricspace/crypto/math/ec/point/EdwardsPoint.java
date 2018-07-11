@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface EdwardsPoint<S extends PrimeField<S>,
                               P extends EdwardsPoint<S, P, T>,
-                              T extends ECPoint.Scratchpad>
+                              T extends ECPoint.Scratchpad<S>>
     extends TwistedEdwardsPoint<S, P, T> {
     /**
      * Get the value of the X coordinate in the Edwards

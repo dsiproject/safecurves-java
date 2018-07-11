@@ -58,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
 public class E382DecafExtended
-    extends E382Decaf<E382DecafExtendedPoint>
+    extends E382Decaf<E382DecafExtendedPoint,
+                      E382DecafExtendedPoint.Scratchpad>
     implements E382Curve,
-               ElligatorGroup<ModE382M105, E382DecafExtendedPoint> {
+               ElligatorGroup<ModE382M105, E382DecafExtendedPoint,
+                              E382DecafExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-382 group.
      */
@@ -72,6 +74,14 @@ public class E382DecafExtended
      */
     private static E382DecafExtendedPoint ZERO_POINT =
         E382DecafExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E382DecafExtendedPoint.Scratchpad scratchpad() {
+        return E382DecafExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

@@ -42,7 +42,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 public abstract class
     MontgomeryLadderGroupTest<S extends PrimeField<S>,
                               P extends MontgomeryLadder<S, P, ?>,
-                              G extends MontgomeryCurveGroup<S, P>>
+                              G extends MontgomeryCurveGroup<S, P, ?>>
     extends ECGroupTest<S, P, G> {
     protected MontgomeryLadderGroupTest(final G group,
                                         final String baseXString,

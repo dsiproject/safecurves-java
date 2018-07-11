@@ -57,9 +57,11 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
 public class E521DecafProjective
-    extends E521Decaf<E521DecafProjectivePoint>
+    extends E521Decaf<E521DecafProjectivePoint,
+                      E521DecafProjectivePoint.Scratchpad>
     implements E521Curve,
-               ElligatorGroup<ModE521M1, E521DecafProjectivePoint> {
+               ElligatorGroup<ModE521M1, E521DecafProjectivePoint,
+                              E521DecafProjectivePoint.Scratchpad> {
     /**
      * The base point of the E-521 group.
      */
@@ -71,6 +73,14 @@ public class E521DecafProjective
      */
     private static E521DecafProjectivePoint ZERO_POINT =
         E521DecafProjectivePoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521DecafProjectivePoint.Scratchpad scratchpad() {
+        return E521DecafProjectivePoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

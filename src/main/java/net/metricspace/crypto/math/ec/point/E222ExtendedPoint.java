@@ -65,10 +65,16 @@ public class E222ExtendedPoint
          */
         private Scratchpad() {
             super(new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
-                  new ModE222M117(0), new ModE222M117(0), new ModE222M117(0));
+                  new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
+                  ModE222M117.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }

@@ -66,10 +66,16 @@ public class Curve25519ProjectivePoint
          */
         private Scratchpad() {
             super(new ModE255M19(0), new ModE255M19(0), new ModE255M19(0),
-                  new ModE255M19(0), new ModE255M19(0), new ModE255M19(0));
+                  new ModE255M19(0), new ModE255M19(0), new ModE255M19(0),
+                  ModE255M19.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }

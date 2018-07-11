@@ -40,9 +40,10 @@ import net.metricspace.crypto.math.ec.ladder.MontgomeryLadderGroupTest;
 import net.metricspace.crypto.math.ec.point.MontgomeryPoint;
 import net.metricspace.crypto.math.field.PrimeField;
 
-public abstract class MontgomeryGroupTest<S extends PrimeField<S>,
-                                          P extends MontgomeryLadder<S, P, ?>,
-                                          G extends MontgomeryCurveGroup<S, P>>
+public abstract class
+    MontgomeryGroupTest<S extends PrimeField<S>,
+                        P extends MontgomeryLadder<S, P, ?>,
+                        G extends MontgomeryCurveGroup<S, P, ?>>
     extends MontgomeryLadderGroupTest<S, P, G> {
     final S avalue;
 

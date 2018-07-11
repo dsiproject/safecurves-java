@@ -51,9 +51,11 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
 public class Curve1174Extended
-    extends Curve1174<Curve1174ExtendedPoint>
+    extends Curve1174<Curve1174ExtendedPoint,
+                      Curve1174ExtendedPoint.Scratchpad>
     implements Curve1174Curve,
-               ElligatorGroup<ModE251M9, Curve1174ExtendedPoint> {
+               ElligatorGroup<ModE251M9, Curve1174ExtendedPoint,
+                              Curve1174ExtendedPoint.Scratchpad> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -65,6 +67,14 @@ public class Curve1174Extended
      */
     private static Curve1174ExtendedPoint ZERO_POINT =
         Curve1174ExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174ExtendedPoint.Scratchpad scratchpad() {
+        return Curve1174ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

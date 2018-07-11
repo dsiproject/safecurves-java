@@ -52,9 +52,10 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
 public class E521Extended
-    extends E521<E521ExtendedPoint>
+    extends E521<E521ExtendedPoint, E521ExtendedPoint.Scratchpad>
     implements E521Curve,
-               ElligatorGroup<ModE521M1, E521ExtendedPoint> {
+               ElligatorGroup<ModE521M1, E521ExtendedPoint,
+                              E521ExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-521 group.
      */
@@ -66,6 +67,14 @@ public class E521Extended
      */
     private static E521ExtendedPoint ZERO_POINT =
         E521ExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521ExtendedPoint.Scratchpad scratchpad() {
+        return E521ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

@@ -46,7 +46,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class ProjectivePoint<S extends PrimeField<S>,
                                       P extends ProjectivePoint<S, P, T>,
-                                      T extends ECPoint.Scratchpad>
+                                      T extends ECPoint.Scratchpad<S>>
     extends ScaledPoint<S, P, T>
     implements TwistedEdwardsPoint<S, P, T> {
     /**

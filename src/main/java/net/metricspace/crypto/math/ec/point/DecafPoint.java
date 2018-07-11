@@ -51,6 +51,7 @@ public interface DecafPoint<S extends PrimeField<S>,
                             P extends DecafPoint<S, P, T>,
                             T extends MontgomeryLadder.Scratchpad<S>>
     extends CompressablePoint<S, P, T, S>,
+            EdwardsPoint<S, P, T>,
             MontgomeryLadder<S, P, T> {
     /**
      * Compress raw projective Edwards coordinates.

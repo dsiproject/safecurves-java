@@ -40,7 +40,7 @@ import net.metricspace.crypto.math.field.ModE255M19;
 
 public abstract class
     Curve25519Test<P extends MontgomeryLadder<ModE255M19, P, ?>,
-                   G extends MontgomeryCurveGroup<ModE255M19, P>>
+                   G extends MontgomeryCurveGroup<ModE255M19, P, ?>>
     extends MontgomeryGroupTest<ModE255M19, P, G> {
     private static String BASE_X_STRING =
         "0000000000000000000000000000000000000000000000000000000000000009";

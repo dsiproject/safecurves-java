@@ -65,10 +65,16 @@ public class Curve1174ExtendedPoint
          */
         private Scratchpad() {
             super(new ModE251M9(0), new ModE251M9(0), new ModE251M9(0),
-                  new ModE251M9(0), new ModE251M9(0), new ModE251M9(0));
+                  new ModE251M9(0), new ModE251M9(0), new ModE251M9(0),
+                  ModE251M9.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }

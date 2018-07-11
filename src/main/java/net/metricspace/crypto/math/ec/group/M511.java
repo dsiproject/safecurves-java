@@ -51,8 +51,9 @@ import net.metricspace.crypto.math.field.ModE511M187;
  * @see ModE511M187
  * @see net.metricspace.crypto.math.ec.group.M511
  */
-public abstract class M511<P extends ECPoint<ModE511M187, P, ?>>
-    extends MontgomeryCurveGroup<ModE511M187, P>
+public abstract class M511<P extends ECPoint<ModE511M187, P, T>,
+                           T extends ECPoint.Scratchpad<ModE511M187>>
+    extends MontgomeryCurveGroup<ModE511M187, P, T>
     implements M511Curve {
     /**
      * Prime order for the group.  The value is {@code

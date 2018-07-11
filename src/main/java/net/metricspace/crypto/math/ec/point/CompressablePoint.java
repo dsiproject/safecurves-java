@@ -41,7 +41,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface CompressablePoint<S extends PrimeField<S>,
                                    P extends CompressablePoint<S, P, T, C>,
-                                   T extends ECPoint.Scratchpad,
+                                   T extends ECPoint.Scratchpad<S>,
                                    C>
     extends ECPoint<S, P, T> {
     /**

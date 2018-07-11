@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see net.metricspace.crypto.math.ec.curve.E222Curve
  */
 public class E222Extended
-    extends E222<E222ExtendedPoint>
+    extends E222<E222ExtendedPoint, E222ExtendedPoint.Scratchpad>
     implements E222Curve,
-               ElligatorGroup<ModE222M117, E222ExtendedPoint> {
+               ElligatorGroup<ModE222M117, E222ExtendedPoint,
+                              E222ExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-222 group.
      */
@@ -67,6 +68,14 @@ public class E222Extended
      */
     private static E222ExtendedPoint ZERO_POINT =
         E222ExtendedPoint.zero();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E222ExtendedPoint.Scratchpad scratchpad() {
+        return E222ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

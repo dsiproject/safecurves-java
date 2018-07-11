@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.group;
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
 import net.metricspace.crypto.math.ec.point.DecafPoint;
 import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 /**
@@ -55,9 +56,11 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see ModE251M9
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
-public abstract class Curve1174Decaf<P extends DecafPoint<ModE251M9, P, ?>>
-    extends Curve1174<P>
-    implements DecafGroup<ModE251M9, P> {
+public abstract class
+    Curve1174Decaf<P extends DecafPoint<ModE251M9, P, T>,
+                   T extends MontgomeryLadder.Scratchpad<ModE251M9>>
+    extends Curve1174<P, T>
+    implements DecafGroup<ModE251M9, P, T> {
     /**
      * The cofactor of Curve1174 is {@code 4}; decaf reduces this by
      * a factor of {@code 4} to {@code 1}.

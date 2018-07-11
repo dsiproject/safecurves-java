@@ -67,10 +67,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
      * @param <S> Scalar values.
      */
     public static abstract class Scratchpad<S extends PrimeField<S>>
-        implements ECPoint.Scratchpad {
-        public final S r0;
-        public final S r1;
-        public final S r2;
+        extends ECPoint.Scratchpad<S> {
         public final S r3;
         public final S r4;
 
@@ -81,10 +78,10 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
                              final S r1,
                              final S r2,
                              final S r3,
-                             final S r4) {
-            this.r0 = r0;
-            this.r1 = r1;
-            this.r2 = r2;
+                             final S r4,
+                             final int ndigits) {
+            super(r0, r1, r2, ndigits);
+
             this.r3 = r3;
             this.r4 = r4;
         }
@@ -94,9 +91,8 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
          */
         @Override
         public void destroy() {
-            r0.destroy();
-            r1.destroy();
-            r2.destroy();
+            super.destroy();
+
             r3.destroy();
             r4.destroy();
         }
@@ -106,8 +102,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
          */
         @Override
         public boolean isDestroyed() {
-            return r0.isDestroyed() && r1.isDestroyed() && r2.isDestroyed() &&
-                   r3.isDestroyed() && r4.isDestroyed();
+            return super.isDestroyed() && r3.isDestroyed() && r4.isDestroyed();
         }
     }
 

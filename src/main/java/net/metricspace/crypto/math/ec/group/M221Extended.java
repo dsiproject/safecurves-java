@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * @see net.metricspace.crypto.math.ec.curve.M221Curve
  */
 public class M221Extended
-    extends M221<M221ExtendedPoint>
+    extends M221<M221ExtendedPoint, M221ExtendedPoint.Scratchpad>
     implements M221Curve,
-               ElligatorGroup<ModE221M3, M221ExtendedPoint> {
+               ElligatorGroup<ModE221M3, M221ExtendedPoint,
+                                  M221ExtendedPoint.Scratchpad> {
     /**
      * The base point of the M-221 group.
      */
@@ -68,6 +69,14 @@ public class M221Extended
     private static M221ExtendedPoint ZERO_POINT =
         M221ExtendedPoint.fromEdwards(ModE221M3.zero(),
                                       ModE221M3.one());
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M221ExtendedPoint.Scratchpad scratchpad() {
+        return M221ExtendedPoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

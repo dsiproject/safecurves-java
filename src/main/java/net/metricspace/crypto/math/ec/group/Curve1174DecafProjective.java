@@ -57,9 +57,11 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
 public class Curve1174DecafProjective
-    extends Curve1174Decaf<Curve1174DecafProjectivePoint>
+    extends Curve1174Decaf<Curve1174DecafProjectivePoint,
+                           Curve1174DecafProjectivePoint.Scratchpad>
     implements Curve1174Curve,
-               ElligatorGroup<ModE251M9, Curve1174DecafProjectivePoint> {
+               ElligatorGroup<ModE251M9, Curve1174DecafProjectivePoint,
+                              Curve1174DecafProjectivePoint.Scratchpad> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -72,6 +74,14 @@ public class Curve1174DecafProjective
     private static Curve1174DecafProjectivePoint ZERO_POINT =
         Curve1174DecafProjectivePoint.fromEdwards(ModE251M9.zero(),
                                                   ModE251M9.one());
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174DecafProjectivePoint.Scratchpad scratchpad() {
+        return Curve1174DecafProjectivePoint.Scratchpad.get();
+    }
 
     /**
      * {@inheritDoc}

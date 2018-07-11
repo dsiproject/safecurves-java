@@ -43,7 +43,7 @@ import net.metricspace.crypto.math.field.PrimeField;
 public abstract class
     DecafPointPropertiesTest<S extends PrimeField<S>,
                              P extends EdwardsDecafPoint<S, P, ?>,
-                             G extends EdwardsCurveGroup<S, P>>
+                             G extends EdwardsCurveGroup<S, P, ?>>
     extends EdwardsPointPropertiesTest<S, P, G> {
     private final Object[][] compressedPoints;
 

@@ -73,8 +73,9 @@ public abstract class
                              final S r2,
                              final S r3,
                              final S r4,
-                             final S r5) {
-            super(r0, r1, r2, r3, r4);
+                             final S r5,
+                             final int ndigits) {
+            super(r0, r1, r2, r3, r4, ndigits);
             this.r5 = r5;
         }
 
