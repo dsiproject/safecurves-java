@@ -631,16 +631,16 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
         r3.mul(zn);
 
         /* Xout = r2.3 / r3.2 */
-        r2.div(r3);
+        r2.div(r3, scratch);
 
         /* Yout = r1.5 / r3.2 */
-        r1.div(r3);
+        r1.div(r3, scratch);
 
         /* Convert back to underlying coordinates */
         out.setMontgomery(r2, r1);
 
         /* Set to zero if Zout is zero */
-        out.reset(r3.isZero());
+        out.reset(r3.isZero(scratch));
     }
 
     /**
@@ -660,10 +660,10 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
             final S curveparam = montgomeryA();
 
             curveparam.sub(2);
-            curveparam.div(4);
+            curveparam.div(4, scratch);
             z.set(1);
             ladderX(x, z, scalar, curveparam, scratch);
-            x.div(z);
+            x.div(z, scratch);
 
             return x;
         }
@@ -701,7 +701,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
             final S curveparam = montgomeryA();
 
             curveparam.sub(2);
-            curveparam.div(4);
+            curveparam.div(4, scratch);
             z.set(1);
             xn.set(1);
             zn.set(0);

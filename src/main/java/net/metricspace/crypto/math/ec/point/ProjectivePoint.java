@@ -151,12 +151,9 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      */
     @Override
     public void scale() {
-        final S a = z.clone();
-
-        a.inv();
-
-        x.mul(a);
-        y.mul(a);
+        z.inv();
+        x.mul(z);
+        y.mul(z);
         z.set(1);
     }
 
@@ -185,11 +182,9 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      */
     @Override
     public S edwardsX() {
-        final S out = x.clone();
+        scale();
 
-        out.div(z);
-
-        return out;
+        return edwardsXScaled();
     }
 
     /**
@@ -197,11 +192,25 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      */
     @Override
     public S edwardsY() {
-        final S out = y.clone();
+        scale();
 
-        out.div(z);
+        return edwardsYScaled();
+    }
 
-        return out;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public S edwardsXScaled() {
+        return x.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public S edwardsYScaled() {
+        return y.clone();
     }
 
     /**

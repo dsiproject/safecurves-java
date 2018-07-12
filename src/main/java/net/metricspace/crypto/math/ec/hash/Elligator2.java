@@ -128,36 +128,38 @@ public interface Elligator2<S extends PrimeField<S>,
          * y = r1.2
          */
 
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
+
         /* r0 = montgomeryA */
-        final S r0 = montgomeryA();
+        r0.set(montgomeryA());
 
         /* r1 = 1 + 2 * r^2 */
-        final S r1 = r.clone();
-
+        r1.set(r);
         r1.square();
         r1.mul(2);
         r1.add(1);
 
         /* r2 = -r0 / r1 */
-        final S r2 = r0.clone();
-
+        r2.set(r0);
         r2.neg();
-        r2.div(r1);
+        r2.div(r1, scratch);
 
         /* r1.1 = r0 * r2 */
         r1.set(r0);
         r1.mul(r2);
 
         /* r3 = (r2^2 + r1.1 + 1) * r2 */
-        final S r3 = r2.clone();
-
+        r3.set(r2);
         r3.square();
         r3.add(r1);
         r3.add(1);
         r3.mul(r2);
 
         /* l1 = r3.legendre */
-        final int l1 = r3.legendre();
+        final int l1 = r3.legendre(scratch);
 
         /* r2.1 = l1 * r2 */
         r2.mul(l1);
@@ -165,7 +167,7 @@ public interface Elligator2<S extends PrimeField<S>,
         /* r3.1 = r2.1 + (l1 - 1) * r0 / 2 */
         r3.set(r0);
         r3.mul(l1 - 1);
-        r3.div(2);
+        r3.div(2, scratch);
         r3.add(r2);
 
         /* r2.2 = r0 * r3.1 */
@@ -180,7 +182,7 @@ public interface Elligator2<S extends PrimeField<S>,
 
         /* r1.2 = -l1 * (r1.1 * r3.1).sqrt */
         r1.mul(r3);
-        r1.sqrt();
+        r1.sqrt(scratch);
         r1.mul(-l1);
 
         /* x = r3.1 */
@@ -235,44 +237,46 @@ public interface Elligator2<S extends PrimeField<S>,
          * l1 = (y.legendre + 1) / 2
          * r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0
          */
-        final S x = getX();
-        final S y = getY();
+        final S x = montgomeryX();
+        final S y = montgomeryY();
+
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
 
         /* r0 = -(x + A) */
-        final S r0 = x.clone();
-
+        r0.set(x);
         r0.add(montgomeryA());
         r0.neg();
 
         /* r1 = r0 * 2 */
-        final S r1 = r0.clone();
-
+        r1.set(r0);
         r1.mul(2);
 
         /* r2 = 2 * x */
-        final S r2 = x.clone();
-
+        r2.set(x);
         r2.mul(2);
 
         /* r0.1 = (r0 / r2).sqrt
          */
-        r0.div(r2);
-        r0.sqrt();
+        r0.div(r2, scratch);
+        r0.sqrt(scratch);
 
         /* r2.1 = (x / r1).sqrt */
         r2.set(x);
-        r2.div(r1);
-        r2.sqrt();
+        r2.div(r1, scratch);
+        r2.sqrt(scratch);
 
         /* l1 = y.legendre + 1 / 2 */
-        final int l1 = (y.legendre() + 1) / 2;
+        final int l1 = (y.legendre(scratch) + 1) / 2;
 
         /* r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0 */
         r2.mask(l1);
         r0.mask(l1 ^ 0x1);
         r0.or(r2);
 
-        return r0;
+        return r0.clone();
     }
 
     /**
@@ -293,16 +297,16 @@ public interface Elligator2<S extends PrimeField<S>,
          * result = r0.1.legendre
          */
         final S x = montgomeryX();
+        final S r0 = scratch.r0;
 
         /* r0 = x + A */
-        final S r0 = x.clone();
-
+        r0.set(x);
         r0.add(montgomeryA());
 
         /* r0.1 = r1.1 * x * -2 */
         r0.mul(x);
         r0.mul(-2);
 
-        return r0.legendre() == 1;
+        return r0.legendre(scratch) == 1;
     }
 }

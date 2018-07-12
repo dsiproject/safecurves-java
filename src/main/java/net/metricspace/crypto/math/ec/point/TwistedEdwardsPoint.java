@@ -67,6 +67,28 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
     public S edwardsY();
 
     /**
+     * Get the value of the X coordinate in the Edwards
+     * representation.  This assumes the point has already been
+     * scaled.
+     *
+     * @return The value of the X coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsXScaled();
+
+    /**
+     * Get the value of the Y coordinate in the Edwards
+     * representation.  This assumes the point has already been
+     * scaled.
+     *
+     * @return The value of the Y coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsYScaled();
+
+    /**
      * Set the point from its Edwards coordinates.
      *
      * @param x The Edwards X coordinate.
