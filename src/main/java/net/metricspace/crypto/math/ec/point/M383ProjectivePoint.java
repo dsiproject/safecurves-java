@@ -170,10 +170,29 @@ public class M383ProjectivePoint
      */
     public static M383ProjectivePoint fromMontgomery(final ModE383M187 x,
                                                      final ModE383M187 y) {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code M383ProjectivePoint} initialized from Edwards
+     * {@code x} and {@code y} points.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
+    public static M383ProjectivePoint fromMontgomery(final ModE383M187 x,
+                                                     final ModE383M187 y,
+                                                     final Scratchpad scratch) {
         final ModE383M187 edwardsX = new ModE383M187(0);
         final ModE383M187 edwardsY = new ModE383M187(0);
 
-        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
+        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX,
+                                                edwardsY, scratch);
 
         return new M383ProjectivePoint(edwardsX, edwardsY);
     }

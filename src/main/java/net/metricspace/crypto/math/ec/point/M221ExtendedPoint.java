@@ -173,10 +173,29 @@ public class M221ExtendedPoint
      */
     public static M221ExtendedPoint fromMontgomery(final ModE221M3 x,
                                                    final ModE221M3 y) {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code M221ExtendedPoint} initialized from Edwards
+     * {@code x} and {@code y} points.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
+    public static M221ExtendedPoint fromMontgomery(final ModE221M3 x,
+                                                   final ModE221M3 y,
+                                                   final Scratchpad scratch) {
         final ModE221M3 edwardsX = new ModE221M3(0);
         final ModE221M3 edwardsY = new ModE221M3(0);
 
-        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
+        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX,
+                                                edwardsY, scratch);
 
         return new M221ExtendedPoint(edwardsX, edwardsY);
     }

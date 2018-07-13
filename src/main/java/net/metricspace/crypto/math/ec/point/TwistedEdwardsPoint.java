@@ -114,14 +114,18 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * @param v The Montgomery {@code v} (or {@code y})
      * @param x The Edwards {@code x} coordinate to set.
      * @param y The Edwards {@code y} coordinate to set.
+     * @param scratch The scratchpad to use.
      */
-    public static <S extends PrimeField<S>>
+    public static <S extends PrimeField<S>,
+                   T extends ECPoint.Scratchpad<S>>
         void montgomeryToEdwards(final S u,
                                  final S v,
                                  final S x,
-                                 final S y) {
-        final S ydenom = u.clone();
+                                 final S y,
+                                 final T scratch) {
+        final S ydenom = scratch.r2;
 
+        ydenom.set(u);
         x.set(v);
         x.inv();
         x.mul(u);
@@ -172,11 +176,12 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      */
     @Override
     public default void setMontgomery(final S u,
-                                      final S v) {
-        final S x = v.clone();
-        final S y = u.clone();
+                                      final S v,
+                                      final T scratch) {
+        final S x = scratch.r0;
+        final S y = scratch.r1;
 
-        montgomeryToEdwards(u, v, x, y);
+        montgomeryToEdwards(u, v, x, y, scratch);
         setEdwards(x, y);
     }
 

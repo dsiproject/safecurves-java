@@ -171,10 +171,30 @@ public class Curve25519ProjectivePoint
      */
     public static Curve25519ProjectivePoint fromMontgomery(final ModE255M19 x,
                                                            final ModE255M19 y) {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve25519ProjectivePoint} initialized from Edwards
+     * {@code x} and {@code y} points.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
+    public static Curve25519ProjectivePoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Scratchpad scratch) {
         final ModE255M19 edwardsX = new ModE255M19(0);
         final ModE255M19 edwardsY = new ModE255M19(0);
 
-        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
+        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX,
+                                                edwardsY, scratch);
 
         return new Curve25519ProjectivePoint(edwardsX, edwardsY);
     }

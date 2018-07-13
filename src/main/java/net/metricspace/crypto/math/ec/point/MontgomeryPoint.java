@@ -69,9 +69,24 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      *
      * @param x The Montgomery X coordinate.
      * @param y The Montgomery Y coordinate.
+     * @param scratch The scratchpad to use.
      */
     public void setMontgomery(final S x,
-                              final S y);
+                              final S y,
+                              final T scratch);
+
+    /**
+     * Set the point from its Montgomery coordinates.
+     *
+     * @param x The Montgomery X coordinate.
+     * @param y The Montgomery Y coordinate.
+     */
+    public default void setMontgomery(final S x,
+                                      final S y) {
+        try(final T scratch = scratchpad()) {
+            setMontgomery(x, y, scratch);
+        }
+    }
 
     /**
      * Get the value of the X coordinate in the Montgomery
