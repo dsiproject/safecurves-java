@@ -159,14 +159,42 @@ public interface ECPoint<S extends PrimeField<S>,
      *
      * @param bool {@code 1} to zero this point, or {@code 0} to leave
      *             it as is.
+     * @param scratch The scratchpad to use.
      */
-    public void reset(final long bool);
+    public void reset(final long bool,
+                      final T scratch);
+
+    /**
+     * Set this point to the zero point or not, depending on a
+     * parameter.  In order to facilitate a branch-free
+     * implementation, this is passed as an integer which is expected
+     * to be {@code 0} or {@code 1} as opposed to a {@code boolean}.
+     *
+     * @param bool {@code 1} to zero this point, or {@code 0} to leave
+     *             it as is.
+     */
+    public default void reset(final long bool) {
+        try(final T scratch = scratchpad()) {
+            reset(bool, scratch);
+        }
+    }
+
+    /**
+     * Set this point to the zero point.
+     *
+     * @param scratch The scratchpad to use.
+     */
+    public default void reset(final T scratch) {
+        reset(1, scratch);
+    }
 
     /**
      * Set this point to the zero point.
      */
     public default void reset() {
-        reset(1);
+        try(final T scratch = scratchpad()) {
+            reset(1, scratch);
+        }
     }
 
     /**

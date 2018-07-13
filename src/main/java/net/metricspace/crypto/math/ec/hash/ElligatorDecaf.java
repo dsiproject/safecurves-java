@@ -120,6 +120,9 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          *
          * Manual register allocation produces the following assignments:
          *
+         * Note: this assignment deliberately uses r3 for E and S over r0,
+         * because decompression does not use r3.
+         *
          * r0 = Q
          * r1 = E
          * r2 = F
@@ -127,8 +130,8 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r2.1 = N
          * r1.2 = G
          * r1.3 = H
-         * r0.1 = E
-         * r0.2 = S
+         * r3 = E
+         * r3.1 = S
          *
          * Final formula:
          *
@@ -139,14 +142,14 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r1.1 = (r1 + 1 - d) * r2
          * r2.1 = (r0 + 1) * (1 - (2 * d))
          * r1.2 = r2.1 * r1.1
-         * r0.1 = if r1.2.legendre == 1
-         *           then r1.2.invsqrt
-         *           else {
-         *             r1.3 = (n * r1.2).invsqrt
-         *             (n * R) * r1.3
-         *           }
-         * r0.2 = (r2.1 * r0.1).abs
-         * decompress r0.2
+         * r3 = if r1.2.legendre == 1
+         *         then r1.2.invsqrt
+         *         else {
+         *           r1.3 = (n * r1.2).invsqrt
+         *           (n * R) * r1.3
+         *         }
+         * r3.1 = (r2.1 * r3).abs
+         * decompress r3.1
          */
 
         /* n = nonresidue */
@@ -156,6 +159,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
 
         /* r0 = n * R^2 */
         r0.set(r);
@@ -184,27 +188,27 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         /* r1.2 = r2.1 * r1.1 */
         r1.mul(r2);
 
-        /* r0.1 = if r1.2.legendre == 1
-         *           then r1.2.invsqrt
-         *           else (n * R) * (n * r1.2).invsqrt
+        /* r3 = if r1.2.legendre == 1
+         *         then r1.2.invsqrt
+         *         else (n * R) * (n * r1.2).invsqrt
          */
         if (r1.legendre(scratch) == 1) {
-            r0.set(r1);
-            r0.invSqrt(scratch);
+            r3.set(r1);
+            r3.invSqrt(scratch);
         } else {
             r1.mul(n);
             r1.invSqrt(scratch);
-            r0.set(r);
-            r0.mul(n);
-            r0.mul(r1);
+            r3.set(r);
+            r3.mul(n);
+            r3.mul(r1);
         }
 
-        /* r0.2 = (r2.1 * r0.1).abs */
-        r0.mul(r2);
-        r0.abs(scratch);
+        /* r3.1 = (r2.1 * r3).abs */
+        r3.mul(r2);
+        r3.abs(scratch);
 
-        /* decompress r0.2 */
-        decompress(r0.clone());
+        /* decompress r3 */
+        decompress(r3);
 
     }
 

@@ -131,8 +131,9 @@ public abstract class ExtendedPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public void reset(final long bit) {
-        super.reset(bit);
+    public void reset(final long bit,
+                      final T scratch) {
+        super.reset(bit, scratch);
 
         t.mask(bit ^ 0x1);
     }

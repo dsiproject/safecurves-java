@@ -243,7 +243,7 @@ public interface DecafPoint<S extends PrimeField<S>,
      *                                  invalid.
      */
     public static <S extends PrimeField<S>,
-                   T extends MontgomeryLadder.Scratchpad<S>>
+                   T extends ECPoint.Scratchpad<S>>
         void decompress(final int d,
                         final S s,
                         final S x,

@@ -133,8 +133,9 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public void reset(final long bit) {
-        final S one = x.clone();
+    public void reset(final long bit,
+                      final T scratch) {
+        final S one = scratch.r0;
         final long negbit = bit ^ 0x1;
 
         one.set(1);
@@ -175,26 +176,6 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
         this.x.set(x);
         this.y.set(y);
         this.z.set(1);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public S edwardsX() {
-        scale();
-
-        return edwardsXScaled();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public S edwardsY() {
-        scale();
-
-        return edwardsYScaled();
     }
 
     /**
