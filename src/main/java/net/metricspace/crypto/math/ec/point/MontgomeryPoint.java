@@ -50,19 +50,51 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * Get the value of the X coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
-     * representation.
+     *         representation.
      */
-    public S montgomeryX();
+    public default S montgomeryX() {
+        scale();
+
+        return montgomeryXScaled();
+    }
+
+    /**
+     * Get the value of the X coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The value of the X coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public S montgomeryXScaled();
 
     /**
      * Get the value of the Y coordinate in the Montgomery
      * representation.
      *
      * @return The value of the Y coordinate in the Montgomery
-     * representation.
+     *         representation.
      */
-    public S montgomeryY();
+    public default S montgomeryY() {
+        scale();
+
+        return montgomeryYScaled();
+    }
+
+    /**
+     * Get the value of the Y coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public S montgomeryYScaled();
 
     /**
      * Set the point from its Montgomery coordinates.

@@ -140,8 +140,8 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryX() {
-        final S y = edwardsY();
+    public default S montgomeryXScaled() {
+        final S y = edwardsYScaled();
         final S denom = y.clone();
 
         denom.sub(1);
@@ -157,13 +157,13 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryY() {
-        final S y = edwardsY();
+    public default S montgomeryYScaled() {
+        final S y = edwardsYScaled();
         final S denom = y.clone();
 
         denom.sub(1);
         denom.neg();
-        denom.mul(edwardsX());
+        denom.mul(edwardsXScaled());
         denom.inv();
         y.add(1);
         y.mul(denom);

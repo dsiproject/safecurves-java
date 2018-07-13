@@ -237,8 +237,10 @@ public interface Elligator2<S extends PrimeField<S>,
          * l1 = (y.legendre + 1) / 2
          * r0.2 = r2.1 if l1 = 1, r0.1 if l1 = 0
          */
-        final S x = montgomeryX();
-        final S y = montgomeryY();
+        scale();
+
+        final S x = montgomeryXScaled();
+        final S y = montgomeryYScaled();
 
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
