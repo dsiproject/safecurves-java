@@ -87,8 +87,9 @@ public class E222DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E222DecafProjectivePoint fromEdwards(final ModE222M117 x,
-                                                final ModE222M117 y) {
+    public E222DecafProjectivePoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222DecafProjectivePoint.fromEdwards(x, y);
     }
 
@@ -96,17 +97,21 @@ public class E222DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E222DecafProjectivePoint fromCompressed(final ModE222M117 s)
+    public E222DecafProjectivePoint
+        fromCompressed(final ModE222M117 s,
+                       final E222DecafProjectivePoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E222DecafProjectivePoint.fromCompressed(s);
+        return E222DecafProjectivePoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E222DecafProjectivePoint fromHash(final ModE222M117 r) {
-        return E222DecafProjectivePoint.fromHash(r);
+    public E222DecafProjectivePoint
+        fromHash(final ModE222M117 r,
+                 final E222DecafProjectivePoint.Scratchpad scratch) {
+        return E222DecafProjectivePoint.fromHash(r, scratch);
     }
 
     /**

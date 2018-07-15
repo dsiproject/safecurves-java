@@ -87,8 +87,9 @@ public class Curve1174DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromEdwards(final ModE251M9 x,
-                                                     final ModE251M9 y) {
+    public Curve1174DecafProjectivePoint
+        fromEdwards(final ModE251M9 x,
+                    final ModE251M9 y) {
         return Curve1174DecafProjectivePoint.fromEdwards(x, y);
     }
 
@@ -96,17 +97,21 @@ public class Curve1174DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromCompressed(final ModE251M9 s)
+    public Curve1174DecafProjectivePoint
+        fromCompressed(final ModE251M9 s,
+                       final Curve1174DecafProjectivePoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return Curve1174DecafProjectivePoint.fromCompressed(s);
+        return Curve1174DecafProjectivePoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromHash(final ModE251M9 r) {
-        return Curve1174DecafProjectivePoint.fromHash(r);
+    public Curve1174DecafProjectivePoint
+        fromHash(final ModE251M9 r,
+                 final Curve1174DecafProjectivePoint.Scratchpad scratch) {
+        return Curve1174DecafProjectivePoint.fromHash(r, scratch);
     }
 
     /**

@@ -172,9 +172,27 @@ public class Curve1174DecafExtendedPoint
      */
     public static Curve1174DecafExtendedPoint fromCompressed(final ModE251M9 s)
         throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromCompressed(s, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve1174DecafExtendedPoint} by decompressing a
+     * compressed point.
+     *
+     * @param s The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by decompressing {@code s}
+     * @throws IllegalArgumentException If the compressed point is invalid.
+     */
+    public static Curve1174DecafExtendedPoint
+        fromCompressed(final ModE251M9 s,
+                       final Scratchpad scratch)
+        throws IllegalArgumentException {
         final Curve1174DecafExtendedPoint p = zero();
 
-        p.decompress(s);
+        p.decompress(s, scratch);
 
         return p;
     }
@@ -186,11 +204,27 @@ public class Curve1174DecafExtendedPoint
      * @return A point initialized by hashing {@code s} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static Curve1174DecafExtendedPoint fromHash(final ModE251M9 s)
+    public static Curve1174DecafExtendedPoint fromHash(final ModE251M9 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve1174DecafExtendedPoint} from a hash.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code r} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve1174DecafExtendedPoint fromHash(final ModE251M9 r,
+                                                       final Scratchpad scratch)
         throws IllegalArgumentException {
         final Curve1174DecafExtendedPoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

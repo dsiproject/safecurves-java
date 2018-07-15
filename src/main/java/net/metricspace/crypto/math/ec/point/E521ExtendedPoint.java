@@ -186,15 +186,31 @@ public class E521ExtendedPoint
     /**
      * Create a {@code E521ExtendedPoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static E521ExtendedPoint fromHash(final ModE521M1 s)
+    public static E521ExtendedPoint fromHash(final ModE521M1 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code E521ExtendedPoint} from a hash.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code r} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E521ExtendedPoint fromHash(final ModE521M1 r,
+                                             final Scratchpad scratch)
         throws IllegalArgumentException {
         final E521ExtendedPoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

@@ -82,8 +82,9 @@ public class M511Extended
      * {@inheritDoc}
      */
     @Override
-    public M511ExtendedPoint fromTwistedEdwards(final ModE511M187 x,
-                                                final ModE511M187 y) {
+    public M511ExtendedPoint
+        fromTwistedEdwards(final ModE511M187 x,
+                           final ModE511M187 y) {
         return M511ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -91,17 +92,21 @@ public class M511Extended
      * {@inheritDoc}
      */
     @Override
-    public M511ExtendedPoint fromMontgomery(final ModE511M187 x,
-                                            final ModE511M187 y) {
-        return M511ExtendedPoint.fromMontgomery(x, y);
+    public M511ExtendedPoint
+        fromMontgomery(final ModE511M187 x,
+                       final ModE511M187 y,
+                       final M511ExtendedPoint.Scratchpad scratch) {
+        return M511ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M511ExtendedPoint fromHash(final ModE511M187 r) {
-        return M511ExtendedPoint.fromHash(r);
+    public M511ExtendedPoint
+        fromHash(final ModE511M187 r,
+                 final M511ExtendedPoint.Scratchpad scratch) {
+        return M511ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

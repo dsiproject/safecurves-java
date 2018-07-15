@@ -88,16 +88,18 @@ public class E521Extended
     /**
      * {@inheritDoc}
      */
-    public E521ExtendedPoint basePoint() {
-        return BASE_POINT.clone();
+    @Override
+    public E521ExtendedPoint
+        fromHash(final ModE521M1 r,
+                 final E521ExtendedPoint.Scratchpad scratch) {
+        return E521ExtendedPoint.fromHash(r, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public E521ExtendedPoint fromHash(final ModE521M1 r) {
-        return E521ExtendedPoint.fromHash(r);
+    public E521ExtendedPoint basePoint() {
+        return BASE_POINT.clone();
     }
 
     /**

@@ -81,8 +81,9 @@ public class E222Projective
      * {@inheritDoc}
      */
     @Override
-    public E222ProjectivePoint fromEdwards(final ModE222M117 x,
-                                           final ModE222M117 y) {
+    public E222ProjectivePoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -90,8 +91,10 @@ public class E222Projective
      * {@inheritDoc}
      */
     @Override
-    public E222ProjectivePoint fromHash(final ModE222M117 r) {
-        return E222ProjectivePoint.fromHash(r);
+    public E222ProjectivePoint
+        fromHash(final ModE222M117 r,
+                 final E222ProjectivePoint.Scratchpad scratch) {
+        return E222ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

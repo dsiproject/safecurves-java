@@ -96,17 +96,21 @@ public class E382DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E382DecafExtendedPoint fromCompressed(final ModE382M105 s)
+    public E382DecafExtendedPoint
+        fromCompressed(final ModE382M105 s,
+                       final E382DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E382DecafExtendedPoint.fromCompressed(s);
+        return E382DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E382DecafExtendedPoint fromHash(final ModE382M105 r) {
-        return E382DecafExtendedPoint.fromHash(r);
+    public E382DecafExtendedPoint
+        fromHash(final ModE382M105 r,
+                 final E382DecafExtendedPoint.Scratchpad scratch) {
+        return E382DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

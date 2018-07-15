@@ -87,8 +87,9 @@ public class Curve1174DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromEdwards(final ModE251M9 x,
-                                                   final ModE251M9 y) {
+    public Curve1174DecafExtendedPoint
+        fromEdwards(final ModE251M9 x,
+                    final ModE251M9 y) {
         return Curve1174DecafExtendedPoint.fromEdwards(x, y);
     }
 
@@ -96,17 +97,21 @@ public class Curve1174DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromCompressed(final ModE251M9 s)
+    public Curve1174DecafExtendedPoint
+        fromCompressed(final ModE251M9 s,
+                       final Curve1174DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return Curve1174DecafExtendedPoint.fromCompressed(s);
+        return Curve1174DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromHash(final ModE251M9 r) {
-        return Curve1174DecafExtendedPoint.fromHash(r);
+    public Curve1174DecafExtendedPoint
+        fromHash(final ModE251M9 r,
+                 final Curve1174DecafExtendedPoint.Scratchpad scratch) {
+        return Curve1174DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

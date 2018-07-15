@@ -83,8 +83,9 @@ public class Curve25519Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromTwistedEdwards(final ModE255M19 x,
-                                                      final ModE255M19 y) {
+    public Curve25519ExtendedPoint
+        fromTwistedEdwards(final ModE255M19 x,
+                           final ModE255M19 y) {
         return Curve25519ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -92,17 +93,21 @@ public class Curve25519Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromMontgomery(final ModE255M19 x,
-                                                  final ModE255M19 y) {
-        return Curve25519ExtendedPoint.fromMontgomery(x, y);
+    public Curve25519ExtendedPoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Curve25519ExtendedPoint.Scratchpad scratch) {
+        return Curve25519ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromHash(final ModE255M19 r) {
-        return Curve25519ExtendedPoint.fromHash(r);
+    public Curve25519ExtendedPoint
+        fromHash(final ModE255M19 r,
+                 final Curve25519ExtendedPoint.Scratchpad scratch) {
+        return Curve25519ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

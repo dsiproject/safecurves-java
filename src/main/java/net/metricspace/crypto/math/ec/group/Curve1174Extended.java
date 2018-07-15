@@ -80,8 +80,9 @@ public class Curve1174Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174ExtendedPoint fromEdwards(final ModE251M9 x,
-                                              final ModE251M9 y) {
+    public Curve1174ExtendedPoint
+        fromEdwards(final ModE251M9 x,
+                    final ModE251M9 y) {
         return Curve1174ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -89,8 +90,10 @@ public class Curve1174Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174ExtendedPoint fromHash(final ModE251M9 r) {
-        return Curve1174ExtendedPoint.fromHash(r);
+    public Curve1174ExtendedPoint
+        fromHash(final ModE251M9 r,
+                 final Curve1174ExtendedPoint.Scratchpad scratch) {
+        return Curve1174ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

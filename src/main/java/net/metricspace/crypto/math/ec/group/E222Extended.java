@@ -81,8 +81,9 @@ public class E222Extended
      * {@inheritDoc}
      */
     @Override
-    public E222ExtendedPoint fromEdwards(final ModE222M117 x,
-                                         final ModE222M117 y) {
+    public E222ExtendedPoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -90,8 +91,10 @@ public class E222Extended
      * {@inheritDoc}
      */
     @Override
-    public E222ExtendedPoint fromHash(final ModE222M117 r) {
-        return E222ExtendedPoint.fromHash(r);
+    public E222ExtendedPoint
+        fromHash(final ModE222M117 r,
+                 final E222ExtendedPoint.Scratchpad scratch) {
+        return E222ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

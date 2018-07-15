@@ -92,17 +92,21 @@ public class Curve25519Projective
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ProjectivePoint fromMontgomery(final ModE255M19 x,
-                                                    final ModE255M19 y) {
-        return Curve25519ProjectivePoint.fromMontgomery(x, y);
+    public Curve25519ProjectivePoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Curve25519ProjectivePoint.Scratchpad scratch) {
+        return Curve25519ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ProjectivePoint fromHash(final ModE255M19 r) {
-        return Curve25519ProjectivePoint.fromHash(r);
+    public Curve25519ProjectivePoint
+        fromHash(final ModE255M19 r,
+                 final Curve25519ProjectivePoint.Scratchpad scratch) {
+        return Curve25519ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

@@ -167,9 +167,27 @@ public class E222DecafProjectivePoint
      */
     public static E222DecafProjectivePoint fromCompressed(final ModE222M117 s)
         throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromCompressed(s, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code E222DecafProjectivePoint} by decompressing a
+     * compressed point.
+     *
+     * @param s The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by decompressing {@code s}
+     * @throws IllegalArgumentException If the compressed point is invalid.
+     */
+    public static E222DecafProjectivePoint
+        fromCompressed(final ModE222M117 s,
+                       final Scratchpad scratch)
+        throws IllegalArgumentException {
         final E222DecafProjectivePoint p = zero();
 
-        p.decompress(s);
+        p.decompress(s, scratch);
 
         return p;
     }
@@ -181,11 +199,27 @@ public class E222DecafProjectivePoint
      * @return A point initialized by hashing {@code s} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static E222DecafProjectivePoint fromHash(final ModE222M117 s)
+    public static E222DecafProjectivePoint fromHash(final ModE222M117 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code E222DecafProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static E222DecafProjectivePoint fromHash(final ModE222M117 r,
+                                                    final Scratchpad scratch)
         throws IllegalArgumentException {
         final E222DecafProjectivePoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

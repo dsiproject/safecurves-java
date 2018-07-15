@@ -86,8 +86,9 @@ public class E222DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromEdwards(final ModE222M117 x,
-                                              final ModE222M117 y) {
+    public E222DecafExtendedPoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222DecafExtendedPoint.fromEdwards(x, y);
     }
 
@@ -95,17 +96,21 @@ public class E222DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromCompressed(final ModE222M117 s)
+    public E222DecafExtendedPoint
+        fromCompressed(final ModE222M117 s,
+                       final E222DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E222DecafExtendedPoint.fromCompressed(s);
+        return E222DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromHash(final ModE222M117 r) {
-        return E222DecafExtendedPoint.fromHash(r);
+    public E222DecafExtendedPoint
+        fromHash(final ModE222M117 r,
+                 final E222DecafExtendedPoint.Scratchpad scratch) {
+        return E222DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

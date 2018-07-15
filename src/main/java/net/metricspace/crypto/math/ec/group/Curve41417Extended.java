@@ -90,8 +90,10 @@ public class Curve41417Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve41417ExtendedPoint fromHash(final ModE414M17 r) {
-        return Curve41417ExtendedPoint.fromHash(r);
+    public Curve41417ExtendedPoint
+        fromHash(final ModE414M17 r,
+                 final Curve41417ExtendedPoint.Scratchpad scratch) {
+        return Curve41417ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

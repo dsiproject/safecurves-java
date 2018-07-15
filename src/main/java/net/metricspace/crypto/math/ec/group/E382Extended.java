@@ -90,8 +90,10 @@ public class E382Extended
      * {@inheritDoc}
      */
     @Override
-    public E382ExtendedPoint fromHash(final ModE382M105 r) {
-        return E382ExtendedPoint.fromHash(r);
+    public E382ExtendedPoint
+        fromHash(final ModE382M105 r,
+                 final E382ExtendedPoint.Scratchpad scratch) {
+        return E382ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

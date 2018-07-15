@@ -90,8 +90,10 @@ public class E382Projective
      * {@inheritDoc}
      */
     @Override
-    public E382ProjectivePoint fromHash(final ModE382M105 r) {
-        return E382ProjectivePoint.fromHash(r);
+    public E382ProjectivePoint
+        fromHash(final ModE382M105 r,
+                 final E382ProjectivePoint.Scratchpad scratch) {
+        return E382ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

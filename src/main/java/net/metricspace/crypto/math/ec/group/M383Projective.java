@@ -82,8 +82,9 @@ public class M383Projective
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromTwistedEdwards(final ModE383M187 x,
-                                                  final ModE383M187 y) {
+    public M383ProjectivePoint
+        fromTwistedEdwards(final ModE383M187 x,
+                           final ModE383M187 y) {
         return M383ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -91,17 +92,21 @@ public class M383Projective
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromMontgomery(final ModE383M187 x,
-                                              final ModE383M187 y) {
-        return M383ProjectivePoint.fromMontgomery(x, y);
+    public M383ProjectivePoint
+        fromMontgomery(final ModE383M187 x,
+                       final ModE383M187 y,
+                       final M383ProjectivePoint.Scratchpad scratch) {
+        return M383ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromHash(final ModE383M187 r) {
-        return M383ProjectivePoint.fromHash(r);
+    public M383ProjectivePoint
+        fromHash(final ModE383M187 r,
+                 final M383ProjectivePoint.Scratchpad scratch) {
+        return M383ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

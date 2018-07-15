@@ -206,15 +206,31 @@ public class Curve25519ExtendedPoint
     /**
      * Create a {@code Curve25519ExtendedPoint} from a hash.
      *
-     * @param s The hash input.
+     * @param r The hash input.
      * @return A point initialized by hashing {@code s} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static Curve25519ExtendedPoint fromHash(final ModE255M19 s)
+    public static Curve25519ExtendedPoint fromHash(final ModE255M19 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve25519ExtendedPoint} from a hash.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve25519ExtendedPoint fromHash(final ModE255M19 s,
+                                                   final Scratchpad scratch)
         throws IllegalArgumentException {
         final Curve25519ExtendedPoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(s, scratch);
 
         return p;
     }

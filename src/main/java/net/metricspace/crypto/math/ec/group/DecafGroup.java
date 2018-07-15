@@ -56,6 +56,22 @@ public interface DecafGroup<S extends PrimeField<S>,
      * @return The decompressed point.
      * @throws IllegalArgumentException If the compressed point is invalid.
      */
-    public P fromCompressed(final S s)
+    public default P fromCompressed(final S s)
+        throws IllegalArgumentException {
+        try(final T scratch = scratchpad()) {
+            return fromCompressed(s, scratch);
+        }
+    }
+
+    /**
+     * Create a point from its compressed representation.
+     *
+     * @param s The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return The decompressed point.
+     * @throws IllegalArgumentException If the compressed point is invalid.
+     */
+    public P fromCompressed(final S s,
+                            final T scratch)
         throws IllegalArgumentException;
 }

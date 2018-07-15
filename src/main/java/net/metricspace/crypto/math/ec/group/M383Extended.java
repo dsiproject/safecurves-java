@@ -82,8 +82,9 @@ public class M383Extended
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromTwistedEdwards(final ModE383M187 x,
-                                                final ModE383M187 y) {
+    public M383ExtendedPoint
+        fromTwistedEdwards(final ModE383M187 x,
+                           final ModE383M187 y) {
         return M383ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -91,17 +92,21 @@ public class M383Extended
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromMontgomery(final ModE383M187 x,
-                                            final ModE383M187 y) {
-        return M383ExtendedPoint.fromMontgomery(x, y);
+    public M383ExtendedPoint
+        fromMontgomery(final ModE383M187 x,
+                       final ModE383M187 y,
+                       final M383ExtendedPoint.Scratchpad scratch) {
+        return M383ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromHash(final ModE383M187 r) {
-        return M383ExtendedPoint.fromHash(r);
+    public M383ExtendedPoint
+        fromHash(final ModE383M187 r,
+                 final M383ExtendedPoint.Scratchpad scratch) {
+        return M383ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

@@ -82,8 +82,9 @@ public class M511Projective
      * {@inheritDoc}
      */
     @Override
-    public M511ProjectivePoint fromTwistedEdwards(final ModE511M187 x,
-                                                  final ModE511M187 y) {
+    public M511ProjectivePoint
+        fromTwistedEdwards(final ModE511M187 x,
+                           final ModE511M187 y) {
         return M511ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -91,17 +92,21 @@ public class M511Projective
      * {@inheritDoc}
      */
     @Override
-    public M511ProjectivePoint fromMontgomery(final ModE511M187 x,
-                                              final ModE511M187 y) {
-        return M511ProjectivePoint.fromMontgomery(x, y);
+    public M511ProjectivePoint
+        fromMontgomery(final ModE511M187 x,
+                       final ModE511M187 y,
+                       final M511ProjectivePoint.Scratchpad scratch) {
+        return M511ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M511ProjectivePoint fromHash(final ModE511M187 r) {
-        return M511ProjectivePoint.fromHash(r);
+    public M511ProjectivePoint
+        fromHash(final ModE511M187 r,
+                 final M511ProjectivePoint.Scratchpad scratch) {
+        return M511ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

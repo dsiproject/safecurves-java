@@ -55,9 +55,26 @@ public interface ElligatorGroup<S extends PrimeField<S>,
      * Create a point by hashing a value to a point on the curve.
      *
      * @param r The hash input.
+     * @param scratch The scratchpad to use.
      * @return The point created by hashing {@code r}.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public P fromHash(final S r)
+    public default P fromHash(final S r)
+        throws IllegalArgumentException {
+        try(final T scratch = scratchpad()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a point by hashing a value to a point on the curve.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return The point created by hashing {@code r}.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public P fromHash(final S r,
+                      final T scratch)
         throws IllegalArgumentException;
 }
