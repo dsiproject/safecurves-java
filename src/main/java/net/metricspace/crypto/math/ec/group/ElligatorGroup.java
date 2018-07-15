@@ -32,6 +32,7 @@
 package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.hash.Elligator;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -47,7 +48,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> The type of points.
  */
 public interface ElligatorGroup<S extends PrimeField<S>,
-                                P extends Elligator<S, P, ?>> {
+                                P extends Elligator<S, P, T>,
+                                T extends MontgomeryLadder.Scratchpad<S>>
+    extends ECGroup<S, P, T> {
     /**
      * Create a point by hashing a value to a point on the curve.
      *
@@ -55,6 +58,22 @@ public interface ElligatorGroup<S extends PrimeField<S>,
      * @return The point created by hashing {@code r}.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public P fromHash(final S r)
+    public default P fromHash(final S r)
+        throws IllegalArgumentException {
+        try(final T scratch = scratchpad()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a point by hashing a value to a point on the curve.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return The point created by hashing {@code r}.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public P fromHash(final S r,
+                      final T scratch)
         throws IllegalArgumentException;
 }

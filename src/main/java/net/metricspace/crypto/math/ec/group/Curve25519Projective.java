@@ -54,9 +54,11 @@ import net.metricspace.crypto.math.field.ModE255M19;
  * @see net.metricspace.crypto.math.ec.curve.Curve25519Curve
  */
 public class Curve25519Projective
-    extends Curve25519<Curve25519ProjectivePoint>
+    extends Curve25519<Curve25519ProjectivePoint,
+                       Curve25519ProjectivePoint.Scratchpad>
     implements Curve25519Curve,
-               ElligatorGroup<ModE255M19, Curve25519ProjectivePoint> {
+               ElligatorGroup<ModE255M19, Curve25519ProjectivePoint,
+                              Curve25519ProjectivePoint.Scratchpad> {
     /**
      * The base point of the Curve25519 group.
      */
@@ -73,6 +75,14 @@ public class Curve25519Projective
      * {@inheritDoc}
      */
     @Override
+    public Curve25519ProjectivePoint.Scratchpad scratchpad() {
+        return Curve25519ProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Curve25519ProjectivePoint fromTwistedEdwards(final ModE255M19 x,
                                                         final ModE255M19 y) {
         return Curve25519ProjectivePoint.fromEdwards(x, y);
@@ -82,17 +92,21 @@ public class Curve25519Projective
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ProjectivePoint fromMontgomery(final ModE255M19 x,
-                                                    final ModE255M19 y) {
-        return Curve25519ProjectivePoint.fromMontgomery(x, y);
+    public Curve25519ProjectivePoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Curve25519ProjectivePoint.Scratchpad scratch) {
+        return Curve25519ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ProjectivePoint fromHash(final ModE255M19 r) {
-        return Curve25519ProjectivePoint.fromHash(r);
+    public Curve25519ProjectivePoint
+        fromHash(final ModE255M19 r,
+                 final Curve25519ProjectivePoint.Scratchpad scratch) {
+        return Curve25519ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

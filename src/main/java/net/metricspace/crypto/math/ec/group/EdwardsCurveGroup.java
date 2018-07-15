@@ -42,8 +42,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public abstract class EdwardsCurveGroup<S extends PrimeField<S>,
-                                        P extends ECPoint<S, P, ?>>
-    implements ECGroup<S, P>, EdwardsCurve<S> {
+                                        P extends ECPoint<S, P, T>,
+                                        T extends ECPoint.Scratchpad<S>>
+    implements ECGroup<S, P, T>, EdwardsCurve<S> {
     /**
      * Create a point from its base Edwards coordinates.
      *

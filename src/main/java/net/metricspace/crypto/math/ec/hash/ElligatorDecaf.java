@@ -67,7 +67,8 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default void decodeHash(final S r) {
+    public default void decodeHash(final S r,
+                                   final T scratch) {
         /* Formula from https://eprint.iacr.org/2015/673.pdf
          *
          * n = nonresidue
@@ -119,6 +120,9 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          *
          * Manual register allocation produces the following assignments:
          *
+         * Note: this assignment deliberately uses r3 for E and S over r0,
+         * because decompression does not use r3.
+         *
          * r0 = Q
          * r1 = E
          * r2 = F
@@ -126,8 +130,8 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r2.1 = N
          * r1.2 = G
          * r1.3 = H
-         * r0.1 = E
-         * r0.2 = S
+         * r3 = E
+         * r3.1 = S
          *
          * Final formula:
          *
@@ -138,34 +142,36 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r1.1 = (r1 + 1 - d) * r2
          * r2.1 = (r0 + 1) * (1 - (2 * d))
          * r1.2 = r2.1 * r1.1
-         * r0.1 = if r1.2.legendre == 1
-         *           then r1.2.invsqrt
-         *           else {
-         *             r1.3 = (n * r1.2).invsqrt
-         *             (n * R) * r1.3
-         *           }
-         * r0.2 = (r2.1 * r0.1).abs
-         * decompress r0.2
+         * r3 = if r1.2.legendre == 1
+         *         then r1.2.invsqrt
+         *         else {
+         *           r1.3 = (n * r1.2).invsqrt
+         *           (n * R) * r1.3
+         *         }
+         * r3.1 = (r2.1 * r3).abs
+         * decompress r3.1
          */
 
         /* n = nonresidue */
         final int n = nonresidue();
         final int d = edwardsD();
 
-        /* r0 = n * R^2 */
-        final S r0 = r.clone();
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+        final S r3 = scratch.r3;
 
+        /* r0 = n * R^2 */
+        r0.set(r);
         r0.square();
         r0.mul(n);
 
         /* r1 = d * r0 */
-        final S r1 = r0.clone();
-
+        r1.set(r0);
         r1.mul(d);
 
         /* r2 = r1 - r0 - d */
-        final S r2 = r1.clone();
-
+        r2.set(r1);
         r2.sub(r0);
         r2.sub(d);
 
@@ -182,27 +188,27 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         /* r1.2 = r2.1 * r1.1 */
         r1.mul(r2);
 
-        /* r0.1 = if r1.2.legendre == 1
-         *           then r1.2.invsqrt
-         *           else (n * R) * (n * r1.2).invsqrt
+        /* r3 = if r1.2.legendre == 1
+         *         then r1.2.invsqrt
+         *         else (n * R) * (n * r1.2).invsqrt
          */
-        if (r1.legendre() == 1) {
-            r0.set(r1);
-            r0.invSqrt();
+        if (r1.legendre(scratch) == 1) {
+            r3.set(r1);
+            r3.invSqrt(scratch);
         } else {
             r1.mul(n);
-            r1.invSqrt();
-            r0.set(r);
-            r0.mul(n);
-            r0.mul(r1);
+            r1.invSqrt(scratch);
+            r3.set(r);
+            r3.mul(n);
+            r3.mul(r1);
         }
 
-        /* r0.2 = (r2.1 * r0.1).abs */
-        r0.mul(r2);
-        r0.abs();
+        /* r3.1 = (r2.1 * r3).abs */
+        r3.mul(r2);
+        r3.abs(scratch);
 
-        /* decompress r0.2 */
-        decompress(r0.clone());
+        /* decompress r3 */
+        decompress(r3);
 
     }
 
@@ -210,7 +216,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S encodeHash() {
+    public default S encodeHash(final T scratch) {
         /* Formula from https://eprint.iacr.org/2015/673.pdf
          * (This hashes Jacobi quartic points)
          *
@@ -277,34 +283,38 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * R = r2.3
          */
 
+        scale();
+
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+
         /* r0 = edwardsX */
-        final S r0 = edwardsX();
+        r0.set(edwardsXScaledRef());
 
         /* r1 = sqrt (1 - r0^2) */
-        final S r1 = r0.clone();
-
+        r1.set(r0);
         r1.square();
         r1.neg();
         r1.add(1);
-        r1.sqrt();
+        r1.sqrt(scratch);
 
         /* r2 = (1 + r1) / r0 */
-        final S r2 = r1.clone();
-
+        r2.set(r1);
         r2.add(1);
-        r2.div(r0);
+        r2.div(r0, scratch);
 
         /* r0.1 = r0 * Y */
-        r0.mul(edwardsY());
+        r0.mul(edwardsYScaledRef());
 
         /* r1.1 = (2 * r2 * r1) / r0.1 */
         r1.mul(r2);
         r1.mul(2);
-        r1.div(r0);
+        r1.div(r0, scratch);
 
         /* r1.2 = r2.signum * (r1.1 + 1) */
         r1.add(1);
-        r1.mul(r2.signum());
+        r1.mul(r2.signum(scratch));
 
         /* r2.1 = ((2 * d) - 1) * r2^2 */
         r2.square();
@@ -316,11 +326,11 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
 
         /* r2.2 = (r2.1 + r1.2) / r0.2 */
         r2.add(r1);
-        r2.div(r0);
+        r2.div(r0, scratch);
 
         /* r2.3 = sqrt (r2.2 / n) */
         r2.div(nonresidue());
-        r2.sqrt();
+        r2.sqrt(scratch);
 
         return r2.clone();
     }
@@ -329,7 +339,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default boolean canEncode() {
+    public default boolean canEncode(final T scratch) {
         /* Formula derived from encodeHash:
          *
          * n = nonresidue
@@ -362,34 +372,38 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r2.3.legendre == 1
          */
 
+        scale();
+
+        final S r0 = scratch.r0;
+        final S r1 = scratch.r1;
+        final S r2 = scratch.r2;
+
         /* r0 = edwardsX */
-        final S r0 = edwardsX();
+        r0.set(edwardsXScaledRef());
 
         /* r1 = sqrt (1 - r0^2) */
-        final S r1 = r0.clone();
-
+        r1.set(r0);
         r1.square();
         r1.neg();
         r1.add(1);
-        r1.sqrt();
+        r1.sqrt(scratch);
 
         /* r2 = (1 + r1) / r0 */
-        final S r2 = r1.clone();
-
+        r2.set(r1);
         r2.add(1);
-        r2.div(r0);
+        r2.div(r0, scratch);
 
         /* r0.1 = r0 * Y */
-        r0.mul(edwardsY());
+        r0.mul(edwardsYScaledRef());
 
         /* r1.1 = (2 * r2 * r1) / r0.1 */
         r1.mul(r2);
         r1.mul(2);
-        r1.div(r0);
+        r1.div(r0, scratch);
 
         /* r1.2 = r2.signum * (r1.1 + 1) */
         r1.add(1);
-        r1.mul(r2.signum());
+        r1.mul(r2.signum(scratch));
 
         /* r2.1 = ((2 * d) - 1) * r2^2 */
         r2.square();
@@ -401,11 +415,11 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
 
         /* r2.2 = (r2.1 + r1.2) / r0.2 */
         r2.add(r1);
-        r2.div(r0);
+        r2.div(r0, scratch);
 
         /* r2.3 = r2.2 / n */
-        r2.div(nonresidue());
+        r2.div(nonresidue(), scratch);
 
-        return r2.legendre() == 1;
+        return r2.legendre(scratch) == 1;
     }
 }

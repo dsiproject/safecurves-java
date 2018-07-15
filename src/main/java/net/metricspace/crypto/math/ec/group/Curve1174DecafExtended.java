@@ -58,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
 public class Curve1174DecafExtended
-    extends Curve1174Decaf<Curve1174DecafExtendedPoint>
+    extends Curve1174Decaf<Curve1174DecafExtendedPoint,
+                           Curve1174DecafExtendedPoint.Scratchpad>
     implements Curve1174Curve,
-               ElligatorGroup<ModE251M9, Curve1174DecafExtendedPoint> {
+               ElligatorGroup<ModE251M9, Curve1174DecafExtendedPoint,
+                              Curve1174DecafExtendedPoint.Scratchpad> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -77,8 +79,17 @@ public class Curve1174DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromEdwards(final ModE251M9 x,
-                                                   final ModE251M9 y) {
+    public Curve1174DecafExtendedPoint.Scratchpad scratchpad() {
+        return Curve1174DecafExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174DecafExtendedPoint
+        fromEdwards(final ModE251M9 x,
+                    final ModE251M9 y) {
         return Curve1174DecafExtendedPoint.fromEdwards(x, y);
     }
 
@@ -86,17 +97,21 @@ public class Curve1174DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromCompressed(final ModE251M9 s)
+    public Curve1174DecafExtendedPoint
+        fromCompressed(final ModE251M9 s,
+                       final Curve1174DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return Curve1174DecafExtendedPoint.fromCompressed(s);
+        return Curve1174DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafExtendedPoint fromHash(final ModE251M9 r) {
-        return Curve1174DecafExtendedPoint.fromHash(r);
+    public Curve1174DecafExtendedPoint
+        fromHash(final ModE251M9 r,
+                 final Curve1174DecafExtendedPoint.Scratchpad scratch) {
+        return Curve1174DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

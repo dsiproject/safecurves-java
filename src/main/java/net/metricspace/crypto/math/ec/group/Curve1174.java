@@ -33,6 +33,7 @@ package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.curve.Curve1174Curve;
 import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.point.EdwardsPoint;
 import net.metricspace.crypto.math.field.ModE251M9;
 
 /**
@@ -49,8 +50,9 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see ModE251M9
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
-public abstract class Curve1174<P extends ECPoint<ModE251M9, P, ?>>
-    extends EdwardsCurveGroup<ModE251M9, P>
+public abstract class Curve1174<P extends EdwardsPoint<ModE251M9, P, T>,
+                                T extends ECPoint.Scratchpad<ModE251M9>>
+    extends EdwardsCurveGroup<ModE251M9, P, T>
     implements Curve1174Curve {
     /**
      * Prime order for the base Edwards curve representation.  The

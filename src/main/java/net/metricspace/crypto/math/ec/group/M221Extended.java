@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * @see net.metricspace.crypto.math.ec.curve.M221Curve
  */
 public class M221Extended
-    extends M221<M221ExtendedPoint>
+    extends M221<M221ExtendedPoint, M221ExtendedPoint.Scratchpad>
     implements M221Curve,
-               ElligatorGroup<ModE221M3, M221ExtendedPoint> {
+               ElligatorGroup<ModE221M3, M221ExtendedPoint,
+                                  M221ExtendedPoint.Scratchpad> {
     /**
      * The base point of the M-221 group.
      */
@@ -73,8 +74,17 @@ public class M221Extended
      * {@inheritDoc}
      */
     @Override
-    public M221ExtendedPoint fromTwistedEdwards(final ModE221M3 x,
-                                                final ModE221M3 y) {
+    public M221ExtendedPoint.Scratchpad scratchpad() {
+        return M221ExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M221ExtendedPoint
+        fromTwistedEdwards(final ModE221M3 x,
+                           final ModE221M3 y) {
         return M221ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -82,17 +92,21 @@ public class M221Extended
      * {@inheritDoc}
      */
     @Override
-    public M221ExtendedPoint fromMontgomery(final ModE221M3 x,
-                                            final ModE221M3 y) {
-        return M221ExtendedPoint.fromMontgomery(x, y);
+    public M221ExtendedPoint
+        fromMontgomery(final ModE221M3 x,
+                       final ModE221M3 y,
+                       final M221ExtendedPoint.Scratchpad scratch) {
+        return M221ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M221ExtendedPoint fromHash(final ModE221M3 r) {
-        return M221ExtendedPoint.fromHash(r);
+    public M221ExtendedPoint
+        fromHash(final ModE221M3 r,
+                 final M221ExtendedPoint.Scratchpad scratch) {
+        return M221ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

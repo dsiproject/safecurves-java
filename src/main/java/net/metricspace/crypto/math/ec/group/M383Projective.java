@@ -54,9 +54,10 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * @see net.metricspace.crypto.math.ec.curve.M383Curve
  */
 public class M383Projective
-    extends M383<M383ProjectivePoint>
+    extends M383<M383ProjectivePoint, M383ProjectivePoint.Scratchpad>
     implements M383Curve,
-               ElligatorGroup<ModE383M187, M383ProjectivePoint> {
+               ElligatorGroup<ModE383M187, M383ProjectivePoint,
+                              M383ProjectivePoint.Scratchpad> {
     /**
      * The base point of the M-383 group.
      */
@@ -73,8 +74,17 @@ public class M383Projective
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromTwistedEdwards(final ModE383M187 x,
-                                                  final ModE383M187 y) {
+    public M383ProjectivePoint.Scratchpad scratchpad() {
+        return M383ProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M383ProjectivePoint
+        fromTwistedEdwards(final ModE383M187 x,
+                           final ModE383M187 y) {
         return M383ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -82,17 +92,21 @@ public class M383Projective
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromMontgomery(final ModE383M187 x,
-                                              final ModE383M187 y) {
-        return M383ProjectivePoint.fromMontgomery(x, y);
+    public M383ProjectivePoint
+        fromMontgomery(final ModE383M187 x,
+                       final ModE383M187 y,
+                       final M383ProjectivePoint.Scratchpad scratch) {
+        return M383ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M383ProjectivePoint fromHash(final ModE383M187 r) {
-        return M383ProjectivePoint.fromHash(r);
+    public M383ProjectivePoint
+        fromHash(final ModE383M187 r,
+                 final M383ProjectivePoint.Scratchpad scratch) {
+        return M383ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

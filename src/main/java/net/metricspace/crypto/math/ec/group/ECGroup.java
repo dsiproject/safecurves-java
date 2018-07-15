@@ -45,7 +45,18 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public interface ECGroup<S extends PrimeField<S>,
-                         P extends ECPoint<S, P, ?>> {
+                         P extends ECPoint<S, P, ?>,
+                         T extends ECPoint.Scratchpad<S>> {
+    /**
+     * Get a scratchpad.  This is a mechanism designed to avoid
+     * repeated allocation of scalar values.  Sequences of operations
+     * should obtain a scratchpad, pass it into all operations, then
+     * destroy it when through.
+     *
+     * @return A scratchpad.
+     */
+    public T scratchpad();
+
     /**
      * Get the prime order of the group.
      *

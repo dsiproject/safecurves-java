@@ -66,10 +66,15 @@ public class Curve41417ProjectivePoint
         private Scratchpad() {
             super(new ModE414M17(0), new ModE414M17(0), new ModE414M17(0),
                   new ModE414M17(0), new ModE414M17(0), new ModE414M17(0),
-                  new ModE414M17(0));
+                  new ModE414M17(0), ModE414M17.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }
@@ -178,15 +183,31 @@ public class Curve41417ProjectivePoint
     /**
      * Create a {@code Curve41417ProjectivePoint} from a hash.
      *
-     * @param s The hash input.
+     * @param r The hash input.
      * @return A point initialized by hashing {@code s} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static Curve41417ProjectivePoint fromHash(final ModE414M17 s)
+    public static Curve41417ProjectivePoint fromHash(final ModE414M17 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve41417ProjectivePoint} from a hash.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve41417ProjectivePoint fromHash(final ModE414M17 r,
+                                                     final Scratchpad scratch)
         throws IllegalArgumentException {
         final Curve41417ProjectivePoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

@@ -58,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
 public class E382DecafProjective
-    extends E382Decaf<E382DecafProjectivePoint>
+    extends E382Decaf<E382DecafProjectivePoint,
+                      E382DecafProjectivePoint.Scratchpad>
     implements E382Curve,
-               ElligatorGroup<ModE382M105, E382DecafProjectivePoint> {
+               ElligatorGroup<ModE382M105, E382DecafProjectivePoint,
+                              E382DecafProjectivePoint.Scratchpad> {
     /**
      * The base point of the E-382 group.
      */
@@ -77,8 +79,17 @@ public class E382DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E382DecafProjectivePoint fromEdwards(final ModE382M105 x,
-                                                final ModE382M105 y) {
+    public E382DecafProjectivePoint.Scratchpad scratchpad() {
+        return E382DecafProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E382DecafProjectivePoint
+        fromEdwards(final ModE382M105 x,
+                    final ModE382M105 y) {
         return E382DecafProjectivePoint.fromEdwards(x, y);
     }
 
@@ -86,17 +97,21 @@ public class E382DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E382DecafProjectivePoint fromCompressed(final ModE382M105 s)
+    public E382DecafProjectivePoint
+        fromCompressed(final ModE382M105 s,
+                       final E382DecafProjectivePoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E382DecafProjectivePoint.fromCompressed(s);
+        return E382DecafProjectivePoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E382DecafProjectivePoint fromHash(final ModE382M105 r) {
-        return E382DecafProjectivePoint.fromHash(r);
+    public E382DecafProjectivePoint
+        fromHash(final ModE382M105 r,
+                 final E382DecafProjectivePoint.Scratchpad scratch) {
+        return E382DecafProjectivePoint.fromHash(r, scratch);
     }
 
     /**

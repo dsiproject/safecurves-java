@@ -42,9 +42,10 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> Type of points.
  */
 public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
-                                           P extends ECPoint<S, P, ?>>
-    extends TwistedEdwardsCurveGroup<S, P>
-    implements ECGroup<S, P>, MontgomeryCurve<S> {
+                                           P extends ECPoint<S, P, T>,
+                                           T extends ECPoint.Scratchpad<S>>
+    extends TwistedEdwardsCurveGroup<S, P, T>
+    implements MontgomeryCurve<S> {
     /**
      * Create a point from its base Montgomery coordinates.
      *
@@ -53,8 +54,25 @@ public abstract class MontgomeryCurveGroup<S extends PrimeField<S>,
      * @return A point initialized to the given Edwards {@code x} and
      *         {@code y} coordinates.
      */
+    public P fromMontgomery(final S x,
+                            final S y) {
+        try(final T scratch = scratchpad()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a point from its base Montgomery coordinates.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
     public abstract P fromMontgomery(final S x,
-                                     final S y);
+                                     final S y,
+                                     final T scratch);
 
     /**
      * {@inheritDoc}

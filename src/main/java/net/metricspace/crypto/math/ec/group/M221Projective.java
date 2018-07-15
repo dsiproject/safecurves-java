@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE221M3;
  * @see net.metricspace.crypto.math.ec.curve.M221Curve
  */
 public class M221Projective
-    extends M221<M221ProjectivePoint>
+    extends M221<M221ProjectivePoint, M221ProjectivePoint.Scratchpad>
     implements M221Curve,
-               ElligatorGroup<ModE221M3, M221ProjectivePoint> {
+               ElligatorGroup<ModE221M3, M221ProjectivePoint,
+                              M221ProjectivePoint.Scratchpad> {
     /**
      * The base point of the M-221 group.
      */
@@ -73,8 +74,17 @@ public class M221Projective
      * {@inheritDoc}
      */
     @Override
-    public M221ProjectivePoint fromTwistedEdwards(final ModE221M3 x,
-                                                  final ModE221M3 y) {
+    public M221ProjectivePoint.Scratchpad scratchpad() {
+        return M221ProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M221ProjectivePoint
+        fromTwistedEdwards(final ModE221M3 x,
+                           final ModE221M3 y) {
         return M221ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -82,17 +92,21 @@ public class M221Projective
      * {@inheritDoc}
      */
     @Override
-    public M221ProjectivePoint fromMontgomery(final ModE221M3 x,
-                                              final ModE221M3 y) {
-        return M221ProjectivePoint.fromMontgomery(x, y);
+    public M221ProjectivePoint
+        fromMontgomery(final ModE221M3 x,
+                       final ModE221M3 y,
+                       final M221ProjectivePoint.Scratchpad scratch) {
+        return M221ProjectivePoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M221ProjectivePoint fromHash(final ModE221M3 r) {
-        return M221ProjectivePoint.fromHash(r);
+    public M221ProjectivePoint
+        fromHash(final ModE221M3 r,
+                 final M221ProjectivePoint.Scratchpad scratch) {
+        return M221ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

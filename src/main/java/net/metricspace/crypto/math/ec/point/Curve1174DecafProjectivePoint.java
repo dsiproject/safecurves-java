@@ -70,10 +70,15 @@ public class Curve1174DecafProjectivePoint
         private Scratchpad() {
             super(new ModE251M9(0), new ModE251M9(0), new ModE251M9(0),
                   new ModE251M9(0), new ModE251M9(0), new ModE251M9(0),
-                  new ModE251M9(0));
+                  new ModE251M9(0), ModE251M9.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }
@@ -168,9 +173,27 @@ public class Curve1174DecafProjectivePoint
     public static Curve1174DecafProjectivePoint
         fromCompressed(final ModE251M9 s)
         throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromCompressed(s, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve1174DecafProjectivePoint} by decompressing a
+     * compressed point.
+     *
+     * @param s The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by decompressing {@code s}
+     * @throws IllegalArgumentException If the compressed point is invalid.
+     */
+    public static Curve1174DecafProjectivePoint
+        fromCompressed(final ModE251M9 s,
+                       final Scratchpad scratch)
+        throws IllegalArgumentException {
         final Curve1174DecafProjectivePoint p = zero();
 
-        p.decompress(s);
+        p.decompress(s, scratch);
 
         return p;
     }
@@ -184,9 +207,26 @@ public class Curve1174DecafProjectivePoint
      */
     public static Curve1174DecafProjectivePoint fromHash(final ModE251M9 s)
         throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(s, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve1174DecafProjectivePoint} from a hash.
+     *
+     * @param s The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code s} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve1174DecafProjectivePoint
+        fromHash(final ModE251M9 s,
+                 final Scratchpad scratch)
+        throws IllegalArgumentException {
         final Curve1174DecafProjectivePoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(s, scratch);
 
         return p;
     }

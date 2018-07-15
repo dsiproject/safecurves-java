@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
 public class E382Extended
-    extends E382<E382ExtendedPoint>
+    extends E382<E382ExtendedPoint, E382ExtendedPoint.Scratchpad>
     implements E382Curve,
-               ElligatorGroup<ModE382M105, E382ExtendedPoint> {
+               ElligatorGroup<ModE382M105, E382ExtendedPoint,
+                              E382ExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-382 group.
      */
@@ -72,6 +73,14 @@ public class E382Extended
      * {@inheritDoc}
      */
     @Override
+    public E382ExtendedPoint.Scratchpad scratchpad() {
+        return E382ExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public E382ExtendedPoint fromEdwards(final ModE382M105 x,
                                          final ModE382M105 y) {
         return E382ExtendedPoint.fromEdwards(x, y);
@@ -81,8 +90,10 @@ public class E382Extended
      * {@inheritDoc}
      */
     @Override
-    public E382ExtendedPoint fromHash(final ModE382M105 r) {
-        return E382ExtendedPoint.fromHash(r);
+    public E382ExtendedPoint
+        fromHash(final ModE382M105 r,
+                 final E382ExtendedPoint.Scratchpad scratch) {
+        return E382ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

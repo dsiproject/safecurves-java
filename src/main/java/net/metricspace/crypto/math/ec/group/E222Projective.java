@@ -53,9 +53,10 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see net.metricspace.crypto.math.ec.curve.E222Curve
  */
 public class E222Projective
-    extends E222<E222ProjectivePoint>
+    extends E222<E222ProjectivePoint, E222ProjectivePoint.Scratchpad>
     implements E222Curve,
-               ElligatorGroup<ModE222M117, E222ProjectivePoint> {
+               ElligatorGroup<ModE222M117, E222ProjectivePoint,
+                              E222ProjectivePoint.Scratchpad> {
     /**
      * The base point of the E-222 group.
      */
@@ -72,8 +73,17 @@ public class E222Projective
      * {@inheritDoc}
      */
     @Override
-    public E222ProjectivePoint fromEdwards(final ModE222M117 x,
-                                           final ModE222M117 y) {
+    public E222ProjectivePoint.Scratchpad scratchpad() {
+        return E222ProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E222ProjectivePoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222ProjectivePoint.fromEdwards(x, y);
     }
 
@@ -81,8 +91,10 @@ public class E222Projective
      * {@inheritDoc}
      */
     @Override
-    public E222ProjectivePoint fromHash(final ModE222M117 r) {
-        return E222ProjectivePoint.fromHash(r);
+    public E222ProjectivePoint
+        fromHash(final ModE222M117 r,
+                 final E222ProjectivePoint.Scratchpad scratch) {
+        return E222ProjectivePoint.fromHash(r, scratch);
     }
 
     /**

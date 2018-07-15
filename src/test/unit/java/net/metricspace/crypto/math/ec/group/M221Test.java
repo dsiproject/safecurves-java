@@ -39,7 +39,7 @@ import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.ModE221M3;
 
 public abstract class M221Test<P extends MontgomeryLadder<ModE221M3, P, ?>,
-                               G extends MontgomeryCurveGroup<ModE221M3, P>>
+                               G extends MontgomeryCurveGroup<ModE221M3, P, ?>>
     extends MontgomeryGroupTest<ModE221M3, P, G> {
     private static String BASE_X_STRING =
         "00000000000000000000000000000000000000000000000000000004";

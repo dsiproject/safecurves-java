@@ -38,8 +38,9 @@ import org.testng.annotations.Test;
 import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.ModE511M187;
 
-public abstract class M511Test<P extends MontgomeryLadder<ModE511M187, P, ?>,
-                               G extends MontgomeryCurveGroup<ModE511M187, P>>
+public abstract class
+    M511Test<P extends MontgomeryLadder<ModE511M187, P, ?>,
+             G extends MontgomeryCurveGroup<ModE511M187, P, ?>>
     extends MontgomeryGroupTest<ModE511M187, P, G> {
     private static String BASE_X_STRING =
         "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005";

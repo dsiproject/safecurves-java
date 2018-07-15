@@ -47,28 +47,55 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface ECPoint<S extends PrimeField<S>,
                          P extends ECPoint<S, P, T>,
-                         T extends ECPoint.Scratchpad>
+                         T extends ECPoint.Scratchpad<S>>
     extends Cloneable, Destroyable, AutoCloseable {
-
     /**
-     * Superinterface for scratchpad objects.  These provide the extra
-     * space that implementations need, thereby preventing them from
-     * allocating objects (and likely scribbling sensitive bytes all
-     * over the heap).
+     * Superclass of scratchpads for Montgomery ladders.
+     *
+     * @param <S> Scalar values.
      */
-    public static interface Scratchpad extends Destroyable, AutoCloseable {
+    public static abstract class Scratchpad<S extends PrimeField<S>>
+        extends PrimeField.Scratchpad {
+        public final S r0;
+        public final S r1;
+        public final S r2;
+
         /**
-         * {@inheritDoc}
+         * Initialize a {@code Scratchpad}.
+         *
+         * @param r0 A scalar object, to be owned by the scratchpad.
+         * @param ndigits The number of digits in a scalar value.
          */
-        @Override
-        public void destroy();
+        protected Scratchpad(final S r0,
+                             final S r1,
+                             final S r2,
+                             final int ndigits) {
+            super(ndigits);
+
+            this.r0 = r0;
+            this.r1 = r1;
+            this.r2 = r2;
+        }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public default void close() {
-            destroy();
+        public void destroy() {
+            super.destroy();
+
+            r0.destroy();
+            r1.destroy();
+            r2.destroy();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isDestroyed() {
+            return super.isDestroyed() && r0.isDestroyed() &&
+                   r1.isDestroyed() && r2.isDestroyed();
         }
     }
 
@@ -132,14 +159,42 @@ public interface ECPoint<S extends PrimeField<S>,
      *
      * @param bool {@code 1} to zero this point, or {@code 0} to leave
      *             it as is.
+     * @param scratch The scratchpad to use.
      */
-    public void reset(final long bool);
+    public void reset(final long bool,
+                      final T scratch);
+
+    /**
+     * Set this point to the zero point or not, depending on a
+     * parameter.  In order to facilitate a branch-free
+     * implementation, this is passed as an integer which is expected
+     * to be {@code 0} or {@code 1} as opposed to a {@code boolean}.
+     *
+     * @param bool {@code 1} to zero this point, or {@code 0} to leave
+     *             it as is.
+     */
+    public default void reset(final long bool) {
+        try(final T scratch = scratchpad()) {
+            reset(bool, scratch);
+        }
+    }
+
+    /**
+     * Set this point to the zero point.
+     *
+     * @param scratch The scratchpad to use.
+     */
+    public default void reset(final T scratch) {
+        reset(1, scratch);
+    }
 
     /**
      * Set this point to the zero point.
      */
     public default void reset() {
-        reset(1);
+        try(final T scratch = scratchpad()) {
+            reset(1, scratch);
+        }
     }
 
     /**
@@ -327,12 +382,124 @@ public interface ECPoint<S extends PrimeField<S>,
      *
      * @return The X coordinate.
      */
-    public S getX();
+    public default S getX() {
+        try(final T scratch = scratchpad()) {
+            return getX(scratch);
+        }
+    }
 
     /**
      * Get the Y coordinate.
      *
      * @return The Y coordinate.
      */
-    public S getY();
+    public default S getY() {
+        try(final T scratch = scratchpad()) {
+            return getY(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @return The X coordinate.
+     */
+    public default S getXScaled() {
+        try(final T scratch = scratchpad()) {
+            return getXScaled(scratch);
+        }
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @return The Y coordinate.
+     */
+    public default S getYScaled() {
+        try(final T scratch = scratchpad()) {
+            return getYScaled(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordinate.
+     *
+     * @return The X coordinate.
+     */
+    public default S getXScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return getXScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @return The Y coordinate.
+     */
+    public default S getYScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return getYScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public default S getX(final T scratch) {
+        scale();
+
+        return getXScaled(scratch);
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public default S getY(final T scratch) {
+        scale();
+
+        return getYScaled(scratch);
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public default S getXScaled(final T scratch) {
+        return getXScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public default S getYScaled(final T scratch) {
+        return getYScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public S getXScaledRef(final T scratch);
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public S getYScaledRef(final T scratch);
 }

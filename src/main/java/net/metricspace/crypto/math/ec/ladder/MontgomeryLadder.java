@@ -67,10 +67,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
      * @param <S> Scalar values.
      */
     public static abstract class Scratchpad<S extends PrimeField<S>>
-        implements ECPoint.Scratchpad {
-        public final S r0;
-        public final S r1;
-        public final S r2;
+        extends ECPoint.Scratchpad<S> {
         public final S r3;
         public final S r4;
 
@@ -81,10 +78,10 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
                              final S r1,
                              final S r2,
                              final S r3,
-                             final S r4) {
-            this.r0 = r0;
-            this.r1 = r1;
-            this.r2 = r2;
+                             final S r4,
+                             final int ndigits) {
+            super(r0, r1, r2, ndigits);
+
             this.r3 = r3;
             this.r4 = r4;
         }
@@ -94,9 +91,8 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
          */
         @Override
         public void destroy() {
-            r0.destroy();
-            r1.destroy();
-            r2.destroy();
+            super.destroy();
+
             r3.destroy();
             r4.destroy();
         }
@@ -106,8 +102,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
          */
         @Override
         public boolean isDestroyed() {
-            return r0.isDestroyed() && r1.isDestroyed() && r2.isDestroyed() &&
-                   r3.isDestroyed() && r4.isDestroyed();
+            return super.isDestroyed() && r3.isDestroyed() && r4.isDestroyed();
         }
     }
 
@@ -467,6 +462,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
      * @param <S> The scalar type.
      * @param <T> The scratchpad type.
      * @param point The original point.
+     * @param x The starting {@code x}-coordinate.
      * @param xn The {@code x}-coordinate produced by {@link #ladderX}
      * multiplying ({@code point} by some {@code n}).
      * @param zn The {@code z}-coordinate produced by {@link #ladderX}
@@ -485,6 +481,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
                    P extends MontgomeryLadder<S, ?, T>,
                    T extends MontgomeryLadder.Scratchpad<S>>
         void recoverY(final P point,
+                      final S x,
                       final S xn,
                       final S zn,
                       final S xnp1,
@@ -561,63 +558,95 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
          * r3.2 = r0.5 * Zn
          * Xout = r2.3 / r3.2
          * Yout = r1.5 / r3.2
+         *
+         * X and Y need to be in r3 and r4 respectively.  Therefore,
+         * rename r1 to r4, then r3 to r1, then r2 to r3.  Finally,
+         * put Y in r2 and set it at the beginning to avoid
+         * interference from montgomeryY().
+         *
+         * r2 = y
+         * r0 = x * Zn
+         * r4 = Xn + r0
+         * r3 = Xn - r0
+         * r3.1 = r3^2
+         * r3.2 = r3.1 * Xnp1
+         * r0.1 = 2 * A * Zn
+         * r4.1 = r4 + r0.1
+         * r1 = x * Xn
+         * r1.1 = r1 + Zn
+         * r4.2 = r4.1 * r1.1
+         * r0.2 = r0.1 * Zn
+         * r4.3 = r4.2 - r0.2
+         * r4.4 = r4.3 * Znp1
+         * r4.5 = r4.4 - r3.2
+         * r0.3 = 2 * B * y
+         * r0.4 = r0.3 * Zn
+         * r0.5 = r0.4 * Znp1
+         * r3.3 = r0.5 * Xn
+         * r1.2 = r0.5 * Zn
+         * Xout = r3.3 / r1.2
+         * Yout = r4.5 / r1.2
          */
 
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
         final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
+
+        /* r2 = y */
+        r2.set(point.montgomeryYScaledRef(scratch));
 
         /* r0 = x * Zn */
-        r0.set(point.montgomeryX());
+        r0.set(x);
         r0.mul(zn);
 
-        /* r1 = Xn + r0 */
-        r1.set(xn);
-        r1.add(r0);
+        /* r4 = Xn + r0 */
+        r4.set(xn);
+        r4.add(r0);
 
-        /* r2 = Xn - r0 */
-        r2.set(xn);
-        r2.sub(r0);
+        /* r3 = Xn - r0 */
+        r3.set(xn);
+        r3.sub(r0);
 
-        /* r2.1 = r2^2 */
-        r2.square();
+        /* r3.1 = r3^2 */
+        r3.square();
 
-        /* r2.2 = r2.1 * Xnp1 */
-        r2.mul(xnp1);
+        /* r3.2 = r3.1 * Xnp1 */
+        r3.mul(xnp1);
 
         /* r0.1 = 2 * A * Zn */
         r0.set(zn);
         r0.mul(2);
         r0.mul(curvea);
 
-        /* r1.1 = r1 + r0 */
-        r1.add(r0);
+        /* r4.1 = r4 + r0 */
+        r4.add(r0);
 
-        /* r3 = x * Xn */
-        r3.set(point.montgomeryX());
-        r3.mul(xn);
+        /* r1 = x * Xn */
+        r1.set(x);
+        r1.mul(xn);
 
-        /* r3.1 = r3 + Zn */
-        r3.add(zn);
+        /* r1.1 = r1 + Zn */
+        r1.add(zn);
 
-        /* r1.2 = r1.1 * r3.1 */
-        r1.mul(r3);
+        /* r4.2 = r4.1 * r1.1 */
+        r4.mul(r1);
 
         /* r0.2 = r0.1 * Zn */
         r0.mul(zn);
 
-        /* r1.3 = r1.2 - r0.2 */
-        r1.sub(r0);
+        /* r4.3 = r4.2 - r0.2 */
+        r4.sub(r0);
 
-        /* r1.4 = r1.3 * Znp1 */
-        r1.mul(znp1);
+        /* r4.4 = r4.3 * Znp1 */
+        r4.mul(znp1);
 
-        /* r1.5 = r1.4 - r2.2 */
-        r1.sub(r2);
+        /* r4.5 = r4.4 - r3.2 */
+        r4.sub(r3);
 
         /* r0.3 = 2 * y */
-        r0.set(point.montgomeryY());
+        r0.set(r2);
         r0.mul(curveb);
         r0.mul(2);
 
@@ -627,25 +656,27 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
         /* r0.5 = r0.4 * Znp1 */
         r0.mul(znp1);
 
-        /* r2.3 = r0.5 * Xn */
-        r2.set(r0);
-        r2.mul(xn);
-
-        /* r3.2 = r0.5 * Zn */
+        /* r3.3 = r0.5 * Xn */
         r3.set(r0);
-        r3.mul(zn);
+        r3.mul(xn);
 
-        /* Xout = r2.3 / r3.2 */
-        r2.div(r3);
+        /* r1.2 = r0.5 * Zn */
+        r1.set(r0);
+        r1.mul(zn);
 
-        /* Yout = r1.5 / r3.2 */
-        r1.div(r3);
+        /* Xout = r3.3 / r1.2 */
+        r3.div(r1, scratch);
+
+        /* Yout = r4.5 / r1.2 */
+        r4.div(r1, scratch);
+
+        final long i0 = r1.isZero(scratch);
 
         /* Convert back to underlying coordinates */
-        out.setMontgomery(r2, r1);
+        out.setMontgomery(r3, r4, scratch);
 
         /* Set to zero if Zout is zero */
-        out.reset(r3.isZero());
+        out.reset(i0, scratch);
     }
 
     /**
@@ -665,10 +696,10 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
             final S curveparam = montgomeryA();
 
             curveparam.sub(2);
-            curveparam.div(4);
+            curveparam.div(4, scratch);
             z.set(1);
             ladderX(x, z, scalar, curveparam, scratch);
-            x.div(z);
+            x.div(z, scratch);
 
             return x;
         }
@@ -694,7 +725,9 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
     @Override
     public default void mul(final S scalar,
                             final T scratch) {
-        try(final S x = montgomeryX();
+        scale();
+
+        try(final S x = montgomeryXScaled(scratch);
             final S z = x.clone();
             final S xn = x.clone();
             final S zn = z.clone();
@@ -706,13 +739,14 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
             final S curveparam = montgomeryA();
 
             curveparam.sub(2);
-            curveparam.div(4);
+            curveparam.div(4, scratch);
             z.set(1);
             xn.set(1);
             zn.set(0);
             znp1.set(1);
             ladderX(x, z, xn, zn, xnp1, znp1, scalar, curveparam, scratch);
-            recoverY(this, xn, zn, xnp1, znp1, curvea, curveb, this, scratch);
+            recoverY(this, x, xn, zn, xnp1, znp1,
+                     curvea, curveb, this, scratch);
         }
     }
 }

@@ -51,8 +51,9 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * @see ModE383M187
  * @see net.metricspace.crypto.math.ec.group.M383
  */
-public abstract class M383<P extends ECPoint<ModE383M187, P, ?>>
-    extends MontgomeryCurveGroup<ModE383M187, P>
+public abstract class M383<P extends ECPoint<ModE383M187, P, T>,
+                           T extends ECPoint.Scratchpad<ModE383M187>>
+    extends MontgomeryCurveGroup<ModE383M187, P, T>
     implements M383Curve {
     /**
      * Prime order for the group.  The value is {@code

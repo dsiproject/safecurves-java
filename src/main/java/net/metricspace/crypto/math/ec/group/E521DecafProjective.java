@@ -57,9 +57,11 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
 public class E521DecafProjective
-    extends E521Decaf<E521DecafProjectivePoint>
+    extends E521Decaf<E521DecafProjectivePoint,
+                      E521DecafProjectivePoint.Scratchpad>
     implements E521Curve,
-               ElligatorGroup<ModE521M1, E521DecafProjectivePoint> {
+               ElligatorGroup<ModE521M1, E521DecafProjectivePoint,
+                              E521DecafProjectivePoint.Scratchpad> {
     /**
      * The base point of the E-521 group.
      */
@@ -76,8 +78,17 @@ public class E521DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E521DecafProjectivePoint fromEdwards(final ModE521M1 x,
-                                                final ModE521M1 y) {
+    public E521DecafProjectivePoint.Scratchpad scratchpad() {
+        return E521DecafProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521DecafProjectivePoint
+        fromEdwards(final ModE521M1 x,
+                    final ModE521M1 y) {
         return E521DecafProjectivePoint.fromEdwards(x, y);
     }
 
@@ -85,17 +96,21 @@ public class E521DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public E521DecafProjectivePoint fromCompressed(final ModE521M1 s)
+    public E521DecafProjectivePoint
+        fromCompressed(final ModE521M1 s,
+                       final E521DecafProjectivePoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E521DecafProjectivePoint.fromCompressed(s);
+        return E521DecafProjectivePoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E521DecafProjectivePoint fromHash(final ModE521M1 r) {
-        return E521DecafProjectivePoint.fromHash(r);
+    public E521DecafProjectivePoint
+        fromHash(final ModE521M1 r,
+                 final E521DecafProjectivePoint.Scratchpad scratch) {
+        return E521DecafProjectivePoint.fromHash(r, scratch);
     }
 
     /**

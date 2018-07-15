@@ -51,6 +51,7 @@ public interface DecafPoint<S extends PrimeField<S>,
                             P extends DecafPoint<S, P, T>,
                             T extends MontgomeryLadder.Scratchpad<S>>
     extends CompressablePoint<S, P, T, S>,
+            EdwardsPoint<S, P, T>,
             MontgomeryLadder<S, P, T> {
     /**
      * Compress raw projective Edwards coordinates.
@@ -70,7 +71,7 @@ public interface DecafPoint<S extends PrimeField<S>,
                    final T scratch) {
         scratch.r0.set(x);
         scratch.r0.mul(y);
-        scratch.r0.div(z);
+        scratch.r0.div(z, scratch);
 
         return compress(d, x, y, z, scratch.r0, scratch);
     }
@@ -163,7 +164,7 @@ public interface DecafPoint<S extends PrimeField<S>,
         r2.sub(y);
         r2.mul(r1);
         r2.mul(i0);
-        r2.invSqrt();
+        r2.invSqrt(scratch);
 
         /* r1.1 = i0 * r2 */
         r1.set(r2);
@@ -175,7 +176,7 @@ public interface DecafPoint<S extends PrimeField<S>,
         r3.mul(-2);
 
         /* r2.1 = r2 * r3.signum */
-        r2.mul(r3.signum());
+        r2.mul(r3.signum(scratch));
 
         /* r3.1 = d * Y * T */
         r3.set(t);
@@ -189,7 +190,7 @@ public interface DecafPoint<S extends PrimeField<S>,
         r0.mul(r2);
         r0.add(y);
         r0.mul(r1);
-        r0.abs();
+        r0.abs(scratch);
 
         /* S = r0 */
         return r0.clone();
@@ -242,7 +243,7 @@ public interface DecafPoint<S extends PrimeField<S>,
      *                                  invalid.
      */
     public static <S extends PrimeField<S>,
-                   T extends MontgomeryLadder.Scratchpad<S>>
+                   T extends ECPoint.Scratchpad<S>>
         void decompress(final int d,
                         final S s,
                         final S x,
@@ -349,22 +350,22 @@ public interface DecafPoint<S extends PrimeField<S>,
         r0.mul(r1);
 
         /* i0 = r0.1.legendre */
-        final int i0 = r0.legendre();
+        final int i0 = r0.legendre(scratch);
 
         /* Reject if s.signum == -1 or i0 == -1 */
-        if (s.signum() == -1 || i0 == -1) {
+        if (s.signum(scratch) == -1 || i0 == -1) {
             throw new IllegalArgumentException("Invalid compressed point");
         }
 
         /* r0.2 = r0.1.invsqrt * i0 */
-        r0.invSqrt();
+        r0.invSqrt(scratch);
         r0.mul(i0);
 
         /* r1.1 = r1 * r0.2 */
         r1.mul(r0);
 
         /* r0.3 = r0.2 * r1.1.signum */
-        r0.mul(r1.signum());
+        r0.mul(r1.signum(scratch));
 
         /* r1.2 = 2 - Z */
         r1.set(2);
@@ -375,7 +376,7 @@ public interface DecafPoint<S extends PrimeField<S>,
         r0.mul(r1);
 
         /* r0.5 = r0.4 + s.isZero */
-        r0.add(s.isZero());
+        r0.add(s.isZero(scratch));
 
         /* Y = r0.5 * Z */
         y.set(r0);

@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.group;
 import net.metricspace.crypto.math.ec.curve.E382Curve;
 import net.metricspace.crypto.math.ec.point.ECPoint;
 import net.metricspace.crypto.math.ec.point.DecafPoint;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.ModE382M105;
 
 /**
@@ -57,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see ModE382M105
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
-public abstract class E382Decaf<P extends DecafPoint<ModE382M105, P, ?>>
-    extends E382<P>
-    implements DecafGroup<ModE382M105, P> {
+public abstract class
+    E382Decaf<P extends DecafPoint<ModE382M105, P, T>,
+              T extends MontgomeryLadder.Scratchpad<ModE382M105>>
+    extends E382<P, T>
+    implements DecafGroup<ModE382M105, P, T> {
     /**
      * The cofactor of E-382 is {@code 4}; decaf reduces this by
      * a factor of {@code 4} to {@code 1}.

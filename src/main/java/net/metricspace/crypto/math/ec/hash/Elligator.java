@@ -53,15 +53,40 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface Elligator<S extends PrimeField<S>,
                            P extends Elligator<S, P, T>,
-                           T extends ECPoint.Scratchpad>
+                           T extends ECPoint.Scratchpad<S>>
     extends ECPoint<S, P, T> {
     /**
      * Use the hash function from a single scalar value to a point to
      * set the value of this point.
      *
      * @param code The hash code from which to generate a point.
+     * @param scratch The scratchpad to use.
      */
-    public void decodeHash(final S code);
+    public void decodeHash(final S code,
+                           final T scratch);
+
+    /**
+     * Use the hash function from a single scalar value to a point to
+     * set the value of this point.
+     *
+     * @param code The hash code from which to generate a point.
+     */
+    public default void decodeHash(final S code) {
+        try(final T scratch = scratchpad()) {
+            decodeHash(code, scratch);
+        }
+    }
+
+    /**
+     * Get a hash code that will re-create this point with {@link
+     * decodeHash}.
+     *
+     * @param scratch The scratchpad to use.
+     * @return A hash code that will re-create this point with {@link
+     *         decodeHash}.
+     * @see decodeHash
+     */
+    public S encodeHash(final T scratch);
 
     /**
      * Get a hash code that will re-create this point with {@link
@@ -71,12 +96,28 @@ public interface Elligator<S extends PrimeField<S>,
      *         decodeHash}.
      * @see decodeHash
      */
-    public S encodeHash();
+    public default S encodeHash() {
+        try(final T scratch = scratchpad()) {
+            return encodeHash(scratch);
+        }
+    }
+
+    /**
+     * Determine whether the point can be hashed.
+     *
+     * @param scratch The scratchpad to use.
+     * @return Whether the point can be hashed.
+     */
+    public boolean canEncode(final T scratch);
 
     /**
      * Determine whether the point can be hashed.
      *
      * @return Whether the point can be hashed.
      */
-    public boolean canEncode();
+    public default boolean canEncode() {
+        try(final T scratch = scratchpad()) {
+            return canEncode(scratch);
+        }
+    }
 }

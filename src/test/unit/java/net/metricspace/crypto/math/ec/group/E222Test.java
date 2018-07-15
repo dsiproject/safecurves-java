@@ -39,7 +39,7 @@ import net.metricspace.crypto.math.ec.point.EdwardsPoint;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 public abstract class E222Test<P extends EdwardsPoint<ModE222M117, P, ?>,
-                               G extends EdwardsCurveGroup<ModE222M117, P>>
+                               G extends EdwardsCurveGroup<ModE222M117, P, ?>>
     extends EdwardsGroupTest<ModE222M117, P, G> {
     private static String BASE_X_STRING =
         "19b12bb156a389e55c9768c303316d07c23adab3736eb2bc3eb54e51";

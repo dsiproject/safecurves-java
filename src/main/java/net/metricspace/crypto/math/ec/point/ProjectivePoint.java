@@ -46,7 +46,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class ProjectivePoint<S extends PrimeField<S>,
                                       P extends ProjectivePoint<S, P, T>,
-                                      T extends ECPoint.Scratchpad>
+                                      T extends ECPoint.Scratchpad<S>>
     extends ScaledPoint<S, P, T>
     implements TwistedEdwardsPoint<S, P, T> {
     /**
@@ -133,8 +133,9 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public void reset(final long bit) {
-        final S one = x.clone();
+    public void reset(final long bit,
+                      final T scratch) {
+        final S one = scratch.r0;
         final long negbit = bit ^ 0x1;
 
         one.set(1);
@@ -151,12 +152,9 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      */
     @Override
     public void scale() {
-        final S a = z.clone();
-
-        a.inv();
-
-        x.mul(a);
-        y.mul(a);
+        z.inv();
+        x.mul(z);
+        y.mul(z);
         z.set(1);
     }
 
@@ -184,24 +182,16 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public S edwardsX() {
-        final S out = x.clone();
-
-        out.div(z);
-
-        return out;
+    public S edwardsXScaledRef() {
+        return x;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public S edwardsY() {
-        final S out = y.clone();
-
-        out.div(z);
-
-        return out;
+    public S edwardsYScaledRef() {
+        return y;
     }
 
     /**

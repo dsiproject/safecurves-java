@@ -58,9 +58,10 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see net.metricspace.crypto.math.ec.curve.E222Curve
  */
 public class E222DecafExtended
-    extends E222Decaf<E222DecafExtendedPoint>
+    extends E222Decaf<E222DecafExtendedPoint, E222DecafExtendedPoint.Scratchpad>
     implements E222Curve,
-               ElligatorGroup<ModE222M117, E222DecafExtendedPoint> {
+               ElligatorGroup<ModE222M117, E222DecafExtendedPoint,
+                              E222DecafExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-222 group.
      */
@@ -77,8 +78,17 @@ public class E222DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromEdwards(final ModE222M117 x,
-                                              final ModE222M117 y) {
+    public E222DecafExtendedPoint.Scratchpad scratchpad() {
+        return E222DecafExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E222DecafExtendedPoint
+        fromEdwards(final ModE222M117 x,
+                    final ModE222M117 y) {
         return E222DecafExtendedPoint.fromEdwards(x, y);
     }
 
@@ -86,17 +96,21 @@ public class E222DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromCompressed(final ModE222M117 s)
+    public E222DecafExtendedPoint
+        fromCompressed(final ModE222M117 s,
+                       final E222DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E222DecafExtendedPoint.fromCompressed(s);
+        return E222DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E222DecafExtendedPoint fromHash(final ModE222M117 r) {
-        return E222DecafExtendedPoint.fromHash(r);
+    public E222DecafExtendedPoint
+        fromHash(final ModE222M117 r,
+                 final E222DecafExtendedPoint.Scratchpad scratch) {
+        return E222DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

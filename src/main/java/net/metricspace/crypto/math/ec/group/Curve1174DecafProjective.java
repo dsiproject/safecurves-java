@@ -57,9 +57,11 @@ import net.metricspace.crypto.math.field.ModE251M9;
  * @see net.metricspace.crypto.math.ec.curve.Curve1174Curve
  */
 public class Curve1174DecafProjective
-    extends Curve1174Decaf<Curve1174DecafProjectivePoint>
+    extends Curve1174Decaf<Curve1174DecafProjectivePoint,
+                           Curve1174DecafProjectivePoint.Scratchpad>
     implements Curve1174Curve,
-               ElligatorGroup<ModE251M9, Curve1174DecafProjectivePoint> {
+               ElligatorGroup<ModE251M9, Curve1174DecafProjectivePoint,
+                              Curve1174DecafProjectivePoint.Scratchpad> {
     /**
      * The base point of the Curve1174 group.
      */
@@ -77,8 +79,17 @@ public class Curve1174DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromEdwards(final ModE251M9 x,
-                                                     final ModE251M9 y) {
+    public Curve1174DecafProjectivePoint.Scratchpad scratchpad() {
+        return Curve1174DecafProjectivePoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve1174DecafProjectivePoint
+        fromEdwards(final ModE251M9 x,
+                    final ModE251M9 y) {
         return Curve1174DecafProjectivePoint.fromEdwards(x, y);
     }
 
@@ -86,17 +97,21 @@ public class Curve1174DecafProjective
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromCompressed(final ModE251M9 s)
+    public Curve1174DecafProjectivePoint
+        fromCompressed(final ModE251M9 s,
+                       final Curve1174DecafProjectivePoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return Curve1174DecafProjectivePoint.fromCompressed(s);
+        return Curve1174DecafProjectivePoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve1174DecafProjectivePoint fromHash(final ModE251M9 r) {
-        return Curve1174DecafProjectivePoint.fromHash(r);
+    public Curve1174DecafProjectivePoint
+        fromHash(final ModE251M9 r,
+                 final Curve1174DecafProjectivePoint.Scratchpad scratch) {
+        return Curve1174DecafProjectivePoint.fromHash(r, scratch);
     }
 
     /**

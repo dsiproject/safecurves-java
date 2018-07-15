@@ -66,10 +66,16 @@ public class M511ExtendedPoint
          */
         private Scratchpad() {
             super(new ModE511M187(0), new ModE511M187(0), new ModE511M187(0),
-                  new ModE511M187(0), new ModE511M187(0), new ModE511M187(0));
+                  new ModE511M187(0), new ModE511M187(0), new ModE511M187(0),
+                  ModE511M187.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }
@@ -168,10 +174,29 @@ public class M511ExtendedPoint
      */
     public static M511ExtendedPoint fromMontgomery(final ModE511M187 x,
                                                    final ModE511M187 y) {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code M511ExtendedPoint} initialized from Edwards
+     * {@code x} and {@code y} points.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
+    public static M511ExtendedPoint fromMontgomery(final ModE511M187 x,
+                                                   final ModE511M187 y,
+                                                   final Scratchpad scratch) {
         final ModE511M187 edwardsX = new ModE511M187(0);
         final ModE511M187 edwardsY = new ModE511M187(0);
 
-        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
+        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX,
+                                                edwardsY, scratch);
 
         return new M511ExtendedPoint(edwardsX, edwardsY);
     }
@@ -179,15 +204,31 @@ public class M511ExtendedPoint
     /**
      * Create a {@code M511ExtendedPoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static M511ExtendedPoint fromHash(final ModE511M187 s)
+    public static M511ExtendedPoint fromHash(final ModE511M187 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code M511ExtendedPoint} from a hash.
+     *
+     * @param r The hash input.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized by hashing {@code r} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static M511ExtendedPoint fromHash(final ModE511M187 r,
+                                             final Scratchpad scratch)
         throws IllegalArgumentException {
         final M511ExtendedPoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

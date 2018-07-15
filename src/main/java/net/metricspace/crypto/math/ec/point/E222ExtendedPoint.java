@@ -65,10 +65,16 @@ public class E222ExtendedPoint
          */
         private Scratchpad() {
             super(new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
-                  new ModE222M117(0), new ModE222M117(0), new ModE222M117(0));
+                  new ModE222M117(0), new ModE222M117(0), new ModE222M117(0),
+                  ModE222M117.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }
@@ -181,14 +187,16 @@ public class E222ExtendedPoint
      * Create a {@code E222ExtendedPoint} from a hash.
      *
      * @param s The hash input.
+     * @param scratch The scratchpad to use.
      * @return A point initialized by hashing {@code s} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static E222ExtendedPoint fromHash(final ModE222M117 s)
+    public static E222ExtendedPoint fromHash(final ModE222M117 s,
+                                             final Scratchpad scratch)
         throws IllegalArgumentException {
         final E222ExtendedPoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(s, scratch);
 
         return p;
     }

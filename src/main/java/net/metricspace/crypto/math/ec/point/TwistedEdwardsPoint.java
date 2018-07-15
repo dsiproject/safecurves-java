@@ -45,7 +45,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public interface TwistedEdwardsPoint<S extends PrimeField<S>,
                                      P extends TwistedEdwardsPoint<S, P, T>,
-                                     T extends ECPoint.Scratchpad>
+                                     T extends ECPoint.Scratchpad<S>>
     extends MontgomeryPoint<S, P, T>,
             MontgomeryBirationalEquivalence<S> {
     /**
@@ -55,7 +55,11 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * @return The value of the X coordinate in the Edwards
      * representation.
      */
-    public S edwardsX();
+    public default S edwardsX() {
+        scale();
+
+        return edwardsXScaled();
+    }
 
     /**
      * Get the value of the Y coordinate in the Edwards
@@ -64,7 +68,59 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * @return The value of the Y coordinate in the Edwards
      * representation.
      */
-    public S edwardsY();
+    public default S edwardsY() {
+        scale();
+
+        return edwardsYScaled();
+    }
+
+    /**
+     * Get the value of the X coordinate in the Edwards
+     * representation.  This assumes the point has already been
+     * scaled.
+     *
+     * @return The value of the X coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public default S edwardsXScaled() {
+        return edwardsXScaledRef().clone();
+    }
+
+    /**
+     * Get the value of the Y coordinate in the Edwards
+     * representation.  This assumes the point has already been
+     * scaled.
+     *
+     * @return The value of the Y coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public default S edwardsYScaled() {
+        return edwardsYScaledRef().clone();
+    }
+
+    /**
+     * Get a direct reference to the value of the X coordinate in the
+     * Edwards representation.  This assumes the point has already
+     * been scaled.
+     *
+     * @return The value of the X coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsXScaledRef();
+
+    /**
+     * Get a direct reference to the value of the Y coordinate in the
+     * Edwards representation.  This assumes the point has already
+     * been scaled.
+     *
+     * @return The value of the Y coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsYScaledRef();
 
     /**
      * Set the point from its Edwards coordinates.
@@ -84,14 +140,18 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * @param v The Montgomery {@code v} (or {@code y})
      * @param x The Edwards {@code x} coordinate to set.
      * @param y The Edwards {@code y} coordinate to set.
+     * @param scratch The scratchpad to use.
      */
-    public static <S extends PrimeField<S>>
+    public static <S extends PrimeField<S>,
+                   T extends ECPoint.Scratchpad<S>>
         void montgomeryToEdwards(final S u,
                                  final S v,
                                  final S x,
-                                 final S y) {
-        final S ydenom = u.clone();
+                                 final S y,
+                                 final T scratch) {
+        final S ydenom = scratch.r2;
 
+        ydenom.set(u);
         x.set(v);
         x.inv();
         x.mul(u);
@@ -106,10 +166,12 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryX() {
-        final S y = edwardsY();
-        final S denom = y.clone();
+    public default S montgomeryXScaledRef(final T scratch) {
+        final S y = scratch.r0;
+        final S denom = scratch.r1;
 
+        y.set(edwardsYScaledRef());
+        denom.set(y);
         denom.sub(1);
         denom.neg();
         denom.inv();
@@ -123,13 +185,15 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryY() {
-        final S y = edwardsY();
-        final S denom = y.clone();
+    public default S montgomeryYScaledRef(final T scratch) {
+        final S y = scratch.r0;
+        final S denom = scratch.r1;
 
+        y.set(edwardsYScaledRef());
+        denom.set(y);
         denom.sub(1);
         denom.neg();
-        denom.mul(edwardsX());
+        denom.mul(edwardsXScaledRef());
         denom.inv();
         y.add(1);
         y.mul(denom);
@@ -142,11 +206,12 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      */
     @Override
     public default void setMontgomery(final S u,
-                                      final S v) {
-        final S x = v.clone();
-        final S y = u.clone();
+                                      final S v,
+                                      final T scratch) {
+        final S x = scratch.r0;
+        final S y = scratch.r1;
 
-        montgomeryToEdwards(u, v, x, y);
+        montgomeryToEdwards(u, v, x, y, scratch);
         setEdwards(x, y);
     }
 
@@ -154,24 +219,26 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * Get the value of the X coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
      * representation.
      */
     @Override
-    public default S getX() {
-        return montgomeryX();
+    public default S getXScaledRef(final T scratch) {
+        return montgomeryXScaledRef(scratch);
     }
 
     /**
      * Get the value of the Y coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the Y coordinate in the Montgomery
      * representation.
      */
     @Override
-    public default S getY() {
-        return montgomeryY();
+    public default S getYScaledRef(final T scratch) {
+        return montgomeryYScaledRef(scratch);
     }
 
     /**

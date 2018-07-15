@@ -43,7 +43,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class ScaledPoint<S extends PrimeField<S>,
                                   P extends ScaledPoint<S, P, T>,
-                                  T extends ECPoint.Scratchpad>
+                                  T extends ECPoint.Scratchpad<S>>
     implements ECPoint<S, P, T> {
     /**
      * Inverted X coordinate.  This is {@code Z / x}, where {@code x}

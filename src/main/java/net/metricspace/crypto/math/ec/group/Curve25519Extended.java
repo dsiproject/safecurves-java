@@ -54,9 +54,11 @@ import net.metricspace.crypto.math.field.ModE255M19;
  * @see net.metricspace.crypto.math.ec.curve.Curve25519Curve
  */
 public class Curve25519Extended
-    extends Curve25519<Curve25519ExtendedPoint>
+    extends Curve25519<Curve25519ExtendedPoint,
+                       Curve25519ExtendedPoint.Scratchpad>
     implements Curve25519Curve,
-               ElligatorGroup<ModE255M19, Curve25519ExtendedPoint> {
+               ElligatorGroup<ModE255M19, Curve25519ExtendedPoint,
+                              Curve25519ExtendedPoint.Scratchpad> {
     /**
      * The base point of the Curve25519 group.
      */
@@ -73,8 +75,17 @@ public class Curve25519Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromTwistedEdwards(final ModE255M19 x,
-                                                      final ModE255M19 y) {
+    public Curve25519ExtendedPoint.Scratchpad scratchpad() {
+        return Curve25519ExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Curve25519ExtendedPoint
+        fromTwistedEdwards(final ModE255M19 x,
+                           final ModE255M19 y) {
         return Curve25519ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -82,17 +93,21 @@ public class Curve25519Extended
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromMontgomery(final ModE255M19 x,
-                                                  final ModE255M19 y) {
-        return Curve25519ExtendedPoint.fromMontgomery(x, y);
+    public Curve25519ExtendedPoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Curve25519ExtendedPoint.Scratchpad scratch) {
+        return Curve25519ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Curve25519ExtendedPoint fromHash(final ModE255M19 r) {
-        return Curve25519ExtendedPoint.fromHash(r);
+    public Curve25519ExtendedPoint
+        fromHash(final ModE255M19 r,
+                 final Curve25519ExtendedPoint.Scratchpad scratch) {
+        return Curve25519ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

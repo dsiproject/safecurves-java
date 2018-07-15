@@ -32,6 +32,7 @@
 package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.point.DecafPoint;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.PrimeField;
 
 /**
@@ -45,7 +46,9 @@ import net.metricspace.crypto.math.field.PrimeField;
  * @param <P> The type of points.
  */
 public interface DecafGroup<S extends PrimeField<S>,
-                            P extends DecafPoint<S, P, ?>> {
+                            P extends DecafPoint<S, P, T>,
+                            T extends MontgomeryLadder.Scratchpad<S>>
+    extends ECGroup<S, P, T> {
     /**
      * Create a point from its compressed representation.
      *
@@ -53,6 +56,22 @@ public interface DecafGroup<S extends PrimeField<S>,
      * @return The decompressed point.
      * @throws IllegalArgumentException If the compressed point is invalid.
      */
-    public P fromCompressed(final S s)
+    public default P fromCompressed(final S s)
+        throws IllegalArgumentException {
+        try(final T scratch = scratchpad()) {
+            return fromCompressed(s, scratch);
+        }
+    }
+
+    /**
+     * Create a point from its compressed representation.
+     *
+     * @param s The compressed point.
+     * @param scratch The scratchpad to use.
+     * @return The decompressed point.
+     * @throws IllegalArgumentException If the compressed point is invalid.
+     */
+    public P fromCompressed(final S s,
+                            final T scratch)
         throws IllegalArgumentException;
 }

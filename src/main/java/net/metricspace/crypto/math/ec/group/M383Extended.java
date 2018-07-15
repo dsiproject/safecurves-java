@@ -54,9 +54,10 @@ import net.metricspace.crypto.math.field.ModE383M187;
  * @see net.metricspace.crypto.math.ec.curve.M383Curve
  */
 public class M383Extended
-    extends M383<M383ExtendedPoint>
+    extends M383<M383ExtendedPoint, M383ExtendedPoint.Scratchpad>
     implements M383Curve,
-               ElligatorGroup<ModE383M187, M383ExtendedPoint> {
+               ElligatorGroup<ModE383M187, M383ExtendedPoint,
+                              M383ExtendedPoint.Scratchpad> {
     /**
      * The base point of the M-383 group.
      */
@@ -73,8 +74,17 @@ public class M383Extended
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromTwistedEdwards(final ModE383M187 x,
-                                                final ModE383M187 y) {
+    public M383ExtendedPoint.Scratchpad scratchpad() {
+        return M383ExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public M383ExtendedPoint
+        fromTwistedEdwards(final ModE383M187 x,
+                           final ModE383M187 y) {
         return M383ExtendedPoint.fromEdwards(x, y);
     }
 
@@ -82,17 +92,21 @@ public class M383Extended
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromMontgomery(final ModE383M187 x,
-                                            final ModE383M187 y) {
-        return M383ExtendedPoint.fromMontgomery(x, y);
+    public M383ExtendedPoint
+        fromMontgomery(final ModE383M187 x,
+                       final ModE383M187 y,
+                       final M383ExtendedPoint.Scratchpad scratch) {
+        return M383ExtendedPoint.fromMontgomery(x, y, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public M383ExtendedPoint fromHash(final ModE383M187 r) {
-        return M383ExtendedPoint.fromHash(r);
+    public M383ExtendedPoint
+        fromHash(final ModE383M187 r,
+                 final M383ExtendedPoint.Scratchpad scratch) {
+        return M383ExtendedPoint.fromHash(r, scratch);
     }
 
     /**

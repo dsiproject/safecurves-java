@@ -66,10 +66,16 @@ public class Curve25519ProjectivePoint
          */
         private Scratchpad() {
             super(new ModE255M19(0), new ModE255M19(0), new ModE255M19(0),
-                  new ModE255M19(0), new ModE255M19(0), new ModE255M19(0));
+                  new ModE255M19(0), new ModE255M19(0), new ModE255M19(0),
+                  ModE255M19.NUM_DIGITS);
         }
 
-        protected static Scratchpad get() {
+        /**
+         * Get an instance of this {@code Scratchpad}.
+         *
+         * @return An instance of this {@code Scratchpad}.
+         */
+        public static Scratchpad get() {
             return scratchpads.get();
         }
     }
@@ -165,10 +171,30 @@ public class Curve25519ProjectivePoint
      */
     public static Curve25519ProjectivePoint fromMontgomery(final ModE255M19 x,
                                                            final ModE255M19 y) {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromMontgomery(x, y, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve25519ProjectivePoint} initialized from Edwards
+     * {@code x} and {@code y} points.
+     *
+     * @param x The Montgomery {@code x} coordinate.
+     * @param y The Montgomery {@code y} coordinate.
+     * @param scratch The scratchpad to use.
+     * @return A point initialized to the given Edwards {@code x} and
+     *         {@code y} coordinates.
+     */
+    public static Curve25519ProjectivePoint
+        fromMontgomery(final ModE255M19 x,
+                       final ModE255M19 y,
+                       final Scratchpad scratch) {
         final ModE255M19 edwardsX = new ModE255M19(0);
         final ModE255M19 edwardsY = new ModE255M19(0);
 
-        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX, edwardsY);
+        TwistedEdwardsPoint.montgomeryToEdwards(x, y, edwardsX,
+                                                edwardsY, scratch);
 
         return new Curve25519ProjectivePoint(edwardsX, edwardsY);
     }
@@ -176,15 +202,30 @@ public class Curve25519ProjectivePoint
     /**
      * Create a {@code Curve25519ProjectivePoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
-    public static Curve25519ProjectivePoint fromHash(final ModE255M19 s)
+    public static Curve25519ProjectivePoint fromHash(final ModE255M19 r)
+        throws IllegalArgumentException {
+        try(final Scratchpad scratch = Scratchpad.get()) {
+            return fromHash(r, scratch);
+        }
+    }
+
+    /**
+     * Create a {@code Curve25519ProjectivePoint} from a hash.
+     *
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
+     * @throws IllegalArgumentException If the hash input is invalid.
+     */
+    public static Curve25519ProjectivePoint fromHash(final ModE255M19 r,
+                                                     final Scratchpad scratch)
         throws IllegalArgumentException {
         final Curve25519ProjectivePoint p = zero();
 
-        p.decodeHash(s);
+        p.decodeHash(r, scratch);
 
         return p;
     }

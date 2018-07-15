@@ -49,7 +49,7 @@ import net.metricspace.crypto.math.field.PrimeField;
  */
 public abstract class ExtendedPoint<S extends PrimeField<S>,
                                     P extends ExtendedPoint<S, P, T>,
-                                    T extends ECPoint.Scratchpad>
+                                    T extends ECPoint.Scratchpad<S>>
     extends ProjectivePoint<S, P, T>
     implements TwistedEdwardsPoint<S, P, T> {
     /**
@@ -131,8 +131,9 @@ public abstract class ExtendedPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public void reset(final long bit) {
-        super.reset(bit);
+    public void reset(final long bit,
+                      final T scratch) {
+        super.reset(bit, scratch);
 
         t.mask(bit ^ 0x1);
     }

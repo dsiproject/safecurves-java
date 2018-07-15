@@ -58,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
 public class E382DecafExtended
-    extends E382Decaf<E382DecafExtendedPoint>
+    extends E382Decaf<E382DecafExtendedPoint,
+                      E382DecafExtendedPoint.Scratchpad>
     implements E382Curve,
-               ElligatorGroup<ModE382M105, E382DecafExtendedPoint> {
+               ElligatorGroup<ModE382M105, E382DecafExtendedPoint,
+                              E382DecafExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-382 group.
      */
@@ -77,6 +79,14 @@ public class E382DecafExtended
      * {@inheritDoc}
      */
     @Override
+    public E382DecafExtendedPoint.Scratchpad scratchpad() {
+        return E382DecafExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public E382DecafExtendedPoint fromEdwards(final ModE382M105 x,
                                               final ModE382M105 y) {
         return E382DecafExtendedPoint.fromEdwards(x, y);
@@ -86,17 +96,21 @@ public class E382DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E382DecafExtendedPoint fromCompressed(final ModE382M105 s)
+    public E382DecafExtendedPoint
+        fromCompressed(final ModE382M105 s,
+                       final E382DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E382DecafExtendedPoint.fromCompressed(s);
+        return E382DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E382DecafExtendedPoint fromHash(final ModE382M105 r) {
-        return E382DecafExtendedPoint.fromHash(r);
+    public E382DecafExtendedPoint
+        fromHash(final ModE382M105 r,
+                 final E382DecafExtendedPoint.Scratchpad scratch) {
+        return E382DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

@@ -52,9 +52,11 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
 public class E521DecafExtended
-    extends E521Decaf<E521DecafExtendedPoint>
+    extends E521Decaf<E521DecafExtendedPoint,
+                      E521DecafExtendedPoint.Scratchpad>
     implements E521Curve,
-               ElligatorGroup<ModE521M1, E521DecafExtendedPoint> {
+               ElligatorGroup<ModE521M1, E521DecafExtendedPoint,
+                              E521DecafExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-521 group.
      */
@@ -71,8 +73,17 @@ public class E521DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E521DecafExtendedPoint fromEdwards(final ModE521M1 x,
-                                              final ModE521M1 y) {
+    public E521DecafExtendedPoint.Scratchpad scratchpad() {
+        return E521DecafExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public E521DecafExtendedPoint
+        fromEdwards(final ModE521M1 x,
+                    final ModE521M1 y) {
         return E521DecafExtendedPoint.fromEdwards(x, y);
     }
 
@@ -80,17 +91,21 @@ public class E521DecafExtended
      * {@inheritDoc}
      */
     @Override
-    public E521DecafExtendedPoint fromCompressed(final ModE521M1 s)
+    public E521DecafExtendedPoint
+        fromCompressed(final ModE521M1 s,
+                       final E521DecafExtendedPoint.Scratchpad scratch)
         throws IllegalArgumentException {
-        return E521DecafExtendedPoint.fromCompressed(s);
+        return E521DecafExtendedPoint.fromCompressed(s, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public E521DecafExtendedPoint fromHash(final ModE521M1 r) {
-        return E521DecafExtendedPoint.fromHash(r);
+    public E521DecafExtendedPoint
+        fromHash(final ModE521M1 r,
+                 final E521DecafExtendedPoint.Scratchpad scratch) {
+        return E521DecafExtendedPoint.fromHash(r, scratch);
     }
 
     /**

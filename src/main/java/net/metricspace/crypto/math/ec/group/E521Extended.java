@@ -52,9 +52,10 @@ import net.metricspace.crypto.math.field.ModE521M1;
  * @see net.metricspace.crypto.math.ec.curve.E521Curve
  */
 public class E521Extended
-    extends E521<E521ExtendedPoint>
+    extends E521<E521ExtendedPoint, E521ExtendedPoint.Scratchpad>
     implements E521Curve,
-               ElligatorGroup<ModE521M1, E521ExtendedPoint> {
+               ElligatorGroup<ModE521M1, E521ExtendedPoint,
+                              E521ExtendedPoint.Scratchpad> {
     /**
      * The base point of the E-521 group.
      */
@@ -71,6 +72,14 @@ public class E521Extended
      * {@inheritDoc}
      */
     @Override
+    public E521ExtendedPoint.Scratchpad scratchpad() {
+        return E521ExtendedPoint.Scratchpad.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public E521ExtendedPoint fromEdwards(final ModE521M1 x,
                                          final ModE521M1 y) {
         return E521ExtendedPoint.fromEdwards(x, y);
@@ -79,16 +88,18 @@ public class E521Extended
     /**
      * {@inheritDoc}
      */
-    public E521ExtendedPoint basePoint() {
-        return BASE_POINT.clone();
+    @Override
+    public E521ExtendedPoint
+        fromHash(final ModE521M1 r,
+                 final E521ExtendedPoint.Scratchpad scratch) {
+        return E521ExtendedPoint.fromHash(r, scratch);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public E521ExtendedPoint fromHash(final ModE521M1 r) {
-        return E521ExtendedPoint.fromHash(r);
+    public E521ExtendedPoint basePoint() {
+        return BASE_POINT.clone();
     }
 
     /**

@@ -34,6 +34,7 @@ package net.metricspace.crypto.math.ec.group;
 import net.metricspace.crypto.math.ec.curve.E222Curve;
 import net.metricspace.crypto.math.ec.point.DecafPoint;
 import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.ModE222M117;
 
 /**
@@ -57,9 +58,11 @@ import net.metricspace.crypto.math.field.ModE222M117;
  * @see ModE222M117
  * @see net.metricspace.crypto.math.ec.curve.E222Curve
  */
-public abstract class E222Decaf<P extends DecafPoint<ModE222M117, P, ?>>
-    extends E222<P>
-    implements DecafGroup<ModE222M117, P> {
+public abstract class
+    E222Decaf<P extends DecafPoint<ModE222M117, P, T>,
+              T extends MontgomeryLadder.Scratchpad<ModE222M117>>
+    extends E222<P, T>
+    implements DecafGroup<ModE222M117, P, T> {
     /**
      * The cofactor of E-222 is {@code 4}; decaf reduces this by
      * a factor of {@code 4} to {@code 1}.
