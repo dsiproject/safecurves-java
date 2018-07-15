@@ -239,13 +239,14 @@ public interface Elligator2<S extends PrimeField<S>,
          */
         scale();
 
-        final S x = montgomeryXScaled();
-        final S y = montgomeryYScaled();
-
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
-        final S r3 = scratch.r3;
+        final S x = scratch.r3;
+        final S y = scratch.r4;
+
+        x.set(montgomeryXScaledRef(scratch));
+        y.set(montgomeryYScaledRef(scratch));
 
         /* r0 = -(x + A) */
         r0.set(x);
@@ -298,8 +299,12 @@ public interface Elligator2<S extends PrimeField<S>,
          * r0.1 = r1.1 * x * -2
          * result = r0.1.legendre
          */
-        final S x = montgomeryX();
+
         final S r0 = scratch.r0;
+        final S x = scratch.r1;
+
+        scale();
+        x.set(montgomeryXScaledRef(scratch));
 
         /* r0 = x + A */
         r0.set(x);

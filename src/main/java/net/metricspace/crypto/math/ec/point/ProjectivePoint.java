@@ -182,16 +182,16 @@ public abstract class ProjectivePoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public S edwardsXScaled() {
-        return x.clone();
+    public S edwardsXScaledRef() {
+        return x;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public S edwardsYScaled() {
-        return y.clone();
+    public S edwardsYScaledRef() {
+        return y;
     }
 
     /**

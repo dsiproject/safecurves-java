@@ -399,20 +399,23 @@ public interface Elligator1<S extends PrimeField<S>,
          * r0.5 = ((1 - r0.4) / r1.2).abs
          * t = r0.5
          */
-        final S y = edwardsY();
+        scale();
+
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
         final S r3 = scratch.r3;
         final S r4 = scratch.r4;
 
+        r2.set(edwardsYScaledRef());
+
         /* r0 = 2 * (y + 1) */
-        r0.set(y);
+        r0.set(r2);
         r0.add(1);
         r0.mul(2);
 
         /* r1 = (y - 1) / r0 */
-        r1.set(y);
+        r1.set(r2);
         r1.sub(1);
         r1.div(r0, scratch);
 
@@ -447,7 +450,7 @@ public interface Elligator1<S extends PrimeField<S>,
         r0.square();
         r0.inv(scratch);
         r0.add(r4);
-        r0.mul(edwardsXScaled());
+        r0.mul(edwardsXScaledRef());
         r0.mul(r3);
         r0.mul(r1);
         r0.mul(elligatorS());
@@ -531,18 +534,19 @@ public interface Elligator1<S extends PrimeField<S>,
          * if r2.1 == -2 then x == r4.1
          */
 
-        final S y = edwardsY();
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
         final S r3 = scratch.r3;
         final S r4 = scratch.r4;
 
+        r4.set(edwardsYScaledRef());
+
         /* r0 = elligatorR */
         r0.set(elligatorR());
 
         /* r1 = y + 1 */
-        r1.set(y);
+        r1.set(r4);
 
         r1.add(1);
 
@@ -551,7 +555,7 @@ public interface Elligator1<S extends PrimeField<S>,
         r2.mul(2);
 
         /* r3 = (y - 1) / r2 */
-        r3.set(y);
+        r3.set(r4);
         r3.sub(1);
         r3.div(r2, scratch);
 
@@ -584,6 +588,6 @@ public interface Elligator1<S extends PrimeField<S>,
         r0.set(-2);
 
         return r1.isZero(scratch) != 1 && r3.legendre(scratch) == 1 &&
-               (!r2.equals(r0) || r4.equals(edwardsXScaled()));
+               (!r2.equals(r0) || r4.equals(edwardsXScaledRef()));
     }
 }

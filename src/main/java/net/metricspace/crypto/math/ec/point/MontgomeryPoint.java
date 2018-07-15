@@ -55,9 +55,22 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      *         representation.
      */
     public default S montgomeryX() {
-        scale();
+        try(final T scratch = scratchpad()) {
+            return montgomeryX(scratch);
+        }
+    }
 
-        return montgomeryXScaled();
+    /**
+     * Get the value of the Y coordinate in the Montgomery
+     * representation.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     */
+    public default S montgomeryY() {
+        try(final T scratch = scratchpad()) {
+            return montgomeryY(scratch);
+        }
     }
 
     /**
@@ -70,19 +83,10 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      *         representation.
      * @see #scale()
      */
-    public S montgomeryXScaled();
-
-    /**
-     * Get the value of the Y coordinate in the Montgomery
-     * representation.
-     *
-     * @return The value of the Y coordinate in the Montgomery
-     *         representation.
-     */
-    public default S montgomeryY() {
-        scale();
-
-        return montgomeryYScaled();
+    public default S montgomeryXScaled() {
+        try(final T scratch = scratchpad()) {
+            return montgomeryXScaled(scratch);
+        }
     }
 
     /**
@@ -94,7 +98,119 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      *         representation.
      * @see #scale()
      */
-    public S montgomeryYScaled();
+    public default S montgomeryYScaled() {
+        try(final T scratch = scratchpad()) {
+            return montgomeryYScaled(scratch);
+        }
+    }
+
+    /**
+     * Get the value of the X coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The value of the X coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public default S montgomeryXScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return montgomeryXScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get a direct reference to an object in the scratchpad holding
+     * the value of the Y coordinate in the Montgomery representation.
+     * This assumes the internal representation has been scaled.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public default S montgomeryYScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return montgomeryYScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get the value of the X coordinate in the Montgomery
+     * representation.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The value of the X coordinate in the Montgomery
+     *         representation.
+     */
+    public default S montgomeryX(final T scratch) {
+        scale();
+
+        return montgomeryXScaled(scratch);
+    }
+
+    /**
+     * Get the value of the Y coordinate in the Montgomery
+     * representation.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     */
+    public default S montgomeryY(final T scratch) {
+        scale();
+
+        return montgomeryYScaled(scratch);
+    }
+
+    /**
+     * Get the value of the X coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The value of the X coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public default S montgomeryXScaled(final T scratch) {
+        return montgomeryXScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the value of the Y coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public default S montgomeryYScaled(final T scratch) {
+        return montgomeryYScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the value of the X coordinate in the Montgomery
+     * representation.  This assumes the internal representation has
+     * been scaled.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The value of the X coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public S montgomeryXScaledRef(final T scratch);
+
+    /**
+     * Get a direct reference to an object in the scratchpad holding
+     * the value of the Y coordinate in the Montgomery representation.
+     * This assumes the internal representation has been scaled.
+     *
+     * @return The value of the Y coordinate in the Montgomery
+     *         representation.
+     * @see #scale()
+     */
+    public S montgomeryYScaledRef(final T scratch);
 
     /**
      * Set the point from its Montgomery coordinates.

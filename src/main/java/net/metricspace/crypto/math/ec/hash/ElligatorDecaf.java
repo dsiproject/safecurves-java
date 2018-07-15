@@ -283,12 +283,14 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * R = r2.3
          */
 
+        scale();
+
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
 
         /* r0 = edwardsX */
-        r0.set(edwardsX());
+        r0.set(edwardsXScaledRef());
 
         /* r1 = sqrt (1 - r0^2) */
         r1.set(r0);
@@ -303,7 +305,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         r2.div(r0, scratch);
 
         /* r0.1 = r0 * Y */
-        r0.mul(edwardsYScaled());
+        r0.mul(edwardsYScaledRef());
 
         /* r1.1 = (2 * r2 * r1) / r0.1 */
         r1.mul(r2);
@@ -370,12 +372,14 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r2.3.legendre == 1
          */
 
+        scale();
+
         final S r0 = scratch.r0;
         final S r1 = scratch.r1;
         final S r2 = scratch.r2;
 
         /* r0 = edwardsX */
-        r0.set(edwardsX());
+        r0.set(edwardsXScaledRef());
 
         /* r1 = sqrt (1 - r0^2) */
         r1.set(r0);
@@ -390,7 +394,7 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         r2.div(r0, scratch);
 
         /* r0.1 = r0 * Y */
-        r0.mul(edwardsYScaled());
+        r0.mul(edwardsYScaledRef());
 
         /* r1.1 = (2 * r2 * r1) / r0.1 */
         r1.mul(r2);

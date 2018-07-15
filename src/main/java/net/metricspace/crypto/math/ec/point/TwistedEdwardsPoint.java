@@ -83,7 +83,9 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * representation.
      * @see #scale()
      */
-    public S edwardsXScaled();
+    public default S edwardsXScaled() {
+        return edwardsXScaledRef().clone();
+    }
 
     /**
      * Get the value of the Y coordinate in the Edwards
@@ -94,7 +96,31 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * representation.
      * @see #scale()
      */
-    public S edwardsYScaled();
+    public default S edwardsYScaled() {
+        return edwardsYScaledRef().clone();
+    }
+
+    /**
+     * Get a direct reference to the value of the X coordinate in the
+     * Edwards representation.  This assumes the point has already
+     * been scaled.
+     *
+     * @return The value of the X coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsXScaledRef();
+
+    /**
+     * Get a direct reference to the value of the Y coordinate in the
+     * Edwards representation.  This assumes the point has already
+     * been scaled.
+     *
+     * @return The value of the Y coordinate in the Edwards
+     * representation.
+     * @see #scale()
+     */
+    public S edwardsYScaledRef();
 
     /**
      * Set the point from its Edwards coordinates.
@@ -140,10 +166,12 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryXScaled() {
-        final S y = edwardsYScaled();
-        final S denom = y.clone();
+    public default S montgomeryXScaledRef(final T scratch) {
+        final S y = scratch.r0;
+        final S denom = scratch.r1;
 
+        y.set(edwardsYScaledRef());
+        denom.set(y);
         denom.sub(1);
         denom.neg();
         denom.inv();
@@ -157,13 +185,15 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * {@inheritDoc}
      */
     @Override
-    public default S montgomeryYScaled() {
-        final S y = edwardsYScaled();
-        final S denom = y.clone();
+    public default S montgomeryYScaledRef(final T scratch) {
+        final S y = scratch.r0;
+        final S denom = scratch.r1;
 
+        y.set(edwardsYScaledRef());
+        denom.set(y);
         denom.sub(1);
         denom.neg();
-        denom.mul(edwardsXScaled());
+        denom.mul(edwardsXScaledRef());
         denom.inv();
         y.add(1);
         y.mul(denom);
@@ -189,24 +219,26 @@ public interface TwistedEdwardsPoint<S extends PrimeField<S>,
      * Get the value of the X coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
      * representation.
      */
     @Override
-    public default S getX() {
-        return montgomeryX();
+    public default S getXScaledRef(final T scratch) {
+        return montgomeryXScaledRef(scratch);
     }
 
     /**
      * Get the value of the Y coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the Y coordinate in the Montgomery
      * representation.
      */
     @Override
-    public default S getY() {
-        return montgomeryY();
+    public default S getYScaledRef(final T scratch) {
+        return montgomeryYScaledRef(scratch);
     }
 
     /**

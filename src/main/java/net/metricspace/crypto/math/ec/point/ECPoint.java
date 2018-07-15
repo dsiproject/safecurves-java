@@ -382,12 +382,124 @@ public interface ECPoint<S extends PrimeField<S>,
      *
      * @return The X coordinate.
      */
-    public S getX();
+    public default S getX() {
+        try(final T scratch = scratchpad()) {
+            return getX(scratch);
+        }
+    }
 
     /**
      * Get the Y coordinate.
      *
      * @return The Y coordinate.
      */
-    public S getY();
+    public default S getY() {
+        try(final T scratch = scratchpad()) {
+            return getY(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @return The X coordinate.
+     */
+    public default S getXScaled() {
+        try(final T scratch = scratchpad()) {
+            return getXScaled(scratch);
+        }
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @return The Y coordinate.
+     */
+    public default S getYScaled() {
+        try(final T scratch = scratchpad()) {
+            return getYScaled(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordinate.
+     *
+     * @return The X coordinate.
+     */
+    public default S getXScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return getXScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @return The Y coordinate.
+     */
+    public default S getYScaledRef() {
+        try(final T scratch = scratchpad()) {
+            return getYScaledRef(scratch);
+        }
+    }
+
+    /**
+     * Get the X coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public default S getX(final T scratch) {
+        scale();
+
+        return getXScaled(scratch);
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public default S getY(final T scratch) {
+        scale();
+
+        return getYScaled(scratch);
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public default S getXScaled(final T scratch) {
+        return getXScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public default S getYScaled(final T scratch) {
+        return getYScaledRef(scratch).clone();
+    }
+
+    /**
+     * Get the X coordt inate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The X coordinate.
+     */
+    public S getXScaledRef(final T scratch);
+
+    /**
+     * Get the Y coordinate.
+     *
+     * @param scratch The scratchpad to use.
+     * @return The Y coordinate.
+     */
+    public S getYScaledRef(final T scratch);
 }

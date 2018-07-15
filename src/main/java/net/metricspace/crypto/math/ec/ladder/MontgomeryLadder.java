@@ -595,7 +595,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
         final S r4 = scratch.r4;
 
         /* r2 = y */
-        r2.set(point.montgomeryYScaled());
+        r2.set(point.montgomeryYScaledRef(scratch));
 
         /* r0 = x * Zn */
         r0.set(x);
@@ -727,7 +727,7 @@ public interface MontgomeryLadder<S extends PrimeField<S>,
                             final T scratch) {
         scale();
 
-        try(final S x = montgomeryXScaled();
+        try(final S x = montgomeryXScaled(scratch);
             final S z = x.clone();
             final S xn = x.clone();
             final S zn = z.clone();
