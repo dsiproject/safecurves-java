@@ -200,8 +200,8 @@ public class Curve1174DecafExtendedPoint
     /**
      * Create a {@code Curve1174DecafExtendedPoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
     public static Curve1174DecafExtendedPoint fromHash(final ModE251M9 r)

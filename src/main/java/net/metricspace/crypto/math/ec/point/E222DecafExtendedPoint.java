@@ -198,8 +198,8 @@ public class E222DecafExtendedPoint
     /**
      * Create a {@code E222DecafExtendedPoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
     public static E222DecafExtendedPoint fromHash(final ModE222M117 r)
@@ -212,9 +212,9 @@ public class E222DecafExtendedPoint
     /**
      * Create a {@code E222DecafExtendedPoint} from a hash.
      *
-     * @param s The hash input.
+     * @param r The hash input.
      * @param scratch The scratchpad to use.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
     public static E222DecafExtendedPoint fromHash(final ModE222M117 r,

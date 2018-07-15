@@ -50,7 +50,6 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * Get the value of the X coordinate in the Montgomery
      * representation.
      *
-     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
      *         representation.
      */
@@ -78,7 +77,6 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * representation.  This assumes the internal representation has
      * been scaled.
      *
-     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
      *         representation.
      * @see #scale()
@@ -109,7 +107,6 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * representation.  This assumes the internal representation has
      * been scaled.
      *
-     * @param scratch The scratchpad to use.
      * @return The value of the X coordinate in the Montgomery
      *         representation.
      * @see #scale()
@@ -153,6 +150,7 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * Get the value of the Y coordinate in the Montgomery
      * representation.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the Y coordinate in the Montgomery
      *         representation.
      */
@@ -181,6 +179,7 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * representation.  This assumes the internal representation has
      * been scaled.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the Y coordinate in the Montgomery
      *         representation.
      * @see #scale()
@@ -206,6 +205,7 @@ public interface MontgomeryPoint<S extends PrimeField<S>,
      * the value of the Y coordinate in the Montgomery representation.
      * This assumes the internal representation has been scaled.
      *
+     * @param scratch The scratchpad to use.
      * @return The value of the Y coordinate in the Montgomery
      *         representation.
      * @see #scale()

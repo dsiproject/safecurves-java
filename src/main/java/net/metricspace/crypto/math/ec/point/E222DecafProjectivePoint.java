@@ -195,8 +195,8 @@ public class E222DecafProjectivePoint
     /**
      * Create a {@code E222DecafProjectivePoint} from a hash.
      *
-     * @param s The hash input.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @param r The hash input.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
     public static E222DecafProjectivePoint fromHash(final ModE222M117 r)
@@ -209,9 +209,9 @@ public class E222DecafProjectivePoint
     /**
      * Create a {@code E222DecafProjectivePoint} from a hash.
      *
-     * @param s The hash input.
+     * @param r The hash input.
      * @param scratch The scratchpad to use.
-     * @return A point initialized by hashing {@code s} to a point.
+     * @return A point initialized by hashing {@code r} to a point.
      * @throws IllegalArgumentException If the hash input is invalid.
      */
     public static E222DecafProjectivePoint fromHash(final ModE222M117 r,
