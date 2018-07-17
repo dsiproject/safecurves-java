@@ -290,30 +290,109 @@ public interface Elligator2<S extends PrimeField<S>,
         /**
          * Formula from https://eprint.iacr.org/2013/325.pdf
          *
+         * x != -a
+         * y != 0 || x == 0
          * (-2 * x * (x + A)).legendre == 1
+         * y == y.legendre * (x^3 + (a * x^2) + x).sqrt
          *
-         * This can easily be done as
+         * Manual common subexpression elimination produces the
+         * following:
          *
+         * X = montgomeryX
+         * Y = montgomeryY
+         * A = montgomeryA
+         * MA = -A
+         * b0 = X.equals(MA)
+         * b1 = Y.isZero() != 1 || X.isZero == 0
+         * l0 = y.legendre
+         * C = X + A
+         * D = X * C
+         * E = (-2 * D)
+         * l1 = E.legendre
+         * F = ((D + 1) * X).sqrt * l0
+         * b2 = Y.equals(F)
+         *
+         * then, !b0 && b1 && l0 == 1 && b2
+         *
+         * Manual register allocation produces the following assignments:
+         *
+         * r3 = X
+         * r4 = Y
          * r0 = A
-         * r0 = x + A
-         * r0.1 = r1.1 * x * -2
-         * result = r0.1.legendre
+         * r1 = MA
+         * r0.1 = C
+         * r0.2 = D
+         * r1.1 = E
+         * r0.3 = F
+         *
+         * Final formula:
+         *
+         * r3 = montgomeryX
+         * r4 = montgomeryY
+         * r0 = montgomeryA
+         * r1 = -r0
+         * b0 = r3.equals(r1)
+         * b1 = r4.isZero() != 1 || r3.isZero == 1
+         * l0 = r4.legendre
+         * r0.1 = r3 + r0
+         * r0.2 = r3 * r0.1
+         * r1.1 = (-2 * r0.2)
+         * l1 = r1.1.legendre
+         * r0.3 = ((r0.2 + 1) * r3).sqrt * l0
+         * b2 = r4.equals(r0.3)
+         * !b0 && b1 && l1 == 1 && b2
          */
 
         final S r0 = scratch.r0;
-        final S x = scratch.r1;
+        final S r1 = scratch.r1;
+        final S r3 = scratch.r3;
+        final S r4 = scratch.r4;
 
-        scale();
-        x.set(montgomeryXScaledRef(scratch));
+        /* r3 = montgomeryX */
+        r3.set(montgomeryXScaledRef());
 
-        /* r0 = x + A */
-        r0.set(x);
-        r0.add(montgomeryA());
+        /* r4 = montgomeryY */
+        r4.set(montgomeryYScaledRef());
 
-        /* r0.1 = r1.1 * x * -2 */
-        r0.mul(x);
-        r0.mul(-2);
+        /* r0 = montgomeryA */
+        r0.set(montgomeryA());
 
-        return r0.legendre(scratch) == 1;
+        /* r1 = -r0 */
+        r1.set(r0);
+        r1.neg();
+
+        /* b0 = r3.equals(r1) */
+        final boolean b0 = r3.equals(r1);
+
+        /* b1 = r4.isZero() != 1 || r3.isZero == 1 */
+        final boolean b1 = r4.isZero(scratch) != 1 || r3.isZero(scratch) == 1;
+
+        /* l0 = y.legendre */
+        final int l0 = r4.legendre(scratch);
+
+        /* r0.1 = r3 + r0 */
+        r0.add(r3);
+
+        /* r0.2 = r3 * r0.1 */
+        r0.mul(r3);
+
+        /* r1.1 = (-2 * r0.2) */
+        r1.set(r0);
+        r1.mul(-2);
+
+        /* l1 = r1.1.legendre */
+        final int l1 = r1.legendre(scratch);
+
+        /* r0.3 = ((r0.2 + 1) * r3).sqrt * l0 */
+        r0.add(1);
+        r0.mul(r3);
+        r0.sqrt(scratch);
+        r0.mul(l0);
+
+        /* b2 = r4.equals(r0.3) */
+        final boolean b2 = r4.equals(r0);
+
+        /* !b0 && b1 && l1 == 1 && b2 */
+        return !b0 && b1 && l1 == 1 && b2;
     }
 }
