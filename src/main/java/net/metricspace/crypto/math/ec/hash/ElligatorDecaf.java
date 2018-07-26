@@ -79,9 +79,12 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          *           then (1, 1 / sqrt (N * D)
          *           else (-1, (n * r0) / sqrt (n * N * D)
          * s = c * abs (N * e)
-         * (t is omitted because it isn't needed)
+         * t = (-c * N * (r - 1) * ((a - (2 * d)) * e)^2) - 1
          *
-         * Then abs (s) is a decaf-compressed point.
+         * Then apply the maps from the paper:
+         *
+         * x = (2 * s) / (1 + (a * s^2))
+         * y = -(1 - (a * s^2)) / t
          *
          * Note that we can safely branch, because we are decoding a
          * hash; therefore, any attacker will know in advance whether
@@ -94,29 +97,38 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * Q = n * R^2
          * D = ((d * Q) + 1 - d) * ((d * Q) - Q - d)
          * N = (Q + 1) * (1 - (2 * d))
-         * E = if (N * D).legendre == 1
+         * c = (N * D).legendre
+         * E = if c == 1
          *        then (N * D).invsqrt
          *        else (n * R) * (n * N * D).invsqrt
-         * S = (N * E).abs
-         * decompress S
+         * S = c * (N * E).abs
+         * T = (-c * N * (Q - 1) * ((1 - (2 * d)) * E)^2) - 1
+         * x = (2 * S) / (1 + S^2)
+         * y = -(1 - S^2) / T
          *
          * Manual common subexpression elimination produces the following:
          *
          * n = nonresidue
          * Q = n * R^2
-         * E = d * Q
-         * F = E - Q - d
-         * D = (E + 1 - d) * F
+         * F = d * Q
+         * G = F - Q - d
+         * D = (F + 1 - d) * G
          * N = (Q + 1) * (1 - (2 * d))
-         * G = N * D
-         * E = if G.legendre == 1
-         *        then G.invsqrt
+         * H = N * D
+         * c = H.legendre
+         * E = if c == 1
+         *        then H.invsqrt
          *        else {
-         *          H = (n * G).invsqrt
-         *          (n * R) * H
+         *          I = (n * H).invsqrt
+         *          (n * Q) * I
          *        }
-         * S = (N * E).abs
-         * decompress S
+         * S = c * (N * E).abs
+         * K = Q - 1
+         * T = (-c * N * K * ((1 - (2 * d)) * E)^2) - 1
+         * SS = S^2
+         * J = 1 + SS
+         * X = (2 * S) / J
+         * Y = -(1 - SS) / T
          *
          * Manual register allocation produces the following assignments:
          *
@@ -124,14 +136,20 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * because decompression does not use r3.
          *
          * r0 = Q
-         * r1 = E
-         * r2 = F
+         * r1 = F
+         * r2 = G
          * r1.1 = D
          * r2.1 = N
-         * r1.2 = G
-         * r1.3 = H
+         * r1.2 = H
+         * r1.3 = I
          * r3 = E
-         * r3.1 = S
+         * r1.4 = S
+         * r0.1 = K
+         * r3.1 = T
+         * r0.2 = SS
+         * r2.2 = J
+         * r1.5 = X
+         * r0.3 = Y
          *
          * Final formula:
          *
@@ -142,14 +160,22 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
          * r1.1 = (r1 + 1 - d) * r2
          * r2.1 = (r0 + 1) * (1 - (2 * d))
          * r1.2 = r2.1 * r1.1
-         * r3 = if r1.2.legendre == 1
-         *         then r1.2.invsqrt
-         *         else {
-         *           r1.3 = (n * r1.2).invsqrt
-         *           (n * R) * r1.3
-         *         }
-         * r3.1 = (r2.1 * r3).abs
-         * decompress r3.1
+         * c = r1.2.legendre
+         * r3 = if c == 1
+         *        then r1.2.invsqrt
+         *        else {
+         *          r1.3 = (n * r1.2).invsqrt
+         *          (n * r0) * r1.3
+         *        }
+         * r1.4 = c * (r2.1 * r3).abs
+         * r0.1 = r0 - 1
+         * r3.1 = (-c * r2.1 * r0.1 * ((1 - (2 * d)) * r3)^2) - 1
+         * r0.2 = r1.4^2
+         * r2.2 = 1 + r0.2
+         * r1.5 = (2 * r1.4) / r2.2
+         * r0.3 = -(1 - r0.2) / r3.1
+         * X = r1.5
+         * Y = r0.3
          */
 
         /* n = nonresidue */
@@ -188,11 +214,14 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
         /* r1.2 = r2.1 * r1.1 */
         r1.mul(r2);
 
+        /* c = r1.2.legendre */
+        final int c = r1.legendre(scratch);
+
         /* r3 = if r1.2.legendre == 1
          *         then r1.2.invsqrt
          *         else (n * R) * (n * r1.2).invsqrt
          */
-        if (r1.legendre(scratch) == 1) {
+        if (c == 1) {
             r3.set(r1);
             r3.invSqrt(scratch);
         } else {
@@ -203,12 +232,42 @@ public interface ElligatorDecaf<S extends PrimeField<S>,
             r3.mul(r1);
         }
 
-        /* r3.1 = (r2.1 * r3).abs */
-        r3.mul(r2);
-        r3.abs(scratch);
+        /* r1.4 = c * (r2.1 * r3).abs */
+        r1.set(r2);
+        r1.mul(r3);
+        r1.abs(scratch);
+        r1.mul(c);
 
-        /* decompress r3 */
-        decompress(r3);
+        /* r0.1 = r0 - 1 */
+        r0.sub(1);
+
+        /* r3.1 = (-c * r2.1 * r0.1 * ((1 - (2 * d)) * r3)^2) - 1 */
+        r3.mul(1 - (2 * d));
+        r3.square();
+        r3.mul(r0);
+        r3.mul(r2);
+        r3.mul(-c);
+        r3.sub(1);
+
+        /* r0.2 = r1.4^2 */
+        r0.set(r1);
+        r0.square();
+
+        /* r2.2 = 1 + r0.2 */
+        r2.set(r0);
+        r2.add(1);
+
+        /* r1.5 = (2 * r1.4) / r2.2 */
+        r1.mul(2);
+        r1.div(r2);
+
+        /* r0.3 = -(1 - r0.2) / r3.1 */
+        r0.sub(1);
+        r0.div(r3);
+
+        /* X = r1.5 */
+        /* Y = r0.3 */
+        setEdwards(r1, r0);
 
     }
 
