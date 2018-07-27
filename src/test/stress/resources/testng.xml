@@ -7,8 +7,6 @@
       </run>
     </groups>
     <packages>
-      <package name="net.metricspace.crypto.math.ec"/>
-      <package name="net.metricspace.crypto.math.ec.curve"/>
       <package name="net.metricspace.crypto.math.ec.group"/>
     </packages>
   </test>
