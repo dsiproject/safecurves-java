@@ -29,56 +29,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.point;
+package net.metricspace.crypto.math.ec.group;
 
-import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
-import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
-import net.metricspace.crypto.math.field.PrimeField;
+import java.security.SecureRandom;
 
-/**
- * Points on an Edwards curve, which has the form {@code x^2 + y^2 = 1
- * + d * x^2 * y^2 }
- *
- * @param <S> The scalar field type.
- */
-public interface EdwardsPoint<S extends PrimeField<S>,
-                              P extends EdwardsPoint<S, P, T>,
-                              T extends MontgomeryLadder.Scratchpad<S>>
-    extends TwistedEdwardsPoint<S, P, T>,
-            MontgomeryLadder<S, P, T> {
-    /**
-     * Get the value of the X coordinate in the Edwards
-     * representation.
-     *
-     * @return The value of the X coordinate in the Edwards
-     * representation.
-     */
-    @Override
-    public default S getX() {
-        return edwardsX();
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import net.metricspace.crypto.math.ec.group.Curve1174;
+import net.metricspace.crypto.math.ec.point.EdwardsPoint;
+import net.metricspace.crypto.math.field.ModE251M9;
+
+abstract class Curve1174ECDHTest<P extends EdwardsPoint<ModE251M9, P, ?>,
+                                 G extends Curve1174<P, ?>>
+    extends ECDHTest<ModE251M9, P, G> {
+    protected Curve1174ECDHTest(final G group) {
+        super(group);
     }
 
-    /**
-     * Get the value of the Y coordinate in the Edwards
-     * representation.
-     *
-     * @return The value of the Y coordinate in the Edwards
-     * representation.
-     */
     @Override
-    public default S getY() {
-        return edwardsY();
-    }
-
-    /**
-     * Set the point from its Edwards coordinates.
-     *
-     * @param x The Edwards X coordinate.
-     * @param y The Edwards Y coordinate.
-     */
-    @Override
-    public default void set(final S x,
-                            final S y) {
-        setEdwards(x, y);
+    protected ModE251M9 generatePrivateKey() {
+        return new ModE251M9(random);
     }
 }

@@ -29,56 +29,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.metricspace.crypto.math.ec.point;
+package net.metricspace.crypto.math.ec.group;
 
-import net.metricspace.crypto.math.ec.curve.EdwardsCurve;
+import java.security.SecureRandom;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import net.metricspace.crypto.math.ec.group.ECGroup;
 import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.field.PrimeField;
 
-/**
- * Points on an Edwards curve, which has the form {@code x^2 + y^2 = 1
- * + d * x^2 * y^2 }
- *
- * @param <S> The scalar field type.
- */
-public interface EdwardsPoint<S extends PrimeField<S>,
-                              P extends EdwardsPoint<S, P, T>,
-                              T extends MontgomeryLadder.Scratchpad<S>>
-    extends TwistedEdwardsPoint<S, P, T>,
-            MontgomeryLadder<S, P, T> {
-    /**
-     * Get the value of the X coordinate in the Edwards
-     * representation.
-     *
-     * @return The value of the X coordinate in the Edwards
-     * representation.
-     */
-    @Override
-    public default S getX() {
-        return edwardsX();
+@Test(groups = "stress")
+abstract class ECDHTest<S extends PrimeField<S>,
+                        P extends MontgomeryLadder<S, P, ?>,
+                        G extends ECGroup<S, P, ?>> {
+    protected static final SecureRandom random = new SecureRandom();
+    private static int NUM_TESTS = 1024;
+    private G group;
+
+    protected ECDHTest(final G group) {
+        this.group = group;
     }
 
-    /**
-     * Get the value of the Y coordinate in the Edwards
-     * representation.
-     *
-     * @return The value of the Y coordinate in the Edwards
-     * representation.
-     */
-    @Override
-    public default S getY() {
-        return edwardsY();
-    }
+    protected abstract S generatePrivateKey();
 
-    /**
-     * Set the point from its Edwards coordinates.
-     *
-     * @param x The Edwards X coordinate.
-     * @param y The Edwards Y coordinate.
-     */
-    @Override
-    public default void set(final S x,
-                            final S y) {
-        setEdwards(x, y);
+    @Test(description = "Test that ECDH works")
+    public void ecdhTest() {
+        for(int i = 0; i < NUM_TESTS; i++) {
+            final S private1 = generatePrivateKey();
+            final P public1 = group.basePoint();
+
+            public1.mul(private1);
+
+            final S private2 = generatePrivateKey();
+            final P public2 = group.basePoint();
+
+            public2.mul(private2);
+
+            final S secret1 = public1.mulX(private2);
+            final S secret2 = public2.mulX(private1);
+
+            Assert.assertEquals(secret1, secret2);
+        }
     }
 }

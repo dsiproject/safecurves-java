@@ -32,7 +32,7 @@
 package net.metricspace.crypto.math.ec.group;
 
 import net.metricspace.crypto.math.ec.curve.E382Curve;
-import net.metricspace.crypto.math.ec.point.ECPoint;
+import net.metricspace.crypto.math.ec.ladder.MontgomeryLadder;
 import net.metricspace.crypto.math.ec.point.EdwardsPoint;
 import net.metricspace.crypto.math.field.ModE382M105;
 
@@ -53,7 +53,7 @@ import net.metricspace.crypto.math.field.ModE382M105;
  * @see net.metricspace.crypto.math.ec.curve.E382Curve
  */
 public abstract class E382<P extends EdwardsPoint<ModE382M105, P, T>,
-                           T extends ECPoint.Scratchpad<ModE382M105>>
+                           T extends MontgomeryLadder.Scratchpad<ModE382M105>>
     extends EdwardsCurveGroup<ModE382M105, P, T>
     implements E382Curve {
     /**
